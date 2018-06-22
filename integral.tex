@@ -1,0 +1,234 @@
+
+\chapter{Integrals}
+
+We define the complementary error function
+\begin{equation} \label{E:erfc}
+  \erfc (x) = \frac{2}{\sqrt{\pi}} \int_x^{\infty} e^{-t^2} dt 
+            = 1 - \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} dt = 1 - \erf (x),
+\end{equation}
+note that $\erfc (-\infty)=2$, $\erfc (0)=1$, and $\erfc (\infty)=0$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Normal Integral}
+\begin{equation}
+  \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$\int_b^{\infty} e^{-c^2 ( x^2+\frac{a^2}{x^2} ) } dx $ }
+Note that
+\begin{align*}
+  \int_b^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } d(x+\frac{a}{x})
+    &= e^{2ac^2} \int_{b+\frac{a}{b}}^{\infty} e^{-c y^2} dy  \notag  \\
+    &= \frac{ \sqrt{\pi} }{2c} e^{2a c^2} 
+       \ \mathrm{erfc} \left( c b + \frac{c a}{b} \right),
+\end{align*}
+where
+Similarly,
+\[
+  \int_b^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } d(x-\frac{a}{x})
+    = \frac{ \sqrt{\pi} }{2c} e^{-2a c^2} 
+      \ \mathrm{erfc} \left( c b - \frac{c a}{b} \right).
+\]
+Hence,
+\begin{align}
+  \int_b^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } dx
+    &= \frac{1}{2} \left(  
+         \int_b^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } d(x+\frac{a}{x})
+         + \int_b^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } d(x-\frac{a}{x})
+       \right)  \notag  \\
+    &= \frac{\sqrt{\pi}}{4c} 
+       \left[ 
+         e^{2a c^2} \mathrm{erfc} \left( c b + \frac{c a}{b} \right)
+         + e^{-2a c^2} \mathrm{erfc} \left( c b - \frac{c a}{b} \right)
+       \right]  \label{E:int1}
+\end{align}
+And in case $b=0$ we have
+\footnote{Boros and Moll, Irresistible Integrals, Example 8.4.1, p.172.
+  Edwards, A Treatise on the Integral Calculus, vol.II, sec.1046, pp.220-221}
+\begin{equation}
+  \int_0^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } dx
+    = \frac{\sqrt{\pi}}{2c} e^{-2a c^2}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $ \int_0^{\infty} e^{-x^2} \cos(a x) \, dx $ }
+Let $ I(a) = \int_0^{\infty} e^{-x^2} \cos(a x) \, dx $, then
+\begin{align*}
+  \frac{dI(a)}{da} &= \int_0^{\infty} - x e^{-x^2} \sin(a x) \, dx  \\
+                   &= \frac{1}{2} e^{-x^2} \sin(a x) \vert_0^{\infty}
+                      - \int_0^{\infty} \frac{a}{2} e^{-x^2} \cos(a x) \, dx  \\
+                   &= - \frac{a}{2} I(a)
+\end{align*}
+Using the fact that 
+$I(0) = \int_0^{\infty} e^{-x^2} \, dx = \frac{\sqrt{\pi}}{2} $, 
+we get
+\begin{equation} \label{E:int2}
+  \int_0^{\infty} e^{-x^2} \cos(a x) \, dx = \frac{\sqrt{\pi}}{2} e^{-a^2 /4}.
+\end{equation}
+As a side effect we have
+\begin{equation} \label{E:int2_2}
+  \int_0^{\infty} e^{-x^2} \sin(a x) \, x dx = \frac{\sqrt{\pi}a}{4} e^{-a^2 /4}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $ \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, \frac{dx}{x^2+\gamma^2} $ }
+Note that
+\[
+  \frac{1}{x^2+\gamma^2} = \int_0^{\infty} e^{-(x^2+\gamma^2) z} \, dz,
+\]
+we have
+\begin{align*}
+  I &= \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, \frac{dx}{x^2+\gamma^2}  \\
+    &= \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, dx 
+         \int_0^{\infty} e^{-(x^2+\gamma^2) z} \, dz   \\
+    &= \int_0^{\infty} dz\, e^{-\gamma^2 z} 
+         \int_0^{\infty} dx\, e^{-(\beta+z)x^2} \cos(a x)
+\end{align*}
+Using Equation \ref{E:int2} and simple variable change, we get
+\[
+  \int_0^{\infty} dx\, e^{-(\beta+z)x^2} \cos(a x) 
+    = \frac{\sqrt{\pi}}{2\sqrt{\beta+z}} e^{-\frac{a^2}{4(\beta+z)}}.
+\]
+Hence
+\begin{align*}
+  I &= \frac{\sqrt{\pi}}{2} \int_0^{\infty} \frac{dz}{\sqrt{\beta+z}}
+                                e^{-\gamma^2 z} e^{-\frac{a^2}{4(\beta+z)}}  \\
+    &= \sqrt{\pi}\, e^{\beta \gamma^2} 
+       \int_{\sqrt{\beta}}^{\infty} e^{-\gamma^2 x^2} e^{-\frac{a^2/4}{x^2}}\,dx
+         \quad (x=\sqrt{\beta+z}).
+\end{align*}
+Using Equations \ref{E:int1} and \ref{E:erfc}, we get
+\begin{equation} \label{E:int3}
+  \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, \frac{dx}{x^2+\gamma^2} 
+    = \frac{\pi}{4\gamma} e^{\beta \gamma^2}
+      \left[
+        e^{-\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+        + e^{\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+      \right]
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $ \int_0^{\infty} e^{-\beta x^2} \sin(a x) \, \frac{x dx}{x^2+\gamma^2} $ }
+Note that
+\[
+  \int_0^{\infty} e^{-\beta x^2} \sin(a x) \, \frac{x dx}{x^2+\gamma^2} 
+   = - \frac{\partial}{\partial a} 
+       \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, \frac{dx}{x^2+\gamma^2}.
+\]
+Using Equation \ref{E:int3} and the facts
+\begin{align*}
+  \frac{\partial}{\partial a} 
+    \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+  &= - \frac{1}{\sqrt{\pi \beta}} 
+    e^{-( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} )^2 },  \\
+  \frac{\partial}{\partial a} 
+    \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+  &= \frac{1}{\sqrt{\pi \beta}} 
+    e^{-( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} )^2 },  
+\end{align*}
+we get 
+\begin{equation} \label{E:int4}
+  \int_0^{\infty} e^{-\beta x^2} \sin(a x) \, \frac{x dx}{x^2+\gamma^2} 
+    = \frac{\pi}{4} e^{\beta \gamma^2}
+      \left[
+        e^{-\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+        - e^{\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+      \right]
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $ \int_0^{\infty} \frac{e^{-\beta x^2}}{x^2+\gamma^2}
+\frac{\sin(ax)}{x}\, dx  $ }
+Note that 
+\[
+  \int_0^{\infty} e^{-\beta x^2} \cos(a x) \, \frac{dx}{x^2+\gamma^2}
+    = \frac{\partial}{\partial a} 
+        \int_0^{\infty} \frac{e^{-\beta x^2}}{x^2+\gamma^2} 
+                        \frac{\sin(ax)}{x}\, dx,
+\] 
+hence we need to perform the rather complicated integration of Equation
+\ref{E:int3}. However note that
+\begin{align*}
+  \frac{\partial}{\partial a}  
+    \left[
+      e^{a \gamma} 
+      \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+    \right]
+  &= \gamma e^{a \gamma} 
+       \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+     - \frac{1}{\sqrt{\pi \beta}} e^{-\beta \gamma^2 - \frac{a^2}{4\beta}},  \\
+  \frac{\partial}{\partial a}  
+    \left[
+      e^{-a \gamma} 
+      \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+    \right]
+  &= - \gamma e^{-a \gamma} 
+       \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+     + \frac{1}{\sqrt{\pi \beta}} e^{-\beta \gamma^2 - \frac{a^2}{4\beta}}, 
+\end{align*}
+hence
+\begin{align*}
+  &\qquad \frac{\partial}{\partial a}  
+    \left[
+      e^{a \gamma} 
+        \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+      - e^{-a \gamma} 
+        \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+    \right] \\
+  &= \gamma 
+    \left[
+      e^{a \gamma} 
+        \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+      + e^{-a \gamma} 
+        \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+    \right]
+    - \frac{2}{\sqrt{\pi \gamma}} e^{-\beta \gamma^2 - \frac{a^2}{4\beta}}.
+\end{align*}
+After some variable changes and taking into account that the integral is 0 
+when $a=0$, we get
+\begin{align} 
+  I &=\int_0^{\infty} e^{-\beta x^2} \frac{\sin(a x)}{x} \, \frac{dx}{x^2+\gamma^2} 
+     \label{E:int5}  \\
+  & = \frac{\pi}{4\gamma^2} e^{\beta \gamma^2}
+      \left[
+        e^{\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} + \frac{a}{2\sqrt{\beta}} \right)
+        - e^{-\gamma a} 
+          \erfc \left( \gamma \sqrt{\beta} - \frac{a}{2\sqrt{\beta}} \right)
+        + 2 e^{-\beta \gamma^2} \left( 1- \erfc \left( \frac{a}{2\sqrt{\beta}} \right) \right)
+      \right]  \notag
+\end{align}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$\int_1^{\infty} \frac{ e^{-pt} }{ t \sqrt{t-1} } \, dt, \qquad p>0 $}
+Notice that
+\[
+  \frac{dI}{dp} = - \int_1^{\infty} \frac{e^{-pt}}{\sqrt{t-1}} dt
+                = - \frac{\sqrt{\pi} e^{-p} }{ \sqrt{p} }
+\]
+and the fact $I(p=\infty)=0$, we get
+\[
+  I = \int_{\infty}^p \frac{dI}{dp} \, dp + I(\infty)
+    = \int_p^{\infty} \sqrt{\pi} \frac{e^{-p}}{\sqrt{p}} dp
+    = \pi \erfc(\sqrt{p})
+\]
+hence
+\begin{equation}  \label{E:int6}
+  \int_1^{\infty} \frac{ e^{-pt} }{ t \sqrt{t-1} } \, dt = \pi \erfc(\sqrt{p}), 
+     \qquad p>0 
+\end{equation}
+
+
+
+

@@ -1,0 +1,848 @@
+\chapter{Hull-White Short Rate Model}
+
+\section{Introduction}
+
+Short rate models are arbitrage-free models of the term structure for which the
+short rate $\{r_t, t\geq 0\}$ is a (time-inhomogeneous) Markov process in
+the risk-neutral measure. The Markovian property of the short rate is essential
+for practical implementation of these models
+as it ensures that the price of a zero coupon bond $D_{tT}$ is a function of the
+triple $(r_t, t, T)$. Thus, the state of the market at $t$ is completely
+determined by the pair $(r_t,t)$.
+
+The Hull-White model is one of the most popular short-rate models. Dynamics 
+of the short rate $r_t$ under the risk-neutral measure $Q$ are
+described by the following stochastic differential equation: 
+\begin{equation} \label{E:hw}
+    dr_t = (\theta_t - a_t r_t) dt + \sigma_t dW_t,
+\end{equation}
+where $\theta_t/a_t$ is the long-term level to which the short rate is
+moving, $a_t$ is the rate at which the short rate is pushed towards the long
+term level, $W_t$ is a Brownian motion under the risk-neutral measure, and
+$\sigma_t$ is the volatility. Note that $a, \theta$, and $\sigma$
+are deterministic functions of time. The exact form of these functions is chosen
+to fit the model to initial bond prices (to make it arbitrage-free) and option
+prices.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bond Price}
+One reason for the popularity of the Hull-White model is that it is analytically
+tractable. The value $D_{tT}$ of a pure discount bond at $t$ which matures at
+$T$ is defined as:
+\begin{equation}
+  D_{tT} = E \left[ \exp \left( -\int_t^T r_u du \right) | F_t \right],
+\end{equation}
+it can be expressed analytically as 
+\begin{equation}
+  D_{tT}=A_{tT} e^{-B_{tT} r_t},
+\end{equation}
+
+Now we are going to derive the analytic formula for the bond price, i.e. 
+formulas for $A_{tT}$, $B_{tT}$ and $\theta_t$ (as a function of model 
+parameters $a_t$, $\sigma_t$ and initial zero curve $(D_{0t})_t$).
+\footnote{Adapted from Hunt and Kennedy, Financial Derivatives in Theory and
+Practice, revised ed., Wiley(2004), chapter 17, Short Rate Models.}
+
+%where
+%\begin{equation}
+%  B_{tT} = \phi_t (\psi_T - \psi_t),
+%\end{equation}
+%\begin{equation}
+%  \log A_{tT} = \log \frac{D_{0T}}{D_{0t}} 
+%                - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+%                - \frac{\xi_t}{2} \left( \frac{B_{tT}}{\phi_t} \right)^2,
+%\end{equation}
+%and
+%\begin{align}
+%  \phi_t &= \exp \left( \int_0^t a_u du  \right) \notag \\
+%  \psi_t &= \int_0^t \frac{du}{\phi_u} \notag \\
+%  \xi_t &= \int_0^t \phi_u^2 \sigma_u^2 du \notag \\
+%\end{align}
+%
+%We also have
+%\begin{equation}
+%  \theta_t = -a_t \frac{\partial}{\partial t} \log D_{0t} 
+%             - \frac{\partial^2}{\partial t^2} \log D_{0t}
+%             + \frac{\xi_t}{\phi_t^2}.
+%\end{equation}
+
+The bank account $N_t=\exp(\int_0^t r_s ds)$ is the numeriare of the
+risk-neutral measure $Q$. Thus $D_{tT}/N_t$ is a martingale under $Q$ and must
+have zero drift. Using Ito's lemma, we have 
+\[
+  d(e^{-\int_0^t r_s ds} D_{tT} ) 
+     = e^{-\int_0^t r_s ds} ( - r_t D_{tT} dt + dD_{tT} ),
+\]
+hence the drift of $dD_{tT}/D_{tT}$ must be $r_t dt$. Using Ito's lemma again, 
+we have
+\[
+  \frac{dD_{tT}}{D_{tT}} = -\sigma_t B_{tT} dW_t
+    + \left(
+       \frac{A'_{tT}}{A_{tT}} - B'_{tT} r_t - B_{tT} \sigma_t + B_{tT} a_t r_t
+       + \frac{1}{2} \sigma_t^2 B_{tT}
+      \right) dt,
+\]
+equalling the drift term to $r_t dt$, we get
+\[
+  - B'_{tT} + B_{tT} a_t = 1,
+\]
+and 
+\[
+  \frac{A'_{tT}}{A_{tT}} - B_{tT} \sigma_t + \frac{1}{2} \sigma_t^2 B_{tT} = 0.
+\]
+
+The first equation can be solved by defining $B_{tT}=y_t e^{\int_0^t a_s ds}$
+and using the fact that $B_{TT}=0$ (because $D_{TT}=A_{TT}e^{-B_{TT}r_T}=1$ for
+arbitrary $r_T$), this yields
+\begin{equation} \label{E:b}
+  B_{tT} = \phi_t (\psi_T - \psi_t),
+\end{equation}
+where for convenience we define the following variables
+\begin{align} \label{E:conv}
+  \phi_t &= e^{\int_0^t a_u du} &
+  \psi_t &= \int_0^t \frac{du}{\phi_u} \notag \\
+  \xi_t &= \int_0^t \phi_u^2 \sigma_u^2 du  &
+  \zeta_t &= \int_0^t \psi_u \phi_u^2 \sigma_u^2 du \notag \\
+  \eta_t &= \int_0^t \psi_u^2 \phi_u^2 \sigma_u^2 du &
+  \mu_t &= \int_0^t \phi_u \theta_u du \notag \\
+  \lambda_t &= \int_0^t \psi_u \phi_u \theta_u du \notag \\
+\end{align}
+
+Substitute $B_{tT}$ back to the second equation and do the integration, we get 
+\[
+  \log{A_{tT}} - \log{A_{0T}} = \psi_T \mu_t - \lambda_t -
+    \frac{1}{2}\psi_T^2\xi_t + \psi_T\zeta_t - \frac{1}{2} \eta_t.
+\]
+To solve this, apply $\frac{\partial}{\partial_T}$ on both sides
+\[
+  \frac{\partial}{\partial_T} \left( \log{A_{tT}} - \log{A_{0T}} \right)
+    = \frac{1}{\phi_T} [\mu_t - \psi_T \xi_t + \zeta_t],
+\]
+take the limit $\lim_{t\to T}$ and using the fact $A_{TT}=1$ we get
+\begin{equation} \label{E:mu}
+  \mu_T = \psi_T \xi_T - \zeta_T 
+          - \phi_T \frac{\partial}{\partial T} \log{A_{0T}}.
+\end{equation}
+for any $T$.
+Sustitute this back to 
+\[
+  \log{A_{TT}} - \log{A_{0T}} 
+    = - \log{A_{0T}}
+    = \psi_T \mu_T - \lambda_T 
+      - \frac{1}{2}\psi_T^2 \xi_T + \psi_T \zeta_T - \frac{1}{2} \eta_T,
+\]
+we get
+\[
+  \lambda_T = \log{A_{0T}} 
+              - \psi_T \phi_T \frac{\partial}{\partial_T} \log{A_{0T}}
+              + \frac{1}{2} \psi_T^2 \xi_T - \frac{1}{2} \eta_T,
+\]
+
+Hence
+\begin{align*}
+  \log{A_{tT}} 
+    &= - \log{A_{0T}} + \psi_T \mu_t - \lambda_t -
+       \frac{1}{2}\psi_T^2\xi_t + \psi_T\zeta_t - \frac{1}{2} \eta_t \notag \\
+    &= \log{\frac{A_{0T}}{A_{0t}}} 
+       - B_{tT}\frac{\partial}{\partial_t} \log{A_{0t}}
+       - \frac{\xi_t}{2} \left( \frac{B_{tT}}{\phi_t} \right)^2. \notag \\
+\end{align*}
+From definition $D_{0T}=A_{0T} e^{-B_{0T} r_0}$ and eqs. \ref{E:b} and
+\ref{E:conv} we get
+\[
+  \log{\frac{A_{0T}}{A_{0t}}} 
+    = \log{\frac{D_{0T}}{D_{0t}}} + \frac{B_{tT}}{\phi_t} r_0,
+\]
+and
+\[
+  \frac{\partial}{\partial t} \log{A_{0t}}
+    = \frac{\partial}{\partial t} \log{D_{0t}} + \frac{r_0}{\phi_t}.
+\]
+Thus we get
+\begin{equation} \label{E:a}
+  \log A_{tT} = \log \frac{D_{0T}}{D_{0t}} 
+                - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+                - \frac{\xi_t}{2} \left( \frac{B_{tT}}{\phi_t} \right)^2.
+\end{equation}
+
+We can solve $\theta_t$ by using the defintion of $\mu_t$ and eq. \ref{E:mu},
+\[
+  \theta_t = \frac{1}{\phi_t} \frac{\partial}{\partial_t} \mu_t
+           = \frac{\xi_t}{\phi_t^2} 
+             - a_t \frac{\partial}{\partial t} \log{A_{0t}}
+             - \frac{\partial^2}{\partial t^2} \log{A_{0t}},
+\]
+using the definition of $D_{0t}=A_{0t} e^{-B_{0t}r_0}$ and eqs. \ref{E:b} and
+\ref{E:conv} we get
+\begin{equation} \label{E:theta}
+  \theta_t = \frac{\xi_t}{\phi_t^2} 
+             - a_t \frac{\partial}{\partial t} \log{D_{0t}}
+             - \frac{\partial^2}{\partial t^2} \log{D_{0t}}.
+\end{equation}
+We also have
+\begin{equation}
+  \mu_t = \int_0^t \theta_s \phi_s ds
+    = - r_0 + \int_0^t \frac{\xi_s}{\phi_s} ds 
+      - \phi_t \frac{\partial}{\partial t} \log{D_{0t}}.
+\end{equation}
+
+In the special case that both mean reversion $a_t=a$ and $\sigma_t=\sigma$ are
+constants we have
+\[
+  \phi_t = e^{at},   \qquad
+  \psi_t = \frac{1-e^{-at}}{a}, \qquad
+  \xi_t = \frac{\sigma^2}{2a} (e^{2at} -1)   
+\]
+and thus
+\begin{align}
+  &B_{tT} = \frac{1-e^{-a(T-t)}}{a}  \\
+  &\log A_{tT} = \log \frac{D_{0T}}{D_{0t}} 
+                - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+                - \frac{\sigma^2}{4a} \left( 1-e^{-2at} \right) B_{tT}^2
+                \\
+  &\theta_t = \frac{\sigma^2}{2a} \left( 1-e^{-2at} \right) 
+             - a_t \frac{\partial}{\partial t} \log{D_{0t}}
+             - \frac{\partial^2}{\partial t^2} \log{D_{0t}}  \\
+  &\mu_t = -r_0 - e^{at} \frac{\partial}{\partial t} \log{D_{0t}}
+          + \frac{\sigma^2 e^{at}}{2a^2} (1-e^{-at})^2.
+\end{align}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Alternative Approach for Bond Price}
+We can also derive the bond price by solving the stochastic differential
+equation \ref{E:hw}. Let $r_t=\frac{y_t}{\phi_t}$, where $\phi_t$ is defined 
+in \ref{E:conv}, it is easy to see that
+\[
+  dy_t = \phi_t \theta_t dt + \phi_t \sigma_t dW_t.
+\]
+Hence
+\[
+  y_t = y_0 + \mu_t + \int_0^t \phi_u \sigma_u dW_u,
+\]
+where $\mu_t$ is defined in \ref{E:conv}.
+It is easy to see that the initial value $y_0=r_0$. Thus we have
+\[
+  r_t = \frac{r_0+\mu_t}{\phi_t} 
+       + \frac{1}{\phi_t} \int_0^t \phi_u \sigma_u dW_u.
+\]
+Now $r_t$ is Gaussian, 
+$r_t\sim N(\frac{r_0+\mu_t}{\phi_t}, \frac{\xi_t}{\phi_t^2})$, and covariance
+\[
+  Cov[r_t,r_s] = \frac{\xi_{t\wedge s}}{\phi_t \phi_s},
+\]
+where $\xi_t$ is again defined in \ref{E:conv} and $t\wedge s=\min(t,s)$.
+
+We need to calculate the expectations conditioned at $F_t$. It is easy to see
+that for any $s>t$
+\begin{equation}
+  r_s = \frac{r_t \phi_t + \mu_s-\mu_t}{\phi_s} 
+       + \frac{1}{\phi_s} \int_t^s \phi_u \sigma_u dW_u.
+\end{equation}
+This yields
+\[
+  E[r_s|F_t] = \frac{r_t \phi_t + \mu_s-\mu_t}{\phi_s},
+\]
+and 
+\[
+  Cov[r_s,r_u|F_t] = \frac{\xi_{s\wedge u} -\xi_t}{\phi_s \phi_u}.
+\]
+Now $\int_t^T r_s ds$ is Gaussian too, and its mean is
+\[
+  E[\int_t^T r_s ds|F_t] 
+    = \int_t^T \frac{r_t \phi_t + \mu_s-\mu_t}{\phi_s} ds
+    = (r_t \phi_t-\mu_t)(\psi_T-\psi_t) + \int_t^T \frac{\mu_s}{\phi_s}ds,
+\]
+and its variance is defined as
+\begin{align*}
+  V_{tT} 
+   &\equiv Var[\int_t^T r_s ds|F_t] \notag \\
+   &= Cov[\int_t^T r_s ds, \int_t^T r_u du|F_t] \notag \\
+   &= \int_t^T ds \int_t^T du Cov[r_s,r_u|F_t] \notag \\
+   &= \int_t^T ds \int_t^T du  \frac{\xi_{s\wedge u} -\xi_t}{\phi_s \phi_u} 
+      \notag \\
+   &= -\int_t^T \frac{\zeta_s}{\phi_s} ds + \psi_T \beta_T 
+     + \psi_t \beta_t - 2 \psi_T \beta_t - \xi_t(\psi_T-\psi_t)^2, \notag \\
+\end{align*}
+where 
+\begin{equation} \label{E:conv2}
+  \beta_t=\int_0^t \frac{\xi_s}{\phi_s} ds,
+\end{equation}
+and $\phi_t$, $\psi_t$, $\mu_t$, $\xi_t$, and $\eta_t$ are defined 
+in eq. \ref{E:conv}. From this we also have
+\[
+  V_{0T} = -\int_0^T \frac{\zeta_s}{\phi_s} ds + \psi_T \beta_T,
+\]
+\[
+  V_{0t} = -\int_0^t \frac{\zeta_s}{\phi_s} ds + \psi_t \beta_t,
+\]
+and
+\begin{equation} \label{E:dev_V}
+  \frac{\partial}{\partial t} \log V_{0t} = \frac{2\beta_t}{\phi_t}.
+\end{equation}
+
+Given that $\int_t^T r_s ds$ is Gaussian, bond price can be rewritten as
+\[
+  D_{tT} = E \left[ \exp \left( -\int_t^T r_u du \right) | F_t \right]
+         = \exp \left( -E[\int_t^T r_u du|F_t] + \frac{1}{2} V_{tT} \right).
+\]
+this yields
+\[
+  \log D_{tT} = - \phi_t(\psi_T-\psi_t) r_t + \mu_t(\psi_T-\psi_t)
+                - \int_t^T \frac{\mu_s}{\phi_s} ds + \frac{1}{2} V_{tT}.
+\]
+From this we get
+\[
+  \log D_{0T} = - r_0 \psi_T - \int_0^T \frac{\mu_s}{\phi_s} ds 
+                + \frac{1}{2} V_{0T},
+\]
+\[
+  \log D_{0t} = - r_0 \psi_t - \int_0^t \frac{\mu_s}{\phi_s} ds 
+                + \frac{1}{2} V_{0t},
+\]
+and 
+\begin{equation} \label{E:dev_bond}
+  \frac{\partial}{\partial t} \log D_{0t} 
+    = \frac{-r_0-\mu_t}{\phi_t} 
+      + \frac{1}{2} \frac{\partial}{\partial t} V_{0t}.
+\end{equation}
+Using this we get
+\[
+  \log D_{tT} = 
+    - B_{tT} r_t - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+    + \log \left( \frac{D_{0T}}{D_{0t}} \right)
+    + \frac{1}{2} 
+        \left(
+          V_{tT} - V_{0T} + V_{0t} 
+          + B_{tT} \frac{\partial}{\partial t} V_{0t}
+        \right)
+\]
+where 
+\[
+  B_{tT} = \phi_t(\psi_T-\psi_t)
+\]
+is the same as in eq. \ref{E:b}. And with the definition of bond
+$D_{tT}=A_{tT} e^{-B_{tT} r_t}$ we have 
+\[
+  \log A_{tT} = 
+    - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+    + \log \left( \frac{D_{0T}}{D_{0t}} \right)
+    + \frac{1}{2} 
+        \left(
+          V_{tT} - V_{0T} + V_{0t} 
+          + B_{tT} \frac{\partial}{\partial t} V_{0t}
+        \right)
+\]
+
+Using the properties of $V_{tT}$, we get
+\[
+  V_{tT} - V_{0T} + V_{0t} 
+  + B_{tT} \frac{\partial}{\partial t} \log V_{0t} 
+  = - \xi_t(\psi_T-\psi_t)^2,
+\]
+and this yields
+\[
+  \log A_{tT} = 
+    - B_{tT} \frac{\partial}{\partial t} \log D_{0t} 
+    + \log \left( \frac{D_{0T}}{D_{0t}} \right)
+    - \frac{\xi_t}{2} \left( \frac{B_{tT}}{\phi_t} \right)^2
+\]
+which is the same as eq. \ref{E:a}.
+
+Now we calculate $\theta_t$. From eq. \ref{E:dev_bond} we have
+\[
+  \int_0^t \theta_s \phi_s ds = \mu_t 
+    = -r_0 - \phi_t \frac{\partial}{\partial t} \log{D_{0t}}
+      + \frac{1}{2} \phi_t \frac{\partial}{\partial t} V_{0t},
+\]
+hence
+\[
+  \theta_t = \frac{1}{\phi_t} \frac{\partial}{\partial t} \mu_t
+    = - a_t \frac{\partial}{\partial t} \log{D_{0t}}
+      - \frac{\partial^2}{\partial t^2} \log{D_{0t}}
+      + \frac{1}{2 \phi_t} \frac{\partial}{\partial t} 
+        \left(
+          \phi_t \frac{\partial}{\partial t} V_{0t}
+        \right).
+\]
+Using eqs. \ref{E:dev_V} and \ref{E:conv2} we get
+\[
+   \frac{1}{\phi_t} \frac{\partial}{\partial t} 
+     \left( \phi_t \frac{\partial}{\partial t} V_{0t} \right)
+   = \frac{2\xi_t}{\phi_t^2},
+\]
+hence
+\[
+  \theta_t 
+    = - a_t \frac{\partial}{\partial t} \log{D_{0t}}
+      - \frac{\partial^2}{\partial t^2} \log{D_{0t}}
+      + \frac{\xi_t}{\phi_t^2},
+\]
+same as eq. \ref{E:theta}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bond Option}
+Now we derive the analytic formula of the price of an European on zero coupon
+bond. Let $T$ be the option maturity and $S$ be the bond maturity, and the
+payoff a call option with strike $K$ at time $T$ is $V_T=(D_{TS}-K)^+$. Hence
+the option price at time $t$ is
+\[
+  \frac{V_t}{N_t} = E[\frac{V_T}{N_T}|F_t],
+\]
+where $N_t$ is the numeriare of our choice. Now we choose $N_t=D_{tT}$ and we
+have the nice expression that $N_T=D_{TT}=1$ and
+\[
+  V_t= D_{tT} E_F[(D_{TS}-K)^+|F_t].
+\]
+where $Q_F$ is the forward measure for numeriare $N_t=D_{tT}$.
+
+Let $Y_t=\frac{D_{tS}}{D_{tT}}$, then $D_{TS}=Y_T$. And $Y_t$ is a 
+$Q_F$-martingale, i.e. lognormal under $Q_F$-measure. Using the affine 
+expression
+\[
+  D_{tT} = A_{tT} e^{-B_{tT} r_t},
+\]
+we get
+\[
+  Y_t = \frac{A_{tS}}{A_{tT}} e^{-(B_{tS}-B_{tT}) r_t},
+\]
+and 
+\[
+  \frac{dY_t}{Y_t} = - (B_{tS}-B_{tT}) \sigma_t dW_t^F
+    = - \phi_t (\psi_S-\psi_T) \sigma_t dW_t^F,
+\]
+Solve this we get
+\[
+  D_{TS} = Y_T = \frac{D_{tS}}{D_{tT}}
+    \exp 
+      \left(    
+        -(\psi_S-\psi_T) \int_t^T \phi_u \sigma_u dW_u^F
+        -\frac{1}{2}(\psi_S-\psi_T)^2 \int_t^T \phi_u^2 \sigma_u^2 du
+      \right).
+\]
+Now we can rewrite $D_{TS}$ as $D_{TS}=\frac{D_{tS}}{D_{tT}} e^{X_t}$ where 
+$X_t\sim N(-\frac{\sigma_p^2}{2}, \sigma_p^2)$ is Gaussian and 
+\begin{equation} \label{E:sigma_p}
+  \sigma_p \equiv (\psi_S-\psi_T) \sqrt{\xi_T-\xi_t}.
+\end{equation}
+In case $a_t\equiv a$ and $\sigma_t=\sigma$ are constants we have
+\[
+  \sigma_p = \sigma \sqrt{ \frac{1-e^{-2a(T-t)}}{2a} }
+            \left( \frac{ 1-e^{-a(S-T)} }{a}  \right).
+\]
+
+Hence
+\begin{align*}
+  V_t&= D_{tT} E_F[(D_{TS}-K)^+|F_t] \notag \\
+     &= D_{tT} E_F[(\frac{D_{tS}}{D_{tT}}e^{X_t} -K)^+|F_t] \notag \\
+     &= D_{tS} E_F[(e^{X_t} -\frac{D_{tT}K}{D_{tS}})^+|F_t] \notag \\
+\end{align*}
+Using eq. \ref{E:int_call}, we get the price of a call option that matures at 
+time $T$ and with strike $K$ on a zero coupon bond maturing at time $S>T$  
+\begin{equation} \label{E:zbc}
+  ZBC(t,T,S,K) = 
+    D_{tS}\Phi
+      \left( \frac{\sigma_p}{2}-\frac{\log(KD_{tT}/D_{tS})}{\sigma_p} \right)
+    - K D_{tT} \Phi
+      \left(-\frac{\sigma_p}{2}-\frac{\log(KD_{tT}/D_{tS})}{\sigma_p} \right).
+\end{equation}
+Similarly we have the price for a put option
+\begin{equation} \label{E:zbp}
+  ZBP(t,T,S,K) = 
+    K D_{tT} \Phi
+      \left(\frac{\sigma_p}{2}+\frac{\log(KD_{tT}/D_{tS})}{\sigma_p} \right)
+    - D_{tS}\Phi
+      \left( -\frac{\sigma_p}{2}+\frac{\log(KD_{tT}/D_{tS})}{\sigma_p} \right).
+\end{equation}
+Note that we have the call-put parity
+\[
+  ZBC(t,T,S,K)-ZBP(t,T,S,K) = D_{tS}-KD_{tT}.
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Caplet/floorlet}
+A caplet has payoff at time $S$
+\[
+  V_S = \tau(T,S) (L_T[T,S]-K)^+,
+\]
+and its price is related to bond options. To see this, note that
+\begin{align*}
+  V_t &= E_Q[e^{-\int_t^S r_u du} V_S | F_t]  \notag \\
+      &= E_Q[e^{-\int_t^T r_u du} D_{TS} V_S | F_t]  \notag \\
+      &= E_Q[e^{-\int_t^T r_u du} D_{TS} \tau(T,S) (L_T[T,S]-K)^+ | F_t]  
+         \notag \\
+      &= (1+K\tau(T,S)) 
+         E_Q[e^{-\int_t^T r_u du} (\frac{1}{1+K\tau(T,S)}-D_{TS})^+ | F_t]  
+         \notag \\
+\end{align*}
+hence
+\[
+  Caplet(t,T,S,K) = (1+K\tau(T,S))\, ZBP(t,T,S,\frac{1}{1+K\tau(T,S)}),
+\]
+and
+\[
+  Floorlet(t,T,S,K) = (1+K\tau(T,S))\, ZBC(t,T,S,\frac{1}{1+K\tau(T,S)}).
+\]
+
+Using the price formulaes for bond options (i.e. eqs. \ref{E:zbc} and
+\ref{E:zbp}), we get 
+\begin{equation} \label{E:caplet}
+  Caplet(t,T,S,K) = D_{tT}\Phi(-h+\sigma_p) - D_{tS}(1+K\tau(T,S)) \Phi(-h),
+\end{equation}
+and
+\begin{equation} \label{E:floorlet}
+  Floorlet(t,T,S,K) = -D_{tT}\Phi(h-\sigma_p) + D_{tS}(1+K\tau(T,S)) \Phi(h),
+\end{equation}
+where 
+\[
+  h = \frac{1}{\sigma_p} \log\left( \frac{D_{tS}(1+K\tau(T,S))}{D_{tT}} \right)
+        + \frac{\sigma_p}{2},
+\]
+and $\sigma_p$ is defined in eq. \ref{E:sigma_p}.
+
+Note that these satisfy the put-call parity
+\[
+  Caplet(t,T,S,K)-Floorlet(t,T,S,K) = D_{tT}-D_{tS}(1+K\tau(T,S)) 
+    = FRA(t,T,S,K).
+\]
+
+The formulaes for caplets and floorlets (eqs. \ref{E:caplet} and
+\ref{E:floorlet}) can also be obtained by using the same method as used by
+calculating bond option. Let $Y_t=\frac{D_{tT}}{D_{tS}}=1+L_t(T,S)\tau(T,S)$ 
+and let numeraire be $N_t=D_{tS}$ and the corresponding measure be $Q^N$,
+we have the caplet price 
+\[
+  V_t = D_{tS} E_N[(Y_T-1-K\tau(T,S))^+|F_t].
+\]
+Note the definition of $Y_t$ in this section is the inverse of the counterpart
+in bond option section.
+
+Since $Y_t$ is a $Q^N$-martingale, it is log-normal under $Q^N$ measure. And
+because 
+\[
+  Y_t=\frac{D_{tT}}{D_{tS}}
+     = \frac{A_{tT}}{A_{tS}} e^{(B_{tS}-B_{tT}) r_t},
+\]
+we get
+\[
+  \frac{dY_t}{Y_t} = (B_{tS}-B_{tT}) \sigma_t dW_t^N
+    = \phi_t (\psi_S-\psi_T) \sigma_t dW_t^N,
+\]
+the solution is
+\[
+  Y_T = \frac{D_{tT}}{D_{tS}}
+    \exp 
+      \left(    
+        (\psi_S-\psi_T) \int_t^T \phi_u \sigma_u dW_u^N
+        -\frac{1}{2}(\psi_S-\psi_T)^2 \int_t^T \phi_u^2 \sigma_u^2 du
+      \right).
+\]
+Again we can rewrite $Y_T$ as $\frac{D_{tT}}{D_{tS}}e^{X_t}$ where 
+$X_t\sim N(-\frac{\sigma_p^2}{2},\sigma_p^2)$ is Gaussian and $\sigma_p$ is
+defined in eq. \ref{E:sigma_p}. And the caplet price can be rewritten as
+\begin{align*}
+  V_t &= D_{tS} E_N[(Y_T-1-K\tau(T,S))^+|F_t] \notag \\
+      &= D_{tS} E_N[(\frac{D_{tT}}{D_{tS}}e^{X_t}-1-K\tau(T,S))^+|F_t] \notag \\
+      &= D_{tT} E_N[(e^{X_t}-\frac{D_{tS}(1+K\tau(T,S))}{D_{tT}})^+|F_t] 
+         \notag \\
+\end{align*}
+Using eq. \ref{E:int_call} we get caplet price eq. \ref{E:caplet}. Similarly 
+we can arrive at floorlet price eq. \ref{E:floorlet}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tree Construction}
+This section describes a two-stage procedure for constructing a trinomial 
+tree that approximates the evolution of the process $(r_t)_t$:
+\[
+  d x_t = - a_t x_t dt + \sigma_t dW_t,
+\]
+and 
+\[
+  r_t = f(x_t + \varphi_t),
+\]
+where $f$ is a deterministic function and $\varphi_t$ is determined by the
+initial yield curve. Note that in case $f(x)=x$ we have the Hull-White model,
+and if $f(x)=e^x$ we have the Black-Karasinski model.
+
+Let us fix a time horizon T and the times $0=t_0 < t_1 < \cdots < t_N=T$,
+and set $\Delta t_i = t_{i+1} - t_i$ for each i. The time instances 
+$t_i$ do not have to be equally spaced.
+
+The first stage constructs a trinomial tree for process $(x_t)_t$,
+the solution of the SDE is:
+\[
+  x_t = \frac{1}{\phi_t} 
+        \left( \phi_s x_s + \int_s^t \phi_u \sigma_u dW_u \right) ,
+        \qquad t>s,
+\]
+and the first two moments are
+\[
+  E[x_t | F_s] = \frac{x_s \phi_s}{ \phi_t },
+\]
+\[
+  V[x_t | F_s] = \frac{\xi_t - \xi_s}{\phi_t^2}.
+\]
+
+The tree nodes are denoted by $(i,j)$, where the time index $i$ ranges from 
+0 to $N$ and the space index $j$ ranges from some $\underline{j}_i < 0$ to 
+some $\bar{j}_i>0$. We denote by $x_{i,j}$ the process value on node
+$(i,j)$. We also have
+\[
+  E[x(t_{i+1})|x(t_i)=x_{i,j}] = \frac{\phi_i}{\phi_{i+1}} x_{i,j} \equiv
+M_{i,j},
+\]
+\[
+  V[x(t_{i+1})|x(t_i)=x_{i,j}] = \frac{\xi_{i+1}-\xi_i}{\phi_{i+1}^2} 
+                   \equiv V_i^2.
+\]
+We then set $x_{i,j}=j \Delta x_i$, where 
+$\underline{j}_i \leq j \leq \bar{j}_i$, and
+\[
+  \Delta x_i = V_{i-1} \sqrt{3}.
+\]
+Assuming that at time $t_i$ we are on node (i,j) with associated value
+$x_{i,j}$, the process can move to $x_{i+1,k+1}$, $x_{i+1,k}$, or 
+$x_{i+1,k-1}$ at time $t_{i+1}$ with probabilities $p_u$, $p_m$,
+and $p_d$, respectively. The central node k is chosen so that
+$x_{i+1,k}$ is as close as possible to $M_{i,j}$, i.e.,
+\[
+  k = \text{round} \left( \frac{M_{i,j}}{\Delta x_{i+1}}   \right).
+\]
+
+The probabilities can be solved using
+\[
+  \begin{cases}
+    p_u + p_m + p_d = 1,      &\text{(total probability)} \\
+    p_u (k+1) \Delta x_{i+1} + p_m k \Delta x_{i+1} + p_d (k-1) \Delta x_{i+1} 
+      = M_{ij},               &\text{(match mean)}  \\
+    p_u (k+1)^2 \Delta x_{i+1}^2 + p_m k^2 \Delta x_{i+1}^2 
+      + p_d (k-1)^2 \Delta x_{i+1}^2 = M_{ij}^2 + V_i^2, 
+      &\text{(match variance)},
+  \end{cases}
+\]
+this yields
+\[
+  \begin{cases}
+    p_u = \frac{1}{6} + \frac{\eta_{j,k}^2}{6 V_i^2} 
+          + \frac{\eta_{j,k}}{2 \sqrt{3} V_i},  \\
+    p_m = \frac{2}{3} - \frac{\eta_{j,k}^2}{3 V_i^2}  \\
+    p_d = \frac{1}{6} + \frac{\eta_{j,k}^2}{6V_i^2} 
+          - \frac{\eta_{j,k}}{2 \sqrt{3} V_i},
+  \end{cases}
+\]
+where $\eta_{j,k}=M_{i,j}-x_{i+1,k}$. Note that from the definintion of k,
+we get $|\eta_{j,k}|\leq \Delta x_{i+1}/2 = V_i \sqrt{3} /2$, and this
+guarantees that all three are valid probabilities ($0\leq p \leq 1$).
+
+The second stage consists in constructing the tree for $r$ using the tree for 
+$x$ and the initial yield curve. 
+%Let
+%\[
+%  r_t = f^{-1}( x_t + \alpha_t ),
+%\]
+%where $\alpha_t$ is to be determined. Note that
+%\[
+%  d\alpha_t = (\theta_t - a_t \alpha_t) dt,
+%\]
+%hence $\alpha$ is deterministic and is the same for each node at a fixed
+%time. However, we can not solve it explicitly because $\theta_t$ is not
+%known yet. Thus we have
+We have the discrete version
+\[
+  r_{i,j} = f(x_{i,j} + \varphi_i) = f(j \Delta x_i + \varphi_i).
+\]
+
+Let $Q_{i,j}$ be the price at time zero of an instrument paying 1 if node
+(i,j) is reached and zero otherwise, i.e.,
+\[
+  Q_{i,j} = E \left[ e^{-\int_0^{t_i} r_u du} 1_{r(t_i)=r_{i,j}} \right],
+\]
+we get the following recursive formula
+\begin{align*}
+  Q_{i+1,j} &= E \left[ e^{-\int_0^{t_i} r_u du} 
+                E \left[
+                    e^{-\int_{t_i}^{t_{i+1}} r_u du} 1_{r_{(t_{i+1})=r_{i+1,j}}} 
+                    | F_i 
+                  \right] 
+                \right]  \notag \\
+    &= \sum_h Q_{i,h} \, p_{(i,h),(i+1,j)} 
+      \exp( -f(\varphi_i+h\Delta x_i) \Delta t_i),
+\end{align*}
+where $p_{(i,h),(i+1,j)}$ is the probability from node (i,h) to node
+(i+1,j).
+
+Given the initial yield curve, or equivalently the intial bond prices
+\[
+  P(0,t_i) = E \left[ e^{-\int_0^{t_i} r_u du} \right],
+\]
+we can determine the value of $\varphi$. Note that
+\begin{align*}
+  P(0, t_{i+1}) &= \sum_j Q_{i+1,j}  \notag \\
+     &= \sum_h Q_{i,h}
+      \exp( -f(\varphi_i+h\Delta x_i)\, \Delta t_i),
+\end{align*}
+where we have used the recursive formula for $Q_{i+1,j}$ and the fact that
+$\sum_j p_{(i,h),(i+1,j)}=1$.
+
+Starting from time step zero, we have $Q_{0,0}=1$. At any time
+step i, we first calculate $\varphi_i$ using the price of bond matured at the
+next time step, i.e., $P(0,t_{i+1})$. Next we use this value to calculate 
+$Q_{i+1,j}, \underline{j}_{i+1}\leq j \leq \bar{j}_{i+1}$ at time step i+1.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Backward Induction} \label{S:back_ind}
+One method to price instruments using a trinomial tree is backward induction.
+For instance, the zero curve at each node $(i,j)$ is calculated using backward
+induction after a tree is built. The basic idea of backward induction is 
+that for $t<s$
+\begin{align*}
+  V_t &= E \left[ e^{-\int_t^T r_u du} V_T | F_t \right]  \notag \\
+      &= E \left[ 
+            E \left[ e^{-\int_t^T r_u du} V_T | F_s \right]  | F_t
+           \right] \notag \\
+      &= E \left[ e^{-\int_t^s r_u du} V_s | F_t \right].
+\end{align*}
+The recursive formula under the discrete setting is:
+\begin{align} \label{E:back_ind1}
+  V_{i,j} &= E \left[ e^{-\int_{t_i}^{t_{i+1}} r_u du} V(t_{i+1}) \right] 
+             \notag \\
+          &= \sum_k e^{-r_{ij} \Delta t_i} p_{(i,j),(i+1,k)} V_{i+1,k}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%   backward induction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \begin{tikzpicture}[scale=1]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (5,1);
+    \coordinate (C) at (5,-1);
+    \coordinate (D) at (5,-3);
+
+    \draw (A) node[left]{$r_{ij},V_{ij}$} 
+          -- (B) node[right]{$r_{i+1,k+1},V_{i+1,k+1}$} node[pos=0.5,above]{$p_u$};
+    \draw (A) node[left]{$r_{ij},V_{ij}$} 
+          -- (C) node[right]{$r_{i+1,k},V_{i+1,k}$} node[pos=0.5,above]{$p_m$};
+    \draw (A) node[left]{$r_{ij},V_{ij}$} 
+          -- (D) node[right]{$r_{i+1,k-1},V_{i+1,k-1}$} node[pos=0.5,above]{$p_d$};
+
+    \draw[fill=black,color=black] (A) circle (1pt);
+    \draw[fill=black,color=black] (B) circle (1pt);
+    \draw[fill=black,color=black] (C) circle (1pt);
+    \draw[fill=black,color=black] (D) circle (1pt);
+
+    \draw (0,-4) node[below]{$t_i$} -- (0,2) ;
+    \draw (5,-4) node[below]{$t_{i+1}$} -- (5,2) ;
+    \draw[->] (3.5,1.5) -- (1.5,1.5);
+
+    \draw (2.5,-3.5) node{$\Delta t_i$} ;
+    \draw[->] (3,-3.5) -- (4.5,-3.5);
+    \draw[->] (2,-3.5) -- (0.5,-3.5);
+
+  \end{tikzpicture} 
+  \caption{Backward induction step for the payoff evaluation on the tree moving
+           backward from time $t_{i+1}$ to time $t_i$.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+In case of a trinomial tree, this becomes
+\begin{equation}
+  V_{ij} = e^{-r_{ij}\Delta t_i} 
+           (p_u V_{i+1,k+1} + p_m V_{i+1,k} + p_d V_{i+1,k-1} ).
+\end{equation}
+
+Backward induction can also used to price instruments with early exercise
+(e.g. Bermudan or American). If $t_i$ is an exercise date, the formula 
+becomes
+\begin{align} \label{E:back_ind2}
+  V_{i,j} 
+    &= \max 
+         \left( 
+           E \left[ e^{-\int_{t_i}^{t_{i+1}} r_u du} V(t_{i+1}) \right],
+           \, I_{ij}
+         \right) \notag \\
+    &= \max
+         \left( 
+           \sum_k e^{-r_{ij} \Delta t_i} p_{(i,j),(i+1,k)} V_{i+1,k}, 
+           \, I_{ij}
+         \right),
+\end{align}
+where $I_{ij}$ is the intrinsic value of the underlying instrument (i.e. the
+payoff if the option is exercised) at node $(i,j)$. If $t_i$ is not an 
+exercise date, equation \ref{E:back_ind1} is used. In case of a trinomial 
+tree, this becomes
+\begin{equation}
+  V_{ij} 
+    = \max 
+        \left(
+          \left[ 
+            e^{-r_{ij}\Delta t_i} 
+            (p_u V_{i+1,k+1} + p_m V_{i+1,k} + p_d V_{i+1,k-1} ) 
+          \right],\, I_{ij}
+        \right).
+\end{equation}
+Note that if $t_i$ is the last exercise date, we have instead
+\begin{equation}
+  V_{ij} = \max (0, I_{ij} ),
+\end{equation}
+which is consistent with the payoff of an European option.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Random Path Generation from a Trinomial Tree}
+\begin{enumerate}
+  \item Start from time step $t_0$, choose the only node.
+  \item At time step $t_i$, for each node $(i,j)$, retrieve the possible
+destinations $(i+1,k+1)$, $(i+1,k)$, and $(i+1,k-1)$ at time step 
+$t_{i+1}$ and the corresponding transition probabilities $p_u$,
+$p_m$, and $p_d$.
+  \item Generate an uniform random number U in $[0,1]$ using the random number
+generator, and the node at time step i+1 is
+    \begin{itemize}
+      \item $k+1$ if $U<=p_u$;
+      \item $k$ if $p_u<U<=p_u+p_m$;
+      \item $k-1$ if $p_u+p_m<U$.
+    \end{itemize}
+  \item Increase i by 1 and repeat step 2 until the end of the tree.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pricing Interest-rate Products}
+In this section we describe the pricing of interest-rate products using the
+Hull-White model and the Black-Karasinski model.
+
+\begin{enumerate}
+\item Swaps and noncallable bonds can be priced without an interest rate model.
+
+
+\item Options (European, American, and Bermudan) on bonds and swaps can be 
+priced using backward induction as described in Section \ref{S:back_ind}.
+Analytic formulas are also available for Hull-White model.
+
+\item Caps and floors can be priced using backward induction. 
+Analytic formulas are also available for the Hull-White model.
+
+
+\item Mortgage backed securities are priced using Monte Carlo method that
+samples interest rate paths from the short-rate tree.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Calibration}
+There are two parts to the calibration of short rate models: (1) calibration (of 
+function $\theta_t$) to initial bond prices and (2) calibration (of a and
+$\sigma_t$) to option prices. The first part can be performed precisely using 
+either analytic formula (if available) or the trinomial tree. The second part 
+is performed using a "goodness-of-fit" measure and an optimization
+method, such as the Levenberg-Marquardt method (see Appendix \ref{C:levenberg}).
+
+
+
+
+

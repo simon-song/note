@@ -1,0 +1,1033 @@
+\chapter{Black-Scholes Formula}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Facts of Ito's formula}
+
+We may symbolically compute
+\footnote{Evans,An Introduction to Stochastic Differential Equations,
+          version 1.2, p.75}
+\begin{equation}
+  d(u(X_t,t)) = \frac{\partial u}{\partial t} dt
+               + \sum_{i=1}^{n} \frac{\partial u}{\partial x_i} dX^i
+               + \frac{1}{2} \sum_{i,j=1}^n 
+                   \frac{\partial^2 u}{\partial x_i \partial x_j} dX^i dX^j,
+\end{equation}
+and then simplify the term $dX^i dX^j$ by expanding it out and using the 
+formal multiplication rules
+\[
+  (dt)^2=0, \quad dt dW^k=0, \quad dW^k dW^l=\delta_{kl} dt.
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Black-Scholes Formula}
+
+Suppose the stock price $S_t$ and the price of zero-coupon bond $D_t$ satisfies
+\[
+  dS_t = S_t (\mu dt + \sigma dW_t),
+\]
+and 
+\[
+  dD_t = D_t r dt,
+\]
+where $r$ is the constant interest rate and $D_T=1$ at maturity $T$.
+And let $V$ be a call-option that pays $V_T=(S_T-K)^+$ where $K>0$ is the 
+strike price. 
+
+Use the zero-coupon bond $D_t$ as the numeraire, then $S_t/D_t$ is a martingale
+under this measure $Q$. By Ito's lemma, we have
+\begin{align*}
+  d(S_t D_t^{-1}) &= S_t dD_t^{-1} + D_t^{-1} dS_t + dD_t^{-1} dS_t \\
+                  &= S_t (-D_t^{-1} rdt) + D_t^{-1} S_t (\mu dt + \sigma dW_t),
+\end{align*}
+and since $S_t D_t^{-1}$ is a martingale under the measure with numeraire 
+$D_t$, the drift is zero, and we have
+\[
+  d(S_t D_t^{-1}) = (S_t D_t^{-1}) \sigma dW_t.
+\]
+Solving this SDE we get for $T>t$
+\[
+  \frac{S_T}{D_T} = \frac{S_t}{D_t} 
+                    e^{\sigma (W_T-W_t) - \frac{1}{2}\sigma^2 (T-t)}.
+\]
+
+Now $V_t/D_t$ is also a martingale under measure $Q$, i.e.
+\[
+  \frac{V_t}{D_t} = E_Q\left[ \frac{V_T}{D_T} \bigg| \mathcal{F}_t \right]
+    = E_Q\left[ \frac{(S_T-K)^+}{D_T} \bigg| \mathcal{F}_t \right].
+\]
+Recall that $D_T=1$, we thus have
+\[
+  V_t =  E_Q
+    \left[ 
+      \left( S_t e^{\sigma (W_T-W_t) -\frac{1}{2} \sigma^2 (T-t)} - K D_t \right)^+ 
+    \right],
+\]
+and since $W_T-W_t\sim N(0,T-t)$, we get
+\begin{align*}
+  V_t 
+   &= \int_{-\infty}^{\infty} dx \, \frac{1}{\sqrt{2\pi (T-t)}} 
+        e^{-\frac{x^2}{2(T-t)}} 
+      \left( S_t e^{\sigma x -\frac{1}{2} \sigma^2 (T-t)} - K D_t \right)^+  \\
+   &= \int_{\frac{\ln (KD_t/S_t)}{\sigma} + \frac{\sigma}{2}(T-t) }^{\infty} 
+        dx \, \frac{1}{\sqrt{2\pi (T-t)}} 
+      \left( S_t e^{\sigma x  -\frac{x^2}{2(T-t)} -\frac{1}{2} \sigma^2 (T-t)} 
+        - K D_t e^{-\frac{x^2}{2(T-t)}} \right)       \\
+   &= \int_{\frac{\ln (KD_t/S_t)}{\sigma} + \frac{\sigma}{2}(T-t) }^{\infty} 
+        dx \, \frac{1}{\sqrt{2\pi (T-t)}} 
+      \left( S_t e^{ -\frac{(x-\sigma (T-t))^2}{2(T-t)} } 
+        - K D_t e^{-\frac{x^2}{2(T-t)}} \right), 
+\end{align*}
+let the cumulative distribution function of the normal distribution be
+\begin{equation}
+  \Phi(x)= \int_{-\infty}^x \frac{e^{-t^2/2}}{\sqrt{2\pi}} dt,
+\end{equation}
+we get the Black-Scholes price of the European call option on stocks
+\begin{equation}
+  V_t = 
+    S_t \Phi 
+    \left(  
+      \frac{\ln (S_t/KD_t)}{\sigma \sqrt{T-t}} + \frac{1}{2} \sigma \sqrt{T-t}  
+    \right)
+    - K D_t \Phi 
+    \left(  
+      \frac{\ln (S_t/KD_t)}{\sigma \sqrt{T-t}} - \frac{1}{2} \sigma \sqrt{T-t}  
+    \right).
+\end{equation}
+
+%%%%%%%%%%%%%%%%
+\begin{remark}
+	We can intepret the Black-Scholes formula the following way (note that
+	$D_T=1$):
+	\footnote{See also Fabrice Rouah, The Heston Model and Its Extensions in 
+	Matlab and C\#, pp. 4-5}
+	\begin{align*}
+		C_t &= D_t \cdot E_Q\left[ \frac{(S_T-K)^+}{D_T}  \bigg| \mathcal{F}_t
+	                      \right] \\
+   			&= D_t \cdot E_Q\left[ 
+ 												  \frac{S_T-K}{D_T} 1_{S_T>K} \bigg| \mathcal{F}_t
+	                      \right] \\
+   			&= D_t \cdot E_Q\left[ 
+ 												  \frac{S_T}{D_T} 1_{S_T>K} \bigg| \mathcal{F}_t
+	                      \right] 
+					 - K D_t \cdot E_Q[1_{S_T>K} | \mathcal{F}_t] \\
+   			&= S_t \cdot E_Q\left[ 
+ 												  \frac{S_T/S_t}{D_T/D_t} 1_{S_T>K} \bigg| \mathcal{F}_t
+	                      \right] 
+					 - K D_t \cdot E_Q[1_{S_T>K} | \mathcal{F}_t] \\
+			  &= S_t \cdot E_{Q_S}[1_{S_T>K} | \mathcal{F}_t] 
+					 - K D_t \cdot E_Q[1_{S_T>K} | \mathcal{F}_t] 
+		% E_Q\left[   \bigg| \mathcal{F}_t \right]
+	\end{align*}
+	where we have use the fact that the Radon-Nikodym derivative between the two
+	measures $Q_S$ and $Q$ using $S_t$ and $D_t$ as numeraires respectively is:
+	\footnote{See Remark \ref{R:radon_num}}
+	\[
+		\frac{dQ_S}{dQ} = \frac{S_T/S_t}{D_T/D_t}.
+	\]
+\end{remark}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Black-Scholes with Continuous Dividend}
+Suppose the underlying is paying a continuous dividend, and let the dividend
+discount factor at time $t$ be $D_t^d$, then the price of the call option
+matures at $T$ with strike $K$ is
+\begin{equation} \label{E:bs_div}
+  C(t,T,\sigma,S_t,K) = S_t D_t^d \Phi(d_1) - K D_t \Phi(d_2),
+\end{equation}
+where
+\[
+  d_{1,2}=\frac{\ln\left( \frac{S_t D_t^d}{K D_t} \right)}{\sigma\sqrt{T-t}}
+          \pm \frac{1}{2} \sigma\sqrt{T-t}.
+\]
+while the price of the put option is 
+\begin{equation}
+  P(t,T,\sigma,S_t,K) = - S_t D_t^d \Phi(-d_1) + K D_t \Phi(-d_2).
+\end{equation}
+
+The deltas are: 
+\begin{align}
+	\frac{\partial C_t}{\partial S_t} &= D_t^d \Phi(d_1)   \\
+	\frac{\partial P_t}{\partial S_t} &= - D_t^d \Phi(-d_1)
+\end{align}
+
+The gammas are:
+\begin{align}
+  \frac{\partial^2 C_t}{\partial S_t^2} 
+	  &= \frac{D_t^d \Phi'(d_1)}{S_t \sigma \sqrt{T-t}}  \\
+  \frac{\partial^2 P_t}{\partial S_t^2} 
+    &= \frac{D_t^d \Phi'(d_1)}{S_t \sigma \sqrt{T-t}}
+\end{align}
+
+The thetas are:
+\begin{align}
+	\frac{\partial C_t}{\partial t} 
+	  &= - S_t  D_t^d \Phi'(d_1) \frac{\sigma}{2\sqrt{T-t}} + q_t S_t \Phi(d_1) D_t^d 
+  	   - r_t K D_t \Phi(d_2)    \\
+	\frac{\partial P_t}{\partial t} 
+	  &= - S_t  D_t^d \Phi'(d_1) \frac{\sigma}{2\sqrt{T-t}} - q_t S_t \Phi(-d_1) D_t^d 
+  	   + r_t K D_t \Phi(-d_2)  
+\end{align}
+
+The vegas are:
+\begin{align}
+	\frac{\partial C_t}{\partial \sigma} &= S_t D_t^d \Phi'(d1) \sqrt{T-t}   \\
+	\frac{\partial P_t}{\partial \sigma} &= S_t D_t^d \Phi'(d1) \sqrt{T-t}
+\end{align}
+
+The rhos are:
+\begin{align}
+	\frac{\partial C_t}{\partial r_t} &= K D_t \Phi(d_2) (T-t)    \\
+	\frac{\partial P_t}{\partial r_t} &= - K D_t \Phi(-d_2) (T-t)
+\end{align}
+where
+\[
+	\Phi'(x)=\frac{e^{-x^2/2}}{\sqrt{2\pi}}
+\]
+is the density function of the normal distribution,
+and
+\[
+	r_t = -\frac{\ln(D_t)}{T-t},
+\]
+\[
+	q_t = -\frac{\ln(D_t^d)}{T-t}.
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Black-Scholes with Delayed Payment}
+In this section we consider vanilla options of which the payoff is determined at
+exercise date $\tau$ but paid later at time $T>\tau$.
+Note that for any instrument exercised at $\tau$ and paid at $T>\tau$
+the time $t$ value can be written as
+\begin{align*}
+	V_t(\tau,T) &= D_{tT} E_Q[V_T|F_t]    \\
+				 &= D_{tT} E_Q[E_Q[V_T|F_{\tau}]|F_t]  \\
+				 &= D_{tT} E_Q[V_{\tau}|F_t]  \\
+				 &= D_{\tau T} D_{t\tau} E_Q[V_{\tau}|F_t]  \\
+				 &= D_{\tau T} V_t(\tau,\tau).
+\end{align*}
+
+Thus the price of the call option with payoff $V_T=(S_{\tau}-K)^+$ is
+\begin{equation} 
+	C(t,\tau, T,\sigma,S_t,K) = S_t D_{\tau T} D_{t\tau}^d \Phi(d_1) - K D_{tT} \Phi(d_2),
+\end{equation}
+where
+\[
+	d_{1,2}=
+  	\frac{\ln\left( \frac{S_t D_{t\tau}^d}{K D_{t\tau}}	\right)}{\sigma\sqrt{\tau-t}}
+          \pm \frac{1}{2} \sigma\sqrt{\tau-t}.
+\]
+while the price of the put option with payoff $V_T=(K-S_{\tau})^+$ is 
+\begin{equation}
+	P(t,\tau,T,\sigma,S_t,K) = - S_t D_{\tau T} D_{t\tau}^d \Phi(-d_1) + K D_{tT} \Phi(-d_2).
+\end{equation}
+
+The deltas are: 
+\begin{align}
+	\frac{\partial C(t,\tau,T)}{\partial S_t} &=   D_{\tau T} D_{t\tau}^d \Phi(d_1)   \\
+	\frac{\partial P(t,\tau,T)}{\partial S_t} &= - D_{\tau T} D_{t\tau}^d \Phi(-d_1)
+\end{align}
+
+The gammas are:
+\begin{align}
+	\frac{\partial^2 C(t,\tau,T)}{\partial S_t^2} 
+  	&= \frac{D_{\tau T} D_{t\tau}^d \Phi'(d_1)}{S_t \sigma \sqrt{\tau-t}}  \\
+	\frac{\partial^2 P(t,\tau,T)}{\partial S_t^2} 
+  	&= \frac{D_{\tau T} D_{t\tau}^d \Phi'(d_1)}{S_t \sigma \sqrt{\tau-t}}
+\end{align}
+
+The thetas are:
+\begin{align}
+	\frac{\partial C_t}{\partial t} 
+	  &= - S_t  D_{\tau T} D_{t\tau}^d \Phi'(d_1) \frac{\sigma}{2\sqrt{\tau-t}} 
+     	 + q_{t\tau} S_t \Phi(d_1) D_{\tau T} D_{t\tau}^d  
+			 - r_{t\tau} K D_{tT} \Phi(d_2)    \\
+	\frac{\partial P_t}{\partial t} 
+	&= - S_t D_{\tau T} D_{t\tau}^d \Phi'(d_1) \frac{\sigma}{2\sqrt{\tau-t}} 
+	   - q_{t\tau} S_t \Phi(-d_1) D_{\tau T} D_{t\tau}^d 
+	   + r_{t\tau} K D_{tT} \Phi(-d_2)  
+\end{align}
+
+The vegas are:
+\begin{align}
+	\frac{\partial C(t,\tau,T)}{\partial \sigma} &= S_t D_{\tau T} D_{t\tau}^d
+  	\Phi'(d_1) \sqrt{\tau-t}   \\
+	\frac{\partial P(t,\tau,T)}{\partial \sigma} &= S_t D_{\tau T} D_{t\tau}^d
+		\Phi'(d_1) \sqrt{\tau-t}
+\end{align}
+
+% The rhos are:
+% \begin{align}
+% 	\frac{\partial C_t}{\partial r_t} &= K D_t \Phi(d_2) (T-t)    \\
+% 	\frac{\partial P_t}{\partial r_t} &= - K D_t \Phi(-d_2) (T-t)
+% \end{align}
+where
+\[
+	\Phi'(x)=\frac{e^{-x^2/2}}{\sqrt{2\pi}}
+\]
+is the density function of the normal distribution,
+and for $s>t$
+\[
+	r_{ts} = -\frac{\ln(D_{ts})}{s-t},
+\]
+\[
+	q_{ts} = -\frac{\ln(D_{ts}^d)}{s-t}.
+\]
+
+The rhos are not well defined in this case, should it be a risk against the
+movement of the whole discount rate curve?
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Black76 Model for Futures Option}
+Under the Black76 model, the underlying futures price is a martingale under the
+risk-neutral measure, and the price of a call option with exercise date $T$ on a
+future matures at $T_1\ge T$ with strike $K$ is:
+\begin{equation}
+	C_{fut}(t,T,T_1,\sigma,F_t(T_1),K) 
+	  = D_t [F_t(T_1) \Phi(d_1) - K \Phi(d_2)],
+\end{equation}
+where
+\[
+	d_{1,2}= \frac{\ln(F_t(T_1)/K)}{\sigma\sqrt{T-t} }
+		         \pm \frac{1}{2}\sigma\sqrt{T-t}.
+\]
+while the price of the put option is
+\begin{equation}
+	P_{fut}(t,T,T_1,\sigma,F_t(T_1),K) 
+	  = D_t [-F_t(T_1) \Phi(-d_1) + K \Phi(-d_2)].
+\end{equation}
+
+Note that if $T_1=T$ the price of the call option on spot and the call option on
+futures are the same:
+\[
+	C_{spot}(t,T,\sigma,S_t,K) = C_{fut}(t,T,T,\sigma,F_t(T),K),
+\]
+since
+\[
+	F_t(T) = D_t^d S_t / D_t.
+\]
+Note that the forward price $F_t(T_1)$ is a martingale under the risk-neutral
+measure.
+\footnote{Geman, Commodities and Commodity Derivatives, section 5.3, pp.99-100;
+Hull, Options, Futures, and Other Derivatives, 9ed, section 18.7, pp.391-392}
+
+The deltas are: 
+\begin{align}
+	\frac{\partial C_{fut}}{\partial F_t(T_1)} &= D_t \Phi(d_1)   \\
+	\frac{\partial P_{fut}}{\partial F_t(T_1)} &= - D_t \Phi(-d_1).
+\end{align}
+
+The gammas are: 
+\begin{align}
+	\frac{\partial^2 C_{fut}}{\partial F_t^2(T_1)} 
+  	&= D_t \frac{\Phi'(d_1)}{F_t(T_1)\sigma \sqrt{T-t}}  \\
+	\frac{\partial^2 P_{fut}}{\partial F_t^2(T_1)} 
+	  &= D_t \frac{\Phi'(-d_1)}{F_t(T_1)\sigma \sqrt{T-t}}
+\end{align}
+
+The thetas are:
+\begin{align}
+  \frac{\partial C_{fut}}{\partial t} 
+	  &= - \frac{D_t F_t(T_1) \Phi'(d_1)\sigma}{2\sqrt{T-t}}
+	     + r_t F_t(T_1) D_t \Phi(d_1) - r_t K D_t \Phi(d_2)   \\
+  \frac{\partial P_{fut}}{\partial t} 
+	  &= - \frac{D_t F_t(T_1) \Phi'(d_1)\sigma}{2\sqrt{T-t}}
+	     - r_t F_t(T_1) D_t \Phi(-d_1) + r_t K D_t \Phi(-d_2)
+\end{align}
+
+The vegas are: 
+\begin{align}
+  \frac{\partial C_{fut}}{\partial \sigma} 
+	  &= F_t(T_1) D_t \Phi'(d_1) \sqrt{T-t}    \\
+  \frac{\partial P_{fut}}{\partial \sigma} 
+	  &= F_t(T_1) D_t \Phi'(d_1) \sqrt{T-t}
+\end{align}
+
+The rhos are: 
+\begin{align}
+  \frac{\partial C_{fut}}{\partial r_t} &= K D_t \Phi(d_2) (T-t)  \\
+	\frac{\partial P_{fut}}{\partial r_t} &= - K D_t \Phi(-d_2) (T-t)
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binary Options}
+A binary (or digital) call option pays either an asset (called asset-or-nothing)
+or \$1 (called cash-or-nothing) at the exercise time $T$ if $S_T>K$ and pays nothing otherwise.
+A binary (or digital) put option pays either an asset or \$1 if $S_T<K$ and 
+pays nothing otherwise. They can be priced using the standard Black-Scholes
+model.
+
+\begin{align}
+	C_{AON} &= S_t D_t^d \Phi(d_1)   \\
+	P_{AON} &= S_t D_t^d \Phi(-d_1)  \\
+	C_{CON} &= D_t \Phi(d_2)         \\
+	P_{CON} &= D_t \Phi(-d_2)        
+\end{align}
+where
+\[
+  d_{1,2}=\frac{\ln\left( \frac{S_t D_t^d}{K D_t} \right)}{\sigma\sqrt{T-t}}
+          \pm \frac{1}{2} \sigma\sqrt{T-t}.
+\]
+
+The deltas are:
+\begin{align}
+	\frac{\partial C_{AON}}{\partial S_t}  
+  	&= D_t^d (\Phi(d_1) + \frac{\Phi'(d_1)}{\sigma\sqrt{T-t}})  \\
+	\frac{\partial P_{AON}}{\partial S_t}  
+  	&= D_t^d (\Phi(-d_1) - \frac{\Phi'(d_1)}{\sigma\sqrt{T-t}})  \\
+	\frac{\partial C_{CON}}{\partial S_t}  
+  	&= \frac{D_t \Phi'(d_2)}{S_t \sigma\sqrt{T-t}}        \\
+	\frac{\partial P_{CON}}{\partial S_t}  
+  	&= - \frac{D_t \Phi'(d_2)}{S_t \sigma\sqrt{T-t}}        
+\end{align}
+
+The gammas are:
+% \begin{align}
+% 	\frac{\partial^2 C_{AON}}{\partial S_t^2}  
+%   	&= \frac{D_t^d \Phi'(d_1)}{S_t\sigma\sqrt{T-t}}
+%        	\left(1-\frac{d_1}{\sigma\sqrt{T-t}}  \right)  \\
+% 	\frac{\partial^2 P_{AON}}{\partial S_t^2}  
+%   	&= \frac{D_t^d \Phi'(d_1)}{S_t\sigma\sqrt{T-t}}
+%        	\left(-1+\frac{d_1}{\sigma\sqrt{T-t}}  \right)  \\
+% 	\frac{\partial^2 C_{CON}}{\partial S_t^2}  
+%   	&= \frac{D_t \Phi'(d_2)}{S_t^2 \sigma\sqrt{T-t}}
+%        	\left(-1-\frac{d_2}{\sigma\sqrt{T-t}}  \right)  \\
+% 	\frac{\partial^2 P_{CON}}{\partial S_t^2}  
+%   	&= \frac{D_t \Phi'(d_2)}{S_t^2 \sigma\sqrt{T-t}}
+%        	\left(1+\frac{d_2}{\sigma\sqrt{T-t}}  \right)  
+% \end{align}
+\begin{align}
+	\frac{\partial^2 C_{AON}}{\partial S_t^2}  
+	  &= \frac{D_t^d \Phi'(d_1) (-d_2)}{S_t\sigma^2 (T-t)}  \\
+	\frac{\partial^2 P_{AON}}{\partial S_t^2}  
+    &= \frac{D_t^d \Phi'(d_1) (d_2)}{S_t\sigma^2 (T-t)}  \\
+	\frac{\partial^2 C_{CON}}{\partial S_t^2}  
+    &= \frac{D_t \Phi'(d_2) (-d_1)}{S_t^2 \sigma^2(T-t)}  \\
+	\frac{\partial^2 P_{CON}}{\partial S_t^2}  
+    &= \frac{D_t \Phi'(d_2) (d_1)}{S_t^2 \sigma^2(T-t)}  
+\end{align}
+
+The thetas are:
+\begin{align}
+	\frac{\partial C_{AON}}{\partial t} &= S_t D_t^d 
+    \left[ y_t \Phi(d_1) + \Phi'(d_1) 
+      \left( \frac{d_2}{2(T-t)} - \frac{r_t-y_t}{\sigma\sqrt{T-t}} \right) 
+    \right]  \\
+	\frac{\partial P_{AON}}{\partial t} &= S_t D_t^d 
+    \left[ y_t \Phi(-d_1) - \Phi'(d_1) 
+      \left( \frac{d_2}{2(T-t)} - \frac{r_t-y_t}{\sigma\sqrt{T-t}} \right) 
+    \right]  \\
+	\frac{\partial C_{CON}}{\partial t}  
+  	&= r_t D_t \Phi(d_2) + D_t \Phi'(d_2) 
+   	\left( \frac{d_1}{2(T-t)} - \frac{r_t-y_t}{\sigma\sqrt{T-t}} \right)  \\
+	\frac{\partial P_{CON}}{\partial t}  
+  	&= r_t D_t \Phi(-d_2) - D_t \Phi'(d_2) 
+   	\left( \frac{d_1}{2(T-t)} - \frac{r_t-y_t}{\sigma\sqrt{T-t}} \right)  
+\end{align}
+
+The vegas are:
+\begin{align}
+	\frac{\partial C_{AON}}{\partial \sigma}  
+  	&= - S_t D_t^d \Phi'(d_1) \frac{d_2}{\sigma}   \\
+	\frac{\partial P_{AON}}{\partial \sigma}  
+  	&= S_t D_t^d \Phi'(d_1) \frac{d_2}{\sigma}   \\
+	\frac{\partial C_{CON}}{\partial \sigma}  
+  	&= - D_t \Phi'(d_2) \frac{d_1}{\sigma}   \\
+	\frac{\partial P_{CON}}{\partial \sigma}  
+  	&= D_t \Phi'(d_2) \frac{d_1}{\sigma}   
+\end{align}
+
+The rhos are:
+\begin{align}
+	\frac{\partial C_{AON}}{\partial r_t}  
+  	&= S_t D_t^d \Phi'(d_1) \frac{\sqrt{T-t}}{\sigma}  \\
+	\frac{\partial P_{AON}}{\partial r_t}  
+  	&= - S_t D_t^d \Phi'(d_1) \frac{\sqrt{T-t}}{\sigma}  \\
+	\frac{\partial C_{CON}}{\partial r_t}  
+  	&= D_t \Phi'(d_2) \frac{\sqrt{T-t}}{\sigma}  - (T-t) D_t \Phi(d_2)  \\
+	\frac{\partial P_{CON}}{\partial r_t}  
+  	&= - D_t \Phi'(d_2) \frac{\sqrt{T-t}}{\sigma}  - (T-t) D_t \Phi(-d_2)  
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binary Options on Futures}
+Binary options (exercised on date $T$) on futures matured on date $T_1\ge T$ 
+are priced using the Black76 model. The prices are:
+\begin{align}
+	C_{AON}^{fut} &= F_t(T_1) D_t \Phi(d_1)   \\
+	P_{AON}^{fut} &= F_t(T_1) D_t \Phi(-d_1)  \\
+	C_{CON}^{fut} &= D_t \Phi(d_2)         \\
+	P_{CON}^{fut} &= D_t \Phi(-d_2)        
+\end{align}
+where
+\[
+	d_{1,2}= \frac{\ln(F_t(T_1)/K)}{\sigma\sqrt{T-t}} 
+	         \pm \frac{1}{2}\sigma\sqrt{T-t}.
+\]
+
+The deltas are:
+\begin{align}
+	\frac{\partial C_{AON}^{fut}}{\partial F_t(T_1)}  
+  	&= D_t \left( \Phi(d_1) + \frac{\Phi'(d_1)}{\sigma\sqrt{T-t}} \right) \\
+	\frac{\partial P_{AON}^{fut}}{\partial F_t(T_1)}  
+  	&= D_t \left( \Phi(-d_1) - \frac{\Phi'(d_1)}{\sigma\sqrt{T-t}} \right) \\
+	\frac{\partial C_{CON}^{fut}}{\partial F_t(T_1)}  
+  	&= \frac{D_t\Phi'(d_2)}{F_t(T_1)\sigma\sqrt{T-t}}  \\
+	\frac{\partial P_{CON}^{fut}}{\partial F_t(T_1)}  
+  	&= - \frac{D_t\Phi'(d_2)}{F_t(T_1)\sigma\sqrt{T-t}}  
+\end{align}
+
+The gammas are:
+\begin{align}
+	\frac{\partial^2 C_{AON}^{fut}}{\partial F_t^2(T_1)}  
+  	&= \frac{D_t\Phi'(d_1)}{F_t(T_1)\sigma\sqrt{T-t}}  
+  	   \left( 1 - \frac{d_1}{\sigma\sqrt{T-t}} \right)   \\
+	\frac{\partial^2 P_{AON}^{fut}}{\partial F_t^2(T_1)}  
+  	&= \frac{D_t\Phi'(d_1)}{F_t(T_1)\sigma\sqrt{T-t}}  
+  	   \left( -1 + \frac{d_1}{\sigma\sqrt{T-t}} \right)   \\
+	\frac{\partial^2 C_{CON}^{fut}}{\partial F_t^2(T_1)}  
+  	&= \frac{D_t\Phi'(d_2)}{F_t^2(T_1)\sigma\sqrt{T-t}}  
+  	   \left( -1 - \frac{d_2}{\sigma\sqrt{T-t}} \right)   \\
+	\frac{\partial^2 P_{CON}^{fut}}{\partial F_t^2(T_1)}  
+  	&= \frac{D_t\Phi'(d_2)}{F_t^2(T_1)\sigma\sqrt{T-t}}  
+  	   \left( 1 + \frac{d_2}{\sigma\sqrt{T-t}} \right)   
+\end{align}
+
+The thetas are:
+\begin{align}
+	\frac{\partial C_{AON}^{fut}}{\partial t}  
+	  &= F_t(T_1) D_t 
+	     \left( r_t \Phi(d_1) + \frac{\Phi'(d_1) d_2}{2(T-t)} \right)   \\
+	\frac{\partial P_{AON}^{fut}}{\partial t}  
+	  &= F_t(T_1) D_t 
+	     \left( r_t \Phi(-d_1) - \frac{\Phi'(d_1) d_2}{2(T-t)} \right)   \\
+	\frac{\partial C_{CON}^{fut}}{\partial t}  
+	  &= D_t 
+	     \left( r_t \Phi(d_2) + \frac{\Phi'(d_2) d_1}{2(T-t)} \right)   \\
+	\frac{\partial P_{CON}^{fut}}{\partial t}  
+	  &= D_t 
+	     \left( r_t \Phi(-d_2) - \frac{\Phi'(d_2) d_1}{2(T-t)} \right)   
+\end{align}
+
+The vegas are:
+\begin{align}
+	\frac{\partial C_{AON}^{fut}}{\partial \sigma}  
+	  &= - F_t(T_1) D_t \Phi'(d_1) \frac{d_2}{\sigma}    \\
+	\frac{\partial P_{AON}^{fut}}{\partial \sigma}  
+	  &=  F_t(T_1) D_t \Phi'(d_1) \frac{d_2}{\sigma}    \\
+	\frac{\partial C_{CON}^{fut}}{\partial \sigma}  
+	  &=  - D_t \Phi'(d_2) \frac{d_1}{\sigma}    \\
+	\frac{\partial P_{CON}^{fut}}{\partial \sigma}  
+	  &=  D_t \Phi'(d_2) \frac{d_1}{\sigma} 
+\end{align}
+
+The rhos are:
+\begin{align}
+	\frac{\partial C_{AON}^{fut}}{\partial r_t}  
+    &=  - (T-t) D_t F_t(T_1) \Phi(d_1)  \\
+	\frac{\partial P_{AON}^{fut}}{\partial r_t}  
+    &=  - (T-t) D_t F_t(T_1) \Phi(-d_1)  \\
+	\frac{\partial C_{CON}^{fut}}{\partial r_t}  &=  - (T-t) D_t \Phi(d_2)  \\
+	\frac{\partial P_{CON}^{fut}}{\partial r_t}  &=  - (T-t) D_t \Phi(-d_2)  
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binary Option with Delayed Payment}
+We will consider (cash-or-nothing) binary options with exercise date $\tau$ 
+earlier than the payment date $T>\tau$. This is useful for replicating range 
+accruals. 
+
+The price for binary options with delayed payment are 
+\begin{align}
+	C_{AON}(t,\tau,T) &= S_t D_{\tau T} D_{t\tau}^d \Phi(d_1)   \\
+	P_{AON}(t,\tau,T) &= S_t D_{\tau T} D_{t\tau}^d \Phi(-d_1)  \\
+	C_{CON}(t,\tau,T) &= D_{tT} \Phi(d_2)         \\
+	P_{CON}(t,\tau,T) &= D_{tT} \Phi(-d_2)        
+\end{align}
+where $D_{\tau T}=\frac{D_{tT}}{D_{t\tau}}$ and
+\[
+	d_{1,2}=\frac{\ln\left( \frac{S_t D_{t\tau}^d}{K D_{t\tau}}\right)}{\sigma\sqrt{\tau-t}}
+          \pm \frac{1}{2} \sigma\sqrt{\tau -t}.
+\]
+
+The deltas are:
+\begin{align}
+	\frac{\partial C_{AON}(t,\tau,T)}{\partial S_t}  
+  	&= D_{\tau T} D_{t\tau}^d  
+	     \left( \Phi(d_1) + \frac{\Phi'(d_1)}{\sigma\sqrt{\tau-t}} \right)  \\
+	\frac{\partial P_{AON}(t,\tau,T)}{\partial S_t}  
+  	&= D_{\tau T} D_{t\tau}^d 
+	     \left( \Phi(-d_1) - \frac{\Phi'(d_1)}{\sigma\sqrt{\tau-t}} \right)  \\
+	\frac{\partial C_{CON}(t,\tau,T)}{\partial S_t}  
+  	&= \frac{D_{tT} \Phi'(d_2)}{S_t \sigma\sqrt{\tau-t}}        \\
+	\frac{\partial P_{CON}(t,\tau,T)}{\partial S_t}  
+  	&= - \frac{D_{tT} \Phi'(d_2)}{S_t \sigma\sqrt{\tau-t}}        
+\end{align}
+
+The gammas are:
+\begin{align}
+	\frac{\partial^2 C_{AON}(t,\tau,T)}{\partial S_t^2}  
+  	&= \frac{D_{\tau T} D_{t\tau}^d \Phi'(d_1) (-d_2)}{S_t\sigma^2 (\tau-t)}  \\
+	\frac{\partial^2 P_{AON}(t,\tau,T)}{\partial S_t^2}  
+  	&= \frac{D_{\tau T} D_{t\tau}^d \Phi'(d_1) (d_2)}{S_t\sigma^2 (\tau-t)}  \\
+	\frac{\partial^2 C_{CON}(t,\tau,T)}{\partial S_t^2}  
+  	&= \frac{D_{tT} \Phi'(d_2) (-d_1)}{S_t^2 \sigma^2(\tau-t)}  \\
+	\frac{\partial^2 P_{CON}(t,\tau,T)}{\partial S_t^2}  
+  	&= \frac{D_{tT} \Phi'(d_2) (d_1)}{S_t^2 \sigma^2(\tau-t)}  
+\end{align}
+
+The thetas are:
+\begin{align}
+	\frac{\partial C_{AON}}{\partial t} &= S_t D_{\tau T} D_{t\tau}^d 
+  	\left[ y_{t\tau} \Phi(d_1) + \Phi'(d_1) 
+			\left( \frac{d_2}{2(\tau-t)} - \frac{r_{t\tau}-y_{t\tau}}{\sigma\sqrt{\tau-t}} \right) 
+    \right]  \\
+	\frac{\partial P_{AON}}{\partial t} &= S_t D_{\tau T} D_{t\tau}^d 
+		\left[ y_{t\tau} \Phi(-d_1) - \Phi'(d_1) 
+			\left( \frac{d_2}{2(\tau-t)} - \frac{r_{t\tau}-y_{t\tau}}{\sigma\sqrt{\tau-t}} \right) 
+    \right]  \\
+	\frac{\partial C_{CON}}{\partial t}  
+  	&= r_{tT} D_{tT} \Phi(d_2) + D_{tT} \Phi'(d_2) 
+  	\left( \frac{d_1}{2(\tau-t)} - \frac{r_{t\tau}-y_{t\tau}}{\sigma\sqrt{\tau-t}} \right)  \\
+	\frac{\partial P_{CON}}{\partial t}  
+  	&= r_{tT} D_{tT} \Phi(-d_2) - D_{tT} \Phi'(d_2) 
+  	\left( \frac{d_1}{2(\tau-t)} - \frac{r_{t\tau}-y_{t\tau}}{\sigma\sqrt{\tau-t}} \right)  
+\end{align}
+where $r_{ts}=-\ln{D_{ts}}/(s-t)$ and $y_{ts}=-\ln{D^d_{ts}}/(s-t)$.
+
+The vegas are:
+\begin{align}
+	\frac{\partial C_{AON}(t,\tau,T)}{\partial \sigma}  
+	  &= - S_t D_{\tau T} D_{t\tau}^d \Phi'(d_1) \frac{d_2}{\sigma}   \\
+	\frac{\partial P_{AON}(t,\tau,T)}{\partial \sigma}  
+	  &= S_t D_{\tau T} D_{t\tau}^d \Phi'(d_1) \frac{d_2}{\sigma}   \\
+	\frac{\partial C_{CON}(t,\tau,T)}{\partial \sigma}  
+	  &= - D_{tT} \Phi'(d_2) \frac{d_1}{\sigma}   \\
+	\frac{\partial P_{CON}(t,\tau,T)}{\partial \sigma}  
+    &= D_{tT} \Phi'(d_2) \frac{d_1}{\sigma}   
+\end{align}
+
+The rhos are not well defined, should it be a derivative to $r_{tT}$ or
+$r_{t\tau}$ or neither?
+% The rhos are:
+% \begin{align}
+% 	\frac{\partial C_{AON}}{\partial r_t}  
+%   	&= S_t D_t^d \Phi'(d_1) \frac{\sqrt{T-t}}{\sigma}  \\
+% 	\frac{\partial P_{AON}}{\partial r_t}  
+%   	&= - S_t D_t^d \Phi'(d_1) \frac{\sqrt{T-t}}{\sigma}  \\
+% 	\frac{\partial C_{CON}}{\partial r_t}  
+%   	&= D_t \Phi'(d_2) \frac{\sqrt{T-t}}{\sigma}  - (T-t) D_t \Phi(d_2)  \\
+% 	\frac{\partial P_{CON}}{\partial r_t}  
+%   	&= - D_t \Phi'(d_2) \frac{\sqrt{T-t}}{\sigma}  - (T-t) D_t \Phi(-d_2)  
+% \end{align}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Black-Scholes PDE}
+We can also derive the Black-Scholes formula using a PDE approach. Again
+assuming the underlying stock price $S_t$ follows a geometric Brownian motion,
+\[
+	dS_t = S_t( \mu_t dt + \sigma_t dW_t),
+\]
+using Ito's lemma, the option price $V(t,S_t)$ follows SDE
+\begin{align*}
+	dV_t &= \frac{\partial V}{\partial t} dt 
+	      + \frac{\partial V}{\partial S} dS_t
+	      + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} dS_t dS_t \\ 
+			&= \left(  
+	         \frac{\partial V}{\partial t} 
+      	   + \frac{\partial V}{\partial S} \mu_t S_t
+	         + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \sigma_t^2 S_t^2
+			   \right) dt
+				 + \left( \frac{\partial V}{\partial S} \sigma_t S_t \right) dW_t.
+\end{align*}
+On the other hand, assume that we can replicate option $V_t$ using $\alpha_t$
+units of stock and $\beta_t$ units of bank account $B_t$, i.e.
+\[
+	V_t = \alpha_t S_t + \beta_t B_t,
+\]
+We require this replication to be self-financing, i.e. at any time we can adjust
+the portfolio from $(\alpha_t,\beta_t)$ to 
+$(\alpha_{t+\Delta t},\beta_{t+\Delta t})$ without any external cash, 
+\[
+  \alpha_t S_t + \beta_t B_t
+  = \alpha_{t+\Delta t} S_t + \beta_{t+\Delta t} B_t
+\]
+hence
+\[
+  S_t d\alpha_t + B_t d\beta_t = 0.
+\]
+We then have
+\[
+	dV_t = \alpha_t dS_t + \alpha_t (q_t dt) S_t + \beta_t dB_t
+	     = ( \alpha_t \mu_t S_t + \beta_t r_t B_t + \alpha_t q_t S_t) dt
+			   + (\alpha_t \sigma_t S_t) dW_t,
+\]
+where $q_t$ is the dividend rate of the stock.
+Match the $dW_t$ term we get
+\[
+	\alpha_t = \frac{\partial V}{\partial S},
+\]
+hence 
+\[
+	\beta_t B_t = V_t - \alpha_t S_t = V_t - \frac{\partial V}{\partial S} S_t.
+\]
+Now we match the $dt$ term and after substituting the expressions for $\alpha_t$
+and $\beta_t$ we get the Black-Scholes PDE
+\footnote{Note that the drift term $\mu_t$ does not appear in this PDE!}
+\begin{equation}
+	\frac{\partial V}{\partial t} 
+	+ (r_t - q_t) S_t \frac{\partial V}{\partial S} 
+	+ \frac{1}{2} \sigma_t^2 S_t^2 \frac{\partial^2 V}{\partial S^2} 
+	- r_t V_t =0,
+\end{equation}
+with terminal condition (i.e. the payoff at time $T$)
+\[
+	V(T,S_T) = g(S_T).
+\]
+
+We can transform this PDE into a standard heat equation. First we remove the
+$r_t V$ term by letting
+\[
+  V(t,S_t) = e^{-\int_t^T r_u du} F(t,S_t),
+\]
+and we get
+\[
+  \frac{\partial F}{\partial t} + (r_t-q_t) S_t \frac{\partial F}{\partial S_t}
+    + \frac{1}{2}\sigma_t^2 S_t^2 \frac{\partial^2 F}{\partial S_t^2} = 0.
+\]
+Next we remove the dependence of $S_t$ in the coeffients by letting
+\[
+  X = \ln S_t,
+\]
+we get
+\[
+  \frac{\partial F}{\partial t} + (r_t-q_t-\frac{1}{2}\sigma_t^2) \frac{\partial F}{\partial X}
+    + \frac{1}{2}\sigma_t^2 \frac{\partial^2 F}{\partial X^2} = 0.
+\]
+Next we remove the first derivative term by letting
+\[
+  Y = X + \int_t^T (r_s-q_s-\frac{1}{2}\sigma_s^2) ds, \qquad t' = t,
+\]
+and we have
+\[
+  \frac{\partial F}{\partial t'} + \frac{1}{2}\sigma_{t'}^2 \frac{\partial^2 F}{\partial Y^2} = 0.
+\]
+Finally, let
+\[
+  \tau=\int_{t'}^T \sigma_s^2 ds = \int_t^T \sigma_s^2 ds,
+\]
+we get
+\[
+  \frac{\partial F}{\partial \tau} = \frac{1}{2} \frac{\partial^2 F}{\partial Y^2}.
+\]
+
+To summarize, we define a set of new variables $(\tau, Y, F)$
+\begin{align}
+	Y &= \ln S_t + \int_t^T \left( r_s - q_s - \frac{1}{2} \sigma_s^2 \right) ds,
+	\\
+	%\tau &= \frac{1}{2} \int_t^T \sigma_s^2 ds, \\
+	\tau &= \int_t^T \sigma_s^2 ds, \\
+	V(t,S_t) &= e^{- \int_t^T r_s ds } F(\tau, Y),
+\end{align}
+then the Black-Scholes can be rewritten in a canonical form of PDE of the
+parabolic kind
+\begin{align}
+	& \frac{\partial F}{\partial \tau} 
+	   = \frac{1}{2} \frac{\partial^2 F}{\partial Y^2}, \\
+	& F(0,Y) = g(e^Y).
+\end{align}
+The solution can be written as 
+\footnote{Evans, Partial Differential Equations, 2ed, p.47; Strauss, Partial
+	Differential Equations: An Introduction, pp.46-51. Note we can also rewrite it
+  as $F(\tau,Y)=\int_{-\infty}^{\infty} p(t,y,y') g(e^{y'}) dy'$ where
+	$p(t,y,y')=\frac{1}{\sqrt{2\pi\tau}} e^{-\frac{(y-y')^2}{2\tau}}$ is the
+  transition density of a standard Brownian motion.}
+\begin{equation}
+	F(\tau,Y) = \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi\tau}} 
+	            e^{-\frac{(y-y')^2}{2\tau}} g(e^{y'}) dy'.
+\end{equation}
+% hence the price of an option is
+% \[
+% 	V(t,S_t) 
+% 	  = e^{- \int_t^T r_s ds } F(\tau, Y)
+% 	  = e^{- \int_t^T r_s ds } 
+% 	    \int_{-\infty}^{\infty} 
+% 			  \frac{1}{\sqrt{2\pi\tau}} e^{-\frac{(y-y')^2}{2\tau}} g(e^{y'}) dy'.
+% \]
+For an European vanilla call option, the payoff function is $g(x)=(x-K)^+$ 
+where $K$ is the strike price, we then have
+\begin{align*}
+	F(\tau,Y) 
+	  &= \int_{-\infty}^{\infty} 
+  		 \frac{1}{\sqrt{2\pi\tau}} e^{-\frac{(y-y')^2}{2\tau}} (e^{y'}-K)^+ dy' \\
+	  &= \int_{-\infty}^{\infty} 
+			 \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} (e^y e^{\sqrt{\tau} x} -K)^+ dx
+			 \qquad (x=\frac{y'-y}{\sqrt{\tau}}) \\
+	 &= \int_{\frac{\ln K -y}{\sqrt{\tau}}}^{\infty} 
+    	 \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} (e^y e^{\sqrt{\tau} x} -K) dx \\
+	 &= e^y e^{\tau /2} \cdot \Phi \left(\frac{y-\ln K+\tau}{\sqrt{\tau}}\right)
+		  - K \Phi \left( \frac{y-\ln K}{\sqrt{\tau}} \right).
+\end{align*}
+We define two discount factors
+\[
+	D_t = e^{-\int_t^T r_s ds},
+\]
+and
+\[
+	D_t^d = e^{-\int_t^T q_s ds},
+\]
+substitude the definition of $(\tau,Y,F)$, we get the price of an European
+vanilla call option
+\begin{align*}
+	V(t,S_t) 
+	  &= D_t F(\tau,Y)  \\
+		&= S_t D_t^d 
+	       \Phi\left( 
+					\frac{\ln \frac{S_t D_t}{K D_t^d}+\frac{1}{2}\int_t^T \sigma_s^2 ds}
+					     { \int_t^T \sigma_s^2 ds }
+				\right)
+	    -K D_t \Phi\left( 
+					\frac{\ln \frac{S_t D_t}{K D_t^d}-\frac{1}{2}\int_t^T \sigma_s^2 ds}
+					     { \int_t^T \sigma_s^2 ds }
+				\right).
+\end{align*}
+This matches the Black-Scholes price (Eq. \ref{E:bs_div}) computed using
+stochastic calculus.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Double Barrier Options}
+In this section we study the analytical pricing of double barrier options.
+Let the lower barrier be $A$, upper barrier be $B$, the option maturity be
+$T$, and the spot price of the underlying be $S_0$. 
+As in the case for the Black-Scholes model for vanilla European options
+we assume the price of the underlying follows a geometric Brownian motion
+\[
+	dS_t = S_t(rdt + \sigma dW_t).
+\]
+Let $X_t=\ln S_t$, by Ito's Lemma we have
+\[
+	dX_t = (r-\frac{\sigma^2}{2})dt + \sigma dW_t,
+\]
+and the spot value of $X_t$ is $x_0=\ln S_0$. For convenience we also define
+variables $a=\ln A$, $b=\ln B$, and
+\[
+	\mu = r - \frac{\sigma^2}{2}.
+\]
+
+We first consider a double knock-out option which will kick in iff neither
+barrier is breached before maturity $T$.
+The price of a double knock-out call option with strike $K$ is
+\begin{align*}
+	C_{dko} 
+	&= e^{-rT} E_Q[ I_{T_{AB}>T} (S_T-K)^+ ]   \\
+	&= e^{-rT} \int_A^B (S_T-K)^+ Q_{S_0}(T_{AB}>T, S_T\in dy)  \\
+	&= e^{-rT} \int_a^b (e^{X_T}-K)^+ Q_{x_0}(T_{ab}>T, X_T\in dx)  \\
+	&= \begin{cases}
+	     0,     & K\ge B  \\
+	     e^{-rT} \int_{a\vee\ln K}^b (e^{X_T}-K) Q_{x_0}(T_{ab}>T, X_T\in dx),
+			       & K<B 
+	   \end{cases}
+\end{align*}
+where $x=\ln y$.
+
+It is convenient to define an auxilary function
+\footnote{Luo, L.S.J.(2001), Various Types of Double-barrier Options, Journal of
+Computational Finance, p.128}
+\[
+	 L(c;G,H)   
+	= e^{-rT} 
+     \int_G^H (e^x -K) e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T}
+	            \phi(x;c,\sigma^2 T) dx,    
+\]
+where 
+\[
+	\phi(x;y,t) = \frac{e^{-\frac{(y-x)^2}{2t}}}{\sqrt{2\pi t}}.
+\]
+After some algebra we get
+\begin{align*}
+	 & L(c;G,H)   \\
+	=& e^{\frac{\mu}{\sigma^2}(c-x_0) - rT}  \\
+	 & \times 
+	   \bigg\{
+			\left[
+				e^{c+(\mu+ \frac{\sigma^2}{2}) T}
+					\Phi\left(\frac{H-c-(\mu+\sigma^2) T}{\sigma\sqrt{T}}  \right)
+				- K \Phi\left(\frac{H-c-\mu T}{\sigma\sqrt{T}}  \right)
+			\right]   \\
+	&-	\left[
+				e^{c+(\mu+ \frac{\sigma^2}{2}) T}
+					\Phi\left(\frac{G-c-(\mu+\sigma^2) T}{\sigma\sqrt{T}}  \right)
+				- K \Phi\left(\frac{G-c-\mu T}{\sigma\sqrt{T}}  \right)
+			\right]
+		\bigg\}
+\end{align*}
+
+Now using the hitting probability of drifted Brownian motion in Equation
+\ref{E:prob_drift_notouch}, we get for $K<B$
+\begin{align*}
+	C_{dko}
+	 &= e^{-rT} \int_{a\vee\ln K}^b (e^{X_T}-K) Q_{x_0}(T_{ab}>T, X_T\in dx) \\
+	 &= e^{-rT} \int_{a\vee\ln K}^b dx (e^x-K) 
+      e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T}
+			\sum_{n=-\infty}^{\infty} 
+			\left[
+				\phi(x_0; x+2n(b-a),\sigma^2 T) - \phi(x_0; 2b-x-2n(b-a), \sigma^2 T)
+			\right]   \\
+	 &= e^{-rT} \int_{a\vee\ln K}^b dx (e^x-K) 
+      e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T}
+			\sum_{n=-\infty}^{\infty} 
+			\left[
+				\phi(x; x_0-2n(b-a),\sigma^2 T) - \phi(x; 2b-x_0-2n(b-a), \sigma^2 T)
+			\right]   \\
+	 &= \sum_{n=-\infty}^{\infty} 
+			\left[
+				L(x_0-2n(b-a); a\vee\ln K, b) - L(2b-x_0-2n(b-a); a\vee\ln K, b) 
+			\right]   
+\end{align*}
+hence
+\begin{equation}
+  C_{dko}  = I_{K<B}
+    \sum_{n=-\infty}^{\infty} 
+    \left[
+  	L(x_0-2n(b-a); a\vee\ln K, b) - L(2b-x_0-2n(b-a); a\vee\ln K, b) 
+    \right]    
+\end{equation}
+
+
+Alternatively using the Fourier expansion of the crossing probability in 
+Equation \ref{E:prob_drift_notouch_alt}, we get for $K<B$
+\begin{align*}
+	C_{dko}
+	 &= e^{-rT} \int_{a\vee\ln K}^b (e^{X_T}-K) Q_{x_0}(T_{ab}>T, X_T\in dx) \\
+	 &= e^{-rT} \int_{a\vee\ln K}^b dx (e^x-K) 
+	    e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T} \frac{2}{b-a}
+			\sum_{n=1}^{\infty} 
+			e^{- \frac{n^2 \pi^2 \sigma^2 T}{2(b-a)^2} }
+			\sin \frac{n\pi (x_0-a)}{b-a} \sin \frac{n\pi (x-a)}{b-a} \\
+\end{align*}
+
+We now define an auxilary indefinite integral
+\begin{equation} \label{F:intQ}
+  Q(\lambda,x) = \int e^{\lambda x} Q_{x_0}(T_{ab}>T, X_T\in dx),
+\end{equation}
+and
+\begin{align*}
+	Q(\lambda,x) 
+	  &= \int e^{\lambda x} 
+	          e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T} \frac{2}{b-a}
+			      \sum_{n=1}^{\infty} 
+			        e^{- \frac{n^2 \pi^2 \sigma^2 T}{2(b-a)^2} }
+			        \sin \frac{n\pi (x_0-a)}{b-a} \sin \frac{n\pi (x-a)}{b-a} 
+			  dx \\
+		&= \frac{2}{b-a} e^{-\frac{\mu x_0}{\sigma^2} - \frac{\mu^2}{2 \sigma^2} T} 
+			 \sum_{n=1}^{\infty} e^{- \frac{n^2 \pi^2 \sigma^2 T}{2(b-a)^2} }
+			   \sin \frac{n\pi (x_0-a)}{b-a} 
+				 \int e^{\left( \lambda+\frac{\mu}{\sigma^2} \right) x}
+				      \sin \frac{n\pi (x-a)}{b-a} dx  \\
+\end{align*}
+Using the result for the indefinite integral
+\[
+	\int e^{\alpha x} \sin\beta (x-a) dx 
+	  = e^{\alpha x} 
+		\frac{\alpha \sin\beta (x-a) - \beta \cos\beta (x-a)}{\alpha^2 + \beta^2},
+\]
+we have
+\[
+	  Q(\lambda,x) 
+	= \frac{2}{b-a} 
+	  e^{ - \frac{\mu x_0}{\sigma^2} - \frac{\mu^2}{2 \sigma^2} T
+		    + (\lambda +\frac{\mu}{\sigma^2}) x
+		  } 
+	  \sum_{n=1}^{\infty} e^{- \frac{n^2 \pi^2 \sigma^2 T}{2(b-a)^2} }
+			\sin \frac{n\pi (x_0-a)}{b-a}  \times
+			\frac{
+				     (\lambda + \frac{\mu}{\sigma^2}) \sin\frac{n\pi (x-a)}{b-a}
+			        - \frac{n\pi}{b-a} \cos\frac{n\pi (x-a)}{b-a} 
+					 }
+			     { (\lambda+\frac{\mu}{\sigma^2})^2 + \frac{n^2 \pi^2}{(b-a)^2}
+					 },
+\]
+and 
+\begin{equation}
+	C_{dko} = I_{K<B}\, e^{-rT} 
+	  ( ( Q(1,b) - Q(1,a\vee \ln K) ) - K\times ( Q(0,b) - Q(0,a\vee \ln K) ) ).
+\end{equation}
+
+And similarly for a double knock-out put option with strike $K$:
+\begin{align*}
+  P_{dko} 
+	&= e^{-rT} E_Q[I_{T_{AB}>T} (K-S_T)^+]   \\
+	&= e^{-rT} \int_A^B (K-S_T)^+ Q_{S_0}(T_{AB}>T, S_T\in dy)  \\
+	&= e^{-rT} \int_a^b (K- e^{X_T})^+ Q_{x_0}(T_{ab}>T, X_T\in dx)  \\
+	&= I_{K>A}\, e^{-rT} \int_{a}^{b\wedge\ln K} (K- e^{X_T}) 
+	   Q_{x_0}(T_{ab}>T, X_T\in dx) \\
+\end{align*}
+thus we have
+\begin{equation}
+  P_{dko}  = I_{K>A}
+    \sum_{n=-\infty}^{\infty} 
+    \left[
+       L(2b-x_0-2n(b-a); a, b\wedge\ln K) - L(x_0-2n(b-a); a, b\wedge\ln K) 
+    \right]    
+\end{equation}
+and alternatively
+\begin{equation}
+  P_{dko} = I_{K>A}\, e^{-rT} 
+   (K\times (Q(0,b\wedge\ln K) - Q(0,a)) - (Q(1,b\wedge\ln K) - Q(1,a) )).
+\end{equation}
+
+To calcualte the price of a rebate, i.e. when it pays $R$ if either barrier is
+touched before time $T$, 
+\begin{align*}
+  V_R &= e^{-rT} \int_{-\infty}^{\infty} R \times Q_{x_0}(T_{ab}<T,X_T\in dx) \\
+      &= e^{-rT} R \times Q_{x_0}(T_{ab}<T) \\
+      &= e^{-rT} R \times ( 1 - Q_{x_0}(T_{ab}>T)) 
+\end{align*}
+
+We define a new auxilary function
+\begin{equation}
+  M(c) = \int_a^b dx\, e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T}
+	 \phi(x; c,\sigma^2 T),
+\end{equation}
+and we have
+\begin{align*}
+  M(c) 
+    &= \int_a^b dx\, e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2 T}{2 \sigma^2}}
+	\frac{e^{-\frac{(x-c)^2}{2\sigma^2 t}}}{\sqrt{2\pi\sigma^2 t}} \\
+    &= \frac{1}{\sqrt{\sigma^2 T}} e^{\frac{\mu(c-x_0)}{\sigma^2}}
+       \left[
+         \Phi\left(\frac{b-c-\mu T}{\sqrt{\sigma^2 T}}\right)
+         - \Phi\left(\frac{a-c-\mu T}{\sqrt{\sigma^2 T}}\right)
+       \right]
+\end{align*}
+
+Hence the probability of not hitting any barrier before time $T$ is
+\begin{align}
+  Q_{x_0}(T_{ab}>T) 
+    &= \int_a^b Q_{x_0}(T_{ab}>T, X_T\in dx) \qquad 
+       \text{($T_{ab}>T$ implies $a<X_T<b$)} \notag \\
+    &= \int_a^b dx\, e^{\frac{\mu}{\sigma^2}(x-x_0) - \frac{\mu^2}{2 \sigma^2} T}
+       \sum_{n=-\infty}^{\infty} 
+       \left[
+	 \phi(x; x_0-2n(b-a),\sigma^2 T) - \phi(x; 2b-x_0-2n(b-a), \sigma^2 T)
+       \right] \notag \\
+    &= \sum_{n=-\infty}^{\infty} 
+       \left[ M(x_0-2n (b-a)) - M(2b-x_0 -2n(b-a)) \right].
+\end{align}
+
+Alternatively, using the indefinite integral defined in \ref{F:intQ}, we have
+\begin{equation}
+  Q_{x_0}(T_{ab}>T) = Q(0,b) - Q(0,a).
+\end{equation}
+
+

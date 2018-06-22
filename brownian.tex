@@ -1,0 +1,946 @@
+\chapter{Brownian Motion}
+
+Unless specified otherwise, in this chapter $\tau \sim Exp(\lambda)$, that is,
+$\tau$ follows an exponential distribution with rate $\lambda$,
+\[
+  P[\tau<t] = \int_0^t e^{-\lambda s} \lambda \, ds
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basic Facts}
+For standard Brownian motion, we have the following basic facts:
+\begin{itemize}
+  \item Generator: $\mathcal{G} f = \frac{1}{2} \frac{d^2}{dx^2}$.
+  \item Speed measure: $m(dx)=m(x)dx=2 dx$.
+  \item Scale function: $s(x)=x$.
+  \item Fundamental solutions of $\mathcal{G} f = \alpha f$ are
+    $\psi_{\alpha}(x)=e^{\sqrt{2\alpha} x}$ and
+    $\phi_{\alpha}(x)=e^{-\sqrt{2\alpha} x}$.
+  \item Green function: $G_{\alpha}(x,y)=w_{\alpha}^{-1} e^{-\sqrt{2\alpha}(x-y)}$, 
+	$x\ge y$
+  \item Wronskian: $w_{\alpha}=2\sqrt{2\alpha}$.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $P_x[ \sup_{0\le s\le \tau} W_s \ge y ]$ (HOBM 1.1.1.2) }
+Let $M_t = \sup\{W_s: s\le t \}$ be the maximum until time $t$ and 
+$H_y=\inf\{s:W_s=y \}$ be the first hitting time of level $y\ge x$,
+then we have for $x\le y$
+\begin{align*}
+	E_x[e^{-\lambda H_y}] 
+	&= \int_0^{\infty} e^{-\lambda t} dP_x(H_y\le t)  \\
+	&= e^{-\lambda t} P_x(H_y\le t) |_{t=0}^{\infty} 
+	   - \int_0^{\infty} (-\lambda) e^{-\lambda t} P_x(H_y\le t) dt  \\
+	&= \lambda \int_0^{\infty} e^{-\lambda t} P_x(H_y\le t) dt  \\
+	&= P_x(H_y<\tau) = P_x(M_{\tau}\ge y).
+\end{align*}
+We know from Example \ref{Ex:hit2} that when $x\le y$
+\[
+  E_x[e^{-\lambda H_y}]
+    =\frac{\psi_{\lambda}(x)}{\psi_{\lambda}(y)}
+    = e^{\sqrt{2\lambda}(x-y)},
+\]
+hence
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 1.1.1.2,
+p.153}
+\begin{equation}
+  P_x[ \sup_{0\le s\le \tau} W_s \ge y ] = e^{\sqrt{2\lambda}(x-y)}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single Boundary Hitting}
+
+For a simple Brownian motion $X_t$ with zero drift and volatility $\sigma$,
+\[
+  dX_t = \sigma dW_t,
+\]
+let $\tau_a$ be the first hitting time at boundary $a$, i.e.
+\[
+  \tau_a = \inf\{t: X_t =a \},
+\]
+the transition probability density $p(x,t|x_0)$ of the process reaches 
+$(x,x+dx)$ at time $t$ without hitting the boundary $a$, i.e.
+\[
+  p(x,t|x_0) dx=P(X_t\in dx, \tau_a>t | X_0=x_0),
+\]
+is the solution of the following equations:
+\footnote{Pavliotis, Stochastic Processes and Applications, 4.2.1, pp.92-93}
+\begin{align} \label{E:fp_nodrift}
+  \frac{\partial}{\partial t} p(x,t|x_0)
+    &= \frac{\sigma^2}{2} \frac{\partial^2 p(x,t|x_0)}{\partial x^2} \notag \\
+  p(a,t|x_0) &= 0,  \qquad \text{(BC)}  \notag \\
+  p(x,0|x_0) &= \delta (x-x_0),  \qquad \text{(IC)}  
+\end{align}
+
+The solution is
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., p.121,
+note that in Borodin the transition density is w.r.t speed measure.}
+\begin{equation} \label{E:td_abs}
+  p(x,t|x_0) = \frac{1}{\sqrt{2\pi \sigma^2 t}} 
+    \left(  e^{-\frac{(x-x_0)^2}{2\sigma^2 t}} 
+          - e^{-\frac{(x+x_0-2a)^2}{2\sigma^2 t}} \right)
+\end{equation}
+This can also be obtained using reflection principle. Since
+\[
+  P(X_t\le x, \tau_a<t | X_0=x_0) = P(X_t\ge 2a-x | X_0=x_0),
+\]
+hence
+\[
+  P(X_t\in dx, \tau_a<t | X_0=x_0) / dx
+    = \frac{1}{\sqrt{2\pi \sigma^2 t}} e^{-\frac{(x+x_0-2a)^2}{2\sigma^2 t}}.
+\]
+Using
+\[
+P(X_t\in dx, \tau_a>t | X_0=x_0) 
+   = P(X_t\in dx) - P(X_t\in dx, \tau_a<t | X_0=x_0),
+\]
+we get Equation \ref{E:td_abs}.
+
+For a Wiener process with drift $\mu$ and volatility $\sigma$, 
+\[
+  dX_t = \mu dt + \sigma dW_t,
+\]
+the transition probability density $p_{\mu}(x,t|x_0)$ is the solution of the
+forward Kolmogorov equation \ref{E:kolm_forw}:
+\footnote{See also Pavliotis, Stochastic Processes and Applications, Eq. (2.54), p.48;
+  Gikhman \& Skorokhod, Introduction to the Theory of Random Processes, pp. 374-375;
+  Shreve, Stochastic Calculus for Finance II, Exercise 6.9, pp. 291-293}
+\begin{align*}
+  \frac{\partial}{\partial t} p_{\mu}(x,t|x_0)
+    &= \frac{\sigma^2}{2} \frac{\partial^2 p_{\mu}(x,t|x_0)}{\partial x^2}   
+     - \mu \frac{\partial p_{\mu}(x,t|x_0)}{\partial x}   \\
+  p_{\mu}(a,t|x_0) &= 0,  \qquad \text{(BC)}  \\
+  p_{\mu}(x,0|x_0) &= \delta (x-x_0),  \qquad \text{(IC)}  
+\end{align*}
+
+This problem can be reduced to the standard problem (\ref{E:fp_nodrift}) without
+drift. First we try to remove the term with first derivative to $x$ by letting
+$p_{\mu}(x,t|x_0)=e^{ax} u(x,t)$, we have
+\[
+ \frac{\sigma^2}{2} \frac{\partial^2 p_{\mu}}{\partial x^2}
+ - \mu \frac{\partial p_{\mu}}{\partial x}
+ = e^{ax} \left[
+   \left( \frac{\sigma^2 a^2}{2} - \mu a \right) u
+   + (a \sigma^2 -\mu) \frac{\partial u}{\partial x}
+   + \frac{\sigma^2}{2} \frac{\partial^2 u}{\partial x^2}
+  \right],
+\]
+choose $a=\mu/\sigma^2$, we then have
+\[
+  \frac{\partial u}{\partial t} 
+    = - \frac{\mu^2}{2 \sigma^2} u + \mu \frac{\partial^2 u}{\partial x^2}   
+\]
+We can further simplify this by letting 
+$u(x,t)=v(x,t) e^{-(\mu^2 t)/(2\sigma^2)}$, we then have
+\[
+  \frac{\partial v}{\partial t} = 
+    \frac{\sigma^2}{2} \frac{\partial^2 v}{\partial x^2}.
+\]
+Now we have
+$p_{\mu}(x,t|x_0)=e^{\frac{\mu}{\sigma^2}x-\frac{\mu^2 t}{2\sigma^2}} v(x,t)$,
+we can see that boundary condition is satisfied with $v(a,t)=0$. However, the
+initial condition of $v$ is 
+$v(x,0|x_0)=e^{-\frac{\mu}{\sigma^2} x} \delta(x-x_0)$. To reduce this to the
+standard $\delta$-function form, we let 
+$v(x,t)=e^{-\frac{\mu}{\sigma^2} x_0} p(x,t|x_0)$, then
+\[
+  p(x,0|x_0)=e^{-\frac{\mu}{\sigma^2} (x-x_0)} \delta(x-x_0)=\delta(x-x_0).
+\]
+
+
+%By Girsanov Theorem, 
+%\footnote{\textdbend need clarification. See also Albanese, Advanced Derivatives
+%   Pricing and Risk Management Theory, Proposition 3.1, p.158}
+%Let
+%\begin{equation} 
+%  p_{\mu}(x,t|x_0) = e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}} 
+%                     p(x,t|x_0),
+%\end{equation}
+%This problem can be reduced to the standard problem (\ref{E:fp_nodrift}) by
+%letting
+%\footnote{
+%  Note that $e^{-\frac{\mu}{\sigma^2}(x-x_0)}\delta(x-x_0)=\delta(x-x_0)$.
+%}
+%i.e.
+
+Hence
+\footnote{See also Albanese, Advanced Derivatives
+   Pricing and Risk Management Theory, Proposition 3.1, p.158}
+\begin{equation} 
+  p_{\mu}(x,t|x_0) = e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}} 
+                     p(x,t|x_0),
+\end{equation}
+where $p(x,t|x_0)$ is the solution of problem (\ref{E:fp_nodrift}).
+Thus we get
+\begin{align} 
+  p_{\mu}(x,t|x_0) 
+    &= \frac{1}{\sqrt{2\pi \sigma^2 t}} 
+       e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}} 
+       \left(  e^{-\frac{(x-x_0)^2}{2\sigma^2 t}} 
+          - e^{-\frac{(x+x_0-2a)^2}{2\sigma^2 t}} \right)
+       \\ \notag
+    &= \frac{1}{\sqrt{2\pi \sigma^2 t}} 
+       \left(  e^{-\frac{(x-x_0-\mu t)^2}{2\sigma^2 t}} 
+             - e^{-\frac{(x+x_0-2a-\mu t)^2}{2\sigma^2 t}} 
+               e^{\frac{2\mu}{\sigma^2} (a-x_0)}
+       \right).
+\end{align} 
+
+Let $x_L<x_0<x_H$ and 
+Let $T_L=\min \{t:X_t=L \}$ and $T_H=\min \{t:X_t=H \}$ be the first hitting
+time of boundaries $L$ and $H$ respectively, and let $T_{LH}=\min(T_L,T_H)$ be
+the first hitting time of either boundary.
+we define the following transition probability densities:
+\begin{align}
+  g_{\mu}(x,x_0;t) dx &= P_{x_0}( X_t \in dx)  \\
+  g^u_{\mu}(x_H,x,x_0;t) dx &= P_{x_0}( T_H>t, X_t \in dx) \\
+  g^l_{\mu}(x_L,x,x_0;t) dx &= P_{x_0}( T_L>t, X_t \in dx) \\
+  g^{ul}_{\mu}(x_L,x_H,x,x_0;t) dx &= P_{x_0}( T_{LH}>t, X_t \in dx) 
+\end{align}
+
+Now
+\begin{equation}
+  g_0(x,x_0;t) 
+  = \frac{e^{-\frac{(x-x_0)^2}{2\sigma^2 t}}}{\sqrt{2\pi \sigma^2 t}},
+\end{equation}
+and 
+\begin{equation}
+  g_{\mu}(x,x_0;t) 
+  = e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}} g_0(x,x_0,t)
+  = \frac{e^{-\frac{(x-x_0-\mu t)^2}{2\sigma^2 t}}}{\sqrt{2\pi \sigma^2 t}}.
+\end{equation}
+The transition probability density for single barriers are of the same format:
+for $x,x_0<x_H$,
+\begin{equation}
+  g^u_{\mu}(x_H,x,x_0;t)  
+   = \frac{1}{\sqrt{2\pi \sigma^2 t}} 
+       \left(  e^{-\frac{(x-x_0-\mu t)^2}{2\sigma^2 t}} 
+             - e^{-\frac{(x+x_0-2 x_H-\mu t)^2}{2\sigma^2 t}} 
+               e^{\frac{2\mu}{\sigma^2} (x_H-x_0)}
+       \right),
+\end{equation}
+and for $x,x_0>x_L$,
+\begin{equation}
+  g^l_{\mu}(x_L,x,x_0;t) 
+   = \frac{1}{\sqrt{2\pi \sigma^2 t}} 
+       \left(  e^{-\frac{(x-x_0-\mu t)^2}{2\sigma^2 t}} 
+             - e^{-\frac{(x+x_0-2 x_L-\mu t)^2}{2\sigma^2 t}} 
+               e^{\frac{2\mu}{\sigma^2} (x_L-x_0)}
+       \right).
+\end{equation}
+The transition probability density for double barriers has two equivalent
+expressions:
+\begin{align}
+   & g^{ul}_{\mu}(x_L,x_H,x,x_0;t) \\ \notag
+  =& e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}}
+     \sum_{n=-\infty}^{\infty} 
+       [ g_{0}(x+2n(x_H-x_L),x_0;t) - g_{0}(2x_H-y-2n(x_H-x_L),x_0;t) ],
+\end{align}
+and
+\begin{align}
+  & g^{ul}_{\mu}(x_L,x_H,x,x_0;t) \\ \notag
+ =& e^{\frac{\mu}{\sigma^2}(x-x_0)-\frac{\mu^2 t}{2\sigma^2}}
+    \left[
+      \frac{2}{x_H-x_L} 
+      \sum_{n=1}^{\infty} e^{-\frac{n^2\pi^2 \sigma^2 t}{2(x_H-x_L)^2}}
+ 	 \sin \frac{n\pi (x_0-x_L)}{x_H-x_L} \sin \frac{n\pi (x-x_L)}{x_H-x_L}
+    \right]
+\end{align}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Double Boundary Hitting: Simple Brownian Motion}
+Let $T_a=\min \{t:W_t=a \}$ and $T_b=\min \{t:W_t=b \}$ be the first hitting
+time of boundaries $a$ and $b$ respectively, and let $T_{ab}=\min(T_a,T_b)$ be
+the first hitting time of either boundary.
+We also presume that $a<x<b$.
+
+We treat the probability of hitting the lower boundary $a$ before hitting
+boundary $b$ and also before time $T$ in two cases: $y<a$ and $y>a$.
+In case of $y<a$, we have
+\begin{align*}
+	&P_x[T_a<T_b, T_a\le T, W_T\in dy]  \notag \\
+	=&  P_x[T_a<T_b, W_T\in dy]   \qquad \text{($y<a$ implies $T_a\le T$)}
+	    \notag \\
+  =& P_x(W_T\in dy) - P_x(T_b<T_a, W_T\in dy)   \notag \\
+	=& P_x(W_T\in dy) - P_x(T_b<T_a, W_T\in d(r_b y)) 
+			\qquad \text{(reflection principle)}  \notag \\
+	=& P_x(W_T\in dy) - P_x(W_T\in d(r_b y)) + P_x(T_a<T_b, W_T\in d(r_b y))
+			\notag \\
+	=& P_x(W_T\in dy) - P_x(W_T\in d(r_b y)) + P_x(W_T\in d(r_a r_b y))  
+			- P_x(T_b<T_a, W_T\in d(r_a r_b y)) \notag \\
+  =& etc.etc.   \notag \\
+\end{align*}
+where $r_a x = 2a-x$ is the reflection of $x$ with respect to $a$.
+Let $f(y)$ be the density function such that
+\begin{equation}
+	f(y) dy = P_x(W_T\in dy), 
+\end{equation}
+we get
+\begin{align*}
+	 & P_x[T_a<T_b, T_a\le T, W_T\in dy]   \\
+  =& dy\times (f(y) - f(r_b y) + f(r_a r_b y) - f(r_b r_a r_b y)
+		 + \cdots) \\
+	=& dy\times\sum_{n=0}^{\infty} [ f(y-2n(b-a)) - f(2b-y+2n(b-a)) ].
+\end{align*}
+
+Similarly for the case with $y>a$
+\begin{align*}
+	&P_x[T_a<T_b, T_a\le T, W_T\in dy]  \notag \\
+	=& P_x[T_a<T_b, T_a\le T, W_T\in d(r_a y)]  \notag \\
+	=& P_x[T_a<T_b, W_T\in d(r_a y)]  \qquad \text{($r_a y<a$ implies $T_a\le T$)} 
+	   \notag \\
+  =& P_x(W_T\in d(r_a y)) - P_x(T_b<T_a, W_T\in d(r_a y)) \notag \\
+  =& P_x(W_T\in d(r_a y)) - P_x(T_b<T_a, W_T\in d(r_b r_a y)) \notag \\
+  =& P_x(W_T\in d(r_a y)) - P_x(W_T\in d(r_b r_a y)) 
+	   + P_x(T_a<T_b, W_T\in d(r_b r_a y)) \notag \\
+	=& etc.etc. \notag \\
+  =& dy\times (f(r_a y) - f(r_b r_a y) + f(r_a r_b r_a y) - f(r_b r_a r_b r_a y)
+		 + \cdots) \\
+  =& dy\times\sum_{n=0}^{\infty} [ f(2a-y-2n(b-a)) - f(y+2b-2a + 2n(b-a)) ].
+\end{align*}
+
+Thus we have
+\begin{align}
+	 & P_x[T_a<T_b, T_a\le T, W_T\in dy]  \notag \\
+	=& \begin{cases}
+     	 dy\times\sum_{n=0}^{\infty} [ f(y-2n(b-a)) - f(2b-y+2n(b-a)) ],         & y<a \\
+	     dy\times\sum_{n=0}^{\infty} [ f(2a-y-2n(b-a)) - f(y+2b-2a + 2n(b-a)) ], & y>a
+     \end{cases}
+\end{align}
+
+Similarly we treat the probability of hitting the upper boundary $b$ before 
+hitting boundary $a$ and also before time $T$ in two cases: $y<b$ and $y>b$.
+In case of $y<b$, we have
+\begin{align*}
+	&P_x[T_b<T_a, T_b\le T, W_T\in dy]  \notag \\
+	=& P_x[T_b<T_a, T_b\le T, W_T\in d(r_b y)]  \notag \\
+	=& P_x[T_b<T_a, W_T\in d(r_b y)]  \qquad \text{($r_b y>b$ implies $T_b\le T$)} 
+	   \notag \\
+  =& P_x(W_T\in d(r_b y)) - P_x(T_a<T_b, W_T\in d(r_b y)) \notag \\
+	=& P_x(W_T\in d(r_b y)) - P_x(T_a<T_b, W_T\in d(r_a r_b y))  \notag \\
+  =& P_x(W_T\in d(r_b y)) - P_x(W_T\in d(r_a r_b y))
+     + P_x(T_b<T_a, W_T\in d(r_a r_b y)  \notag \\
+  =& etc.etc. \notag \\
+  =& dy\times (f(r_b y) - f(r_a r_b y) + f(r_b r_a r_b y) - f(r_a r_b r_a r_b y)
+		 + \cdots) \\
+  =& dy\times\sum_{n=0}^{\infty} [ f(2b-y+2n(b-a)) - f(y-2b+2a - 2n(b-a)) ].
+\end{align*}
+Similarly for the case with $y>b$ we have
+\begin{align*}
+	&P_x[T_b<T_a, T_b\le T, W_T\in dy]  \notag \\
+	=&  P_x[T_b<T_a, W_T\in dy]   \qquad \text{($y>b$ implies $T_b\le T$)}
+	    \notag \\
+  =& P_x(W_T\in dy) - P_x(T_a<T_b, W_T\in dy)   \notag \\
+	=& P_x(W_T\in dy) - P_x(T_a<T_b, W_T\in d(r_a y)) 
+			\qquad \text{(reflection principle)}  \notag \\
+	=& P_x(W_T\in dy) - P_x(W_T\in d(r_a y)) 
+     + P_x(T_b<T_a, W_T\in d(r_a y))  \notag \\
+	=& etc.etc.   \notag \\
+  =& dy\times (f(y) - f(r_a y) + f(r_b r_a y) - f(r_a r_b r_a y)
+		 + \cdots) \\
+	=& dy\times\sum_{n=0}^{\infty} [ f(y+2n(b-a)) - f(2a-y-2n(b-a)) ].
+\end{align*}
+Hence
+\begin{align}
+	& P_x[T_b<T_a, T_b\le T, W_T\in dy]  \notag \\
+	=& 
+    \begin{cases}
+			dy\times\sum_{n=0}^{\infty} [ f(2b-y+2n(b-a)) - f(y-2b+2a - 2n(b-a)) ], & y<b \\
+			dy\times\sum_{n=0}^{\infty} [ f(y+2n(b-a)) - f(2a-y-2n(b-a)) ],  & y>b
+    \end{cases}
+\end{align}
+
+We next calculate the probability of not hitting either boundary before time
+$T$. First note that $T_{ab}>T$ implies $a<y<b$,
+\begin{align*}
+	& P_x(T_{ab}>T, W_T\in dy)  \\
+	=& P_x(W_T\in dy) - P_x(T_{ab}<T,W_T\in dy)   \\
+	=& P_x(W_T\in dy) - P_x(T_a<T_b, T_a<T, W_T\in dy)  
+	   - P_x(T_b<T_a, T_b<T, W_T\in dy)    \\
+  =& f(y) - ( f(r_a y) - f(r_b r_a y) + f(r_a r_b r_a y) - \cdots) )  
+          - ( f(r_b y) - f(r_a r_b y) + f(r_b r_a r_b y) - \cdots) )  
+\end{align*}
+i.e.
+\begin{equation}
+	P_x(T_{ab}>T, W_T\in dy)  
+	= dy\times\sum_{n=-\infty}^{\infty} [ f(y+2n(b-a)) - f(2b-y-2n(b-a)) ].
+\end{equation}
+
+The results in this section can be readily extended to Brownian motion with zero
+drift and constant volatility $\sigma$, i.e. $\sigma W_t$, we just need to
+set density function to
+\[
+	f(y) = P_x(\sigma W_T\in dy) 
+	     = \frac{e^{-\frac{(y-x)^2}{2\sigma^2 T}}}{\sqrt{2\pi \sigma^2 T}}.
+\]
+
+Alternatively, these density functions can also be calculated using PDE method.
+$P_x(T_{ab}>T, W_T\in dy)/dy$ is the unique solution $u(y,T)$ of the 
+following initial-boundary value problem (IBVP) of the heat equation:
+\begin{gather*}
+	u_T = \frac{\sigma^2}{2} u_{yy},   \\
+	u(a,T)=0,              \qquad \text{(boundary condition)}     \\
+	u(b,T)=0,              \qquad \text{(boundary condition)}     \\
+	u(y,0) = \delta(y-x) \qquad \text{(initial condition)}
+\end{gather*}
+This can be expressed as a Fourier series:
+\begin{equation}
+	u(y,T) = 
+	  \frac{2}{b-a} 
+		\sum_{n=1}^{\infty} e^{-\frac{n^2\pi^2 \sigma^2 T}{2(b-a)^2}}
+			\sin \frac{n\pi (x-a)}{b-a} \sin \frac{n\pi (y-a)}{b-a}.
+\end{equation}
+
+Unfortunately, the densities $P_x(T_a<T_b, T_a\le T, W_T\in dy)/dy$ and
+$P_x(T_b<T_a, T_b\le T, W_T\in dy)/dy$ do not seem to be solutions of any
+Cauchy-Dirichlet problems of the heat equation.
+
+%Similarly, the density $P_x(T_a<T_b, T_a\le T, W_T\in dy)/dy$ is the unique
+%solution of the initial-boundary value problem:
+%\begin{gather*}
+%	u_t = \frac{\sigma^2}{2} u_{xx},   \\
+%	u(a,t)=1,              \qquad \text{(boundary condition)}     \\
+%	u(b,t)=0,              \qquad \text{(boundary condition)}     \\
+%	u(x,0) = \delta(x-x_0) \qquad \text{(initial condition)}
+%\end{gather*}
+%The solution is
+%\begin{equation}
+%	u(x,t) = \frac{b-x}{b-a}
+%	+ \sum_{n=1}^{\infty} 
+%	  \left( \frac{2}{b-a} \sin \frac{n\pi (x_0-a)}{b-a} -\frac{2}{n\pi} \right)
+%		e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (x-a)}{b-a}.
+%\end{equation}
+%
+%And the density $P_x(T_b<T_a, T_b\le T, W_T\in dy)/dy$ is the unique
+%solution of the initial-boundary value problem:
+%\begin{gather*}
+%	u_t = \frac{\sigma^2}{2} u_{xx},   \\
+%	u(a,t)=0,              \qquad \text{(boundary condition)}     \\
+%	u(b,t)=1,              \qquad \text{(boundary condition)}     \\
+%	u(x,0) = \delta(x-x_0) \qquad \text{(initial condition)}
+%\end{gather*}
+%The solution is
+%\begin{equation}
+%	u(x,t) = \frac{x-a}{b-a}
+%	+ \sum_{n=1}^{\infty} 
+%	\left( \frac{2}{b-a} \sin \frac{n\pi (x_0-a)}{b-a} +\frac{2(-)^n}{n\pi} \right)
+%		e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (x-a)}{b-a}.
+%\end{equation}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Double Boundary Hitting: Brownian Motion with Drift}
+In this section we consider the double boundary hitting of Brownian motion 
+with constant drift $\mu$ and constant volatility $\sigma$, i.e. 
+\[
+	dX_t = \mu dt + \sigma dW_t.
+\]
+The density function $p_x(y,T)$ for any event $A$ at time $T$ satisfies the
+forward Kolmogorov equation
+\[
+	\partial_T p + \mu \partial_y p - \frac{\sigma^2}{2} \partial_y^2 p = 0.
+\]
+
+By Girsanov Theorem, 
+\footnote{\textdbend need clarification. See also Albanese, Advanced Derivatives
+   Pricing and Risk Management Theory, Proposition 3.1, p.158}
+\begin{equation} \label{E:density_change}
+	p_x(y,T) = e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} u_x(y,T),
+\end{equation}
+where $u_x(y,T)$ is the density function under the measure with zero drift, i.e.
+$X_t=\sigma \tilde{W}_t$. It is easy to verify that $u_x(y,T)$ satisfies the
+heat equation
+\[
+   \partial_T u - \frac{\sigma^2}{2} \partial_y^2 u = 0.
+\]
+
+Similar to the case of Brownian motion without drift, 
+let $T_a=\min \{t:X_t=a \}$ and $T_b=\min \{t:X_t=b \}$ be the first hitting
+time of boundaries $a$ and $b$ respectively, and let $T_{ab}=\min(T_a,T_b)$ be
+the first hitting time of either boundary. Using Equation \ref{E:density_change}
+we have
+\begin{align}
+	 & P_x[T_a<T_b, T_a\le T, X_T\in dy]  \notag \\
+	=& dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+	   \begin{cases}
+			 \sum_{n=0}^{\infty} [ f(y-2n(b-a)) - f(2b-y+2n(b-a)) ],         & y<a \\
+			 \sum_{n=0}^{\infty} [ f(2a-y-2n(b-a)) - f(y+2b-2a + 2n(b-a)) ], & y>a
+     \end{cases}
+\end{align}
+and
+\begin{align}
+	& P_x[T_b<T_a, T_b\le T, X_T\in dy]  \notag \\
+	=& dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+    \begin{cases}
+			\sum_{n=0}^{\infty} [ f(2b-y+2n(b-a)) - f(y-2b+2a - 2n(b-a)) ], & y<b \\
+			\sum_{n=0}^{\infty} [ f(y+2n(b-a)) - f(2a-y-2n(b-a)) ],  & y>b
+    \end{cases}
+\end{align}
+and
+\begin{equation} \label{E:prob_drift_notouch}
+	P_x(T_{ab}>T, X_T\in dy)  
+	= dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+	  \sum_{n=-\infty}^{\infty} [ f(y+2n(b-a)) - f(2b-y-2n(b-a)) ].
+\end{equation}
+where
+\[
+	f(y) = P_x(\sigma W_T\in dy) 
+	     = \frac{e^{-\frac{(y-x)^2}{2\sigma^2 T}}}{\sqrt{2\pi \sigma^2 T}}.
+\]
+
+Alternatively, these densities can also be written as
+%\begin{align}
+%	& P_x[T_a<T_b, T_a\le T, X_T\in dy]  \notag \\
+%	=& dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+%	   \left[
+%	     \frac{b-y}{b-a}
+%	     + \sum_{n=1}^{\infty} 
+%	       \left( \frac{2}{b-a} \sin \frac{n\pi (x-a)}{b-a} -\frac{2}{n\pi} \right)
+%		     e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (y-a)}{b-a}
+%		\right]
+%\end{align}
+%
+%\begin{align}
+%	& P_x[T_b<T_a, T_b\le T, X_T\in dy]  \notag \\
+%	=& dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+%	   \left[
+%	     \frac{y-a}{b-a}
+%	     + \sum_{n=1}^{\infty} 
+%			 \left( \frac{2}{b-a} \sin \frac{n\pi (x-a)}{b-a} +\frac{2(-)^n}{n\pi} \right)
+%		     e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (y-a)}{b-a}
+%		\right]
+%\end{align}
+%and
+\begin{align}  \label{E:prob_drift_notouch_alt}
+	& P_x[T_{ab}>T, X_T\in dy]  \notag \\
+	=& dy\times e^{\frac{\mu}{\sigma^2}(y-x)-\frac{\mu^2 T}{2\sigma^2}} \times
+	   \left[
+	     \frac{2}{b-a} 
+		   \sum_{n=1}^{\infty} e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}}
+		 	 \sin \frac{n\pi (x-a)}{b-a} \sin \frac{n\pi (y-a)}{b-a}
+		\right]
+\end{align}
+
+From Theorem \ref{T:kac_diff3}, by setting $k(x)=\alpha$, $g(x)=0$, and
+$f(x)=I_{x=a}$, then 
+\[
+	u(x) = E_x[e^{-\alpha T_a}, T_a<T_b] 
+	= E_x[e^{-\alpha T_a} I_{X_{T_{ab}}=a}]
+\]
+is the unique solution of the Dirichlet problem
+\[
+	 \mu u_{x} + \frac{\sigma^2}{2} u_{xx} = \alpha u,
+\]
+with boundary condition
+\[
+	u(x)= I_{x=a}, \qquad x=a,b.
+\]
+Let $u(x) = e^{-\frac{\mu x}{\sigma^2}} v(x)$, we have
+\[
+	v_{xx}=\frac{2\alpha + \mu^2 / \sigma^2}{\sigma^2} v,
+\]
+and boundary conditions
+\[
+	v(a)=e^{\frac{\mu a}{\sigma^2}}, \qquad v(b)=0.
+\]
+The solution can be written as 
+\[
+	v(x)=C_1 e^{\beta x} + C_2 e^{-\beta x},
+\]
+where 
+\[
+	\beta = \frac{\sqrt{2\alpha+\frac{\mu^2}{\sigma^2}}}{\sigma},
+\]
+and $C_1,C_2$ are constants to be determined by the boundary conditions.
+Solving this, we get
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 3.0.5(a),
+  p.309, where $\sigma=1$.}
+\begin{equation}
+	u(x) = E_x[e^{-\alpha T_a}, T_a<T_b] 
+	     = e^{\frac{\mu (a-x)}{\sigma^2} } 
+	       \frac{\sinh \beta (b-x)}{\sinh \beta(b-a)}.
+\end{equation}
+Taking the inverse Laplace transform, we get the following density:
+\begin{align*}
+	P_x[T_a\in dt; T_a<T_b]/dt 
+	&= L_{\alpha}^{-1} \left[  E_x[e^{-\alpha T_a}, T_a<T_b] \right] \\
+	&= L_{\alpha}^{-1} 
+	   \left[ 
+		  e^{\frac{\mu (a-x)}{\sigma^2} } \frac{\sinh \beta (b-x)}{\sinh \beta(b-a)}
+     \right]. 
+\end{align*}
+Using the definition of theta function $ss_t$ as in Eq. \ref{E:theta_ss} and Eq.
+\ref{E:ilt_lin} we get
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 3.0.6(a),
+  p.309, where $\sigma=1$.}
+\begin{equation}
+	P_x[T_a\in dt; T_a<T_b]  
+	= e^{\frac{\mu (a-x)}{\sigma^2} - \frac{\mu^2 t}{2\sigma^2}}  \,
+	  ss_t \left( \frac{b-x}{\sigma}, \frac{b-a}{\sigma} \right) \, dt.
+\end{equation}
+
+Similarly, from Theorem \ref{T:kac_diff3}, by setting $k(x)=\alpha$, $g(x)=0$, 
+and $f(x)=I_{x=b}$, then 
+\[
+	u(x) = E_x[e^{-\alpha T_b}, T_b<T_a] 
+	= E_x[e^{-\alpha T_b} I_{X_{T_{ab}}=b}]
+\]
+is the unique solution of the Dirichlet problem
+\[
+	 \mu u_{x} + \frac{\sigma^2}{2} u_{xx} = \alpha u,
+\]
+with boundary condition
+\[
+	u(x)= I_{x=b}, \qquad x=a,b.
+\]
+Solving this, we get
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 3.0.5(b),
+  p.309, where $\sigma=1$.}
+\begin{equation}
+	u(x) = E_x[e^{-\alpha T_b}, T_b<T_a] 
+	     = e^{\frac{\mu (b-x)}{\sigma^2} } 
+	       \frac{\sinh \beta (x-a)}{\sinh \beta(b-a)},
+\end{equation}
+where 
+\[
+	\beta = \frac{\sqrt{2\alpha+\frac{\mu^2}{\sigma^2}}}{\sigma}.
+\]
+Again by taking the inverse Laplace transform, we get the following density:
+\begin{align*}
+	P_x[T_b\in dt; T_b<T_a]/dt 
+	&= L_{\alpha}^{-1} \left[  E_x[e^{-\alpha T_b}, T_b<T_a] \right] \\
+	&= L_{\alpha}^{-1} 
+	   \left[ 
+		  e^{\frac{\mu (b-x)}{\sigma^2} } \frac{\sinh \beta (x-a)}{\sinh \beta(b-a)}
+     \right]. 
+\end{align*}
+Using the definition of theta function $ss_t$ as in Eq. \ref{E:theta_ss} and Eq.
+\ref{E:ilt_lin} we get
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 3.0.6(b),
+  p.309, where $\sigma=1$.}
+\begin{equation}
+	P_x[T_b\in dt; T_b<T_a]  
+	= e^{\frac{\mu (b-x)}{\sigma^2} - \frac{\mu^2 t}{2\sigma^2}}  \,
+	  ss_t \left( \frac{x-a}{\sigma}, \frac{b-a}{\sigma} \right) \, dt.
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Double Boundary Hitting: Geometric Brownian Motion}
+In this section we consider the double boundary hitting of a Geometric Brownian 
+motion 
+\[
+	dS_t = S_t(\mu dt + \sigma dW_t).
+\]
+Let $X_t = \ln{S_t}$, using Ito's lemma we get
+\[
+	dX_t = (\mu-\frac{\sigma^2}{2})dt + \sigma dW_t,
+\]
+i.e. $X_t$ is a Brownian motion with a nonzero drift.
+
+Again, let $T_a=\min \{t:S_t=a \}$ and $T_b=\min \{t:S_t=b \}$ be the first 
+hitting time of boundaries $a$ and $b$ respectively, and let 
+$T_{ab}=\min(T_a,T_b)$ be the first hitting time of either boundary. 
+Also let
+\[
+	\nu = \mu - \frac{\sigma^2}{2}.
+\]
+Using the results of the previous section we get
+\footnote{Note that $S_t\in dy$ is equivalent to $X_t\in d(\ln y)$.}
+\begin{align}
+	 & P_x[T_a<T_b, T_a\le T, S_T\in dy]  \notag \\
+	=& d(\ln y)\times e^{\frac{\nu}{\sigma^2}\ln(y/x) - \frac{\nu^2 T}{2\sigma^2}} \times
+	   \begin{cases}
+			 \sum_{n=0}^{\infty} 
+			   [ f(\ln{y}-2n \ln(b/a)) - f(2\ln{b}-\ln{y}+2n\ln(b/a)) ],   & y<a \\
+			 \sum_{n=0}^{\infty} 
+			   [ f(2\ln a- \ln y-2n\ln(b/a)) - f(\ln y+2\ln(b/a) + 2n\ln(b/a)) ], & y>a
+     \end{cases}
+\end{align}
+and
+\begin{align}
+	& P_x[T_b<T_a, T_b\le T, S_T\in dy]  \notag \\
+	=& d(\ln y)\times e^{\frac{\nu}{\sigma^2}\ln(y/x) - \frac{\nu^2 T}{2\sigma^2}} \times
+    \begin{cases}
+			\sum_{n=0}^{\infty} 
+			  [ f(2\ln b-\ln y+2n\ln(b/a)) - f(\ln y-2\ln(b/a) - 2n\ln(b/a)) ], & y<b \\
+			\sum_{n=0}^{\infty} 
+  			[ f(\ln y+2n\ln(b/a)) - f(2\ln a-\ln y-2n\ln(b/a)) ],  & y>b
+    \end{cases}
+\end{align}
+and
+\begin{equation}
+	P_x(T_{ab}>T, S_T\in dy)  
+	= d(\ln y)\times e^{\frac{\nu}{\sigma^2}\ln(y/x) - \frac{\nu^2 T}{2\sigma^2}} \times
+	  \sum_{n=-\infty}^{\infty} [ f(\ln y+2n\ln(b/a)) - f(2\ln b-\ln y-2n\ln(b/a)) ].
+\end{equation}
+where
+\[
+	f(y) = P_{\ln x}(\sigma W_T\in dy) 
+	     = \frac{e^{-\frac{(y-\ln x)^2}{2\sigma^2 T}}}{\sqrt{2\pi \sigma^2 T}}.
+\]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $E_x[ e^{-\gamma l(\tau,r)} ]$ (HOBM 1.1.3.1)}
+Notice first that from definition we have
+\[
+  E_x \left[ e^{-\gamma l(\tau,r)} \right] 
+    = \lambda \, E_x 
+        \left[ 
+          \int_0^{\infty} e^{-\lambda t} e^{-\gamma l(t,r)} \, dt 
+        \right],
+\]
+and from Theorem \ref{T:kac2}, we know that 
+$E_x[ \int_0^{\infty} e^{-\lambda t} e^{-\gamma l(t,r)} \, dt ]$
+is the solution of problem
+\begin{align*}
+  \frac{1}{2} M''(x) - \lambda M(x) &= -1  \\
+  M'(r+0) - M'(r-0) &= 2\gamma M(r),
+\end{align*}
+$M(-\infty)$ and $M(\infty)$ are bounded.
+It is easy to see that
+\[
+  M(x)= 
+    \begin{cases}
+      A e^{-\sqrt{2\lambda} (x-r)} + \frac{1}{\lambda}, & x>r \\
+      A e^{\sqrt{2\lambda} (x-r)} + \frac{1}{\lambda},  & x<r
+    \end{cases}
+\]
+satisfies the first equation, where $A$ is a constant that can be determined by
+the second equation
+\[
+  A = - \frac{\gamma}{\lambda (\sqrt{2\lambda}+\gamma) }.
+\]
+Hence
+\begin{equation}
+  E_x \left[ \int_0^{\infty} e^{-\lambda t} e^{-\gamma l(t,r)} \, dt \right]
+    = \frac{1}{\lambda} - \frac{\gamma}{\lambda (\sqrt{2\lambda}+\gamma)} 
+                          e^{-\sqrt{2\lambda}\,|x-r|},
+\end{equation}
+and
+\begin{equation}
+  E_x \left[ e^{-\gamma l(\tau,r)} \right] 
+    = 1 - \frac{\gamma}{\sqrt{2\lambda}+\gamma} e^{-\sqrt{2\lambda}\,|x-r|}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $P_x[l(\tau,r)=0]$ and $P_x[l(\tau,r)\in dy]$ (HOBM 1.1.3.2)}
+Let $f(y)$ be the probability density function such that
+\[
+  P_x[l(\tau,r)\in dy] = f(y) dy,
+\]
+then we have (total probability must be 1)
+\[
+  P_x[l(\tau,r)=0] + \int_0^{\infty} f(y) \, dy = 1.
+\]
+Note that
+\[
+  E_x \left[ e^{-\gamma l(\tau,r)} \right] 
+    = P_x[l(\tau,r)=0] + \int_0^{\infty} e^{-\gamma y} f(y) \, dy,
+\]
+hence 
+\[
+  \int_0^{\infty} e^{-\gamma y} f(y) \, dy = \int_0^{\infty} f(y)\, dy
+    - \frac{\gamma}{\gamma+\sqrt{2\lambda}} e^{-\sqrt{2\lambda} |x-r|}.
+\]
+Let $C=\int_0^{\infty} f(y) \, dy$, we get
+\begin{align*}
+  f(y) &= L_{\gamma}^{-1} 
+          \left[
+            C - \frac{\gamma}{\gamma+\sqrt{2\lambda}} e^{-\sqrt{2\lambda}|x-r|}
+          \right]   \\
+       &= \gamma [C- e^{-\sqrt{2\lambda} |x-r|}]
+          + \sqrt{2\lambda}\, e^{-\sqrt{2\lambda} (|x-r|+y)}
+\end{align*}
+Since $C$ must be bounded, it is easy to see that $C= e^{-\sqrt{2\lambda}|x-r|}$
+and
+\begin{align}
+  P_x[l(\tau,r)=0] &= 1 - e^{-\sqrt{2\lambda}|x-r|},   \\
+  P_x[l(\tau,r)\in dy] &= \sqrt{2\lambda}\, e^{-\sqrt{2\lambda} (|x-r|+y)} dy,
+    \qquad y>0
+\end{align}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $E_x[ e^{-\gamma l(t,r)} ]$ (HOBM 1.1.3.3)}
+Notice first that
+\begin{align*}
+  E_x \left[ e^{-\gamma l(t,r)} \right] 
+    &= L_{\lambda}^{-1} 
+         \left(
+           E_x 
+             \left[ 
+               \int_0^{\infty} e^{-\lambda t} e^{-\gamma l(t,r)} \, dt 
+             \right]
+         \right) \\
+    &= L_{\lambda}^{-1} 
+       \left[
+         \frac{1}{\lambda} - \frac{\gamma}{\lambda (\sqrt{2\lambda}+\gamma)} 
+                             e^{-\sqrt{2\lambda}\,|x-r|},
+       \right]  \\
+    &= 1 - \gamma \, L_{\lambda}^{-1} 
+       \left[
+         \frac{1}{\lambda (\sqrt{2\lambda}+\gamma)} e^{-\sqrt{2\lambda}\,|x-r|}
+       \right].  
+\end{align*}
+Using Equation \ref{E:ilt1} we get
+\begin{equation}
+  E_x \left[ e^{-\gamma l(t,r)} \right] 
+    = 1 - \erfc \left( \frac{|x-r|}{\sqrt{2t}} \right)
+      + e^{|x-r|\gamma + \frac{1}{2}\gamma^2 t}
+        \erfc 
+          \left( 
+            \frac{\gamma \sqrt{t}}{\sqrt{2}} + \frac{|x-r|}{\sqrt{2t}}    
+          \right).
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $E_x[ e^{-\gamma l(\tau,r)}; W_{\tau}\in dz ]$ (HOBM 1.1.3.5)}
+First note that 
+\[
+  E_x[ e^{-\gamma l(\tau,r)}; W_{\tau}\in dz ]
+    = \lambda \frac{\partial}{\partial z} E_x 
+       \left[
+         \int_0^{\infty} e^{-\lambda t} 1_{(-\infty,z)}(W_t)
+           e^{-\gamma l(t,r)} \, dt
+       \right]
+      \, dz.
+\]
+From Theorem \ref{T:kac2}, we have that 
+\[
+  M(x) = E_x 
+    \left[
+      \int_0^{\infty} e^{-\lambda t} 1_{(-\infty,z)}(W_t)
+           e^{-\gamma l(t,r)} \, dt
+    \right]
+\]
+is the solution of problem
+\begin{align*}
+  \frac{1}{2} M''(x) - \lambda M(x) &= - 1_{(-\infty,z)}(x) \\
+  M'(r+0) - M'(r-0) &= 2\gamma M(r).
+\end{align*}
+The solution would depend on whether $z>r$ or $z<r$. In the first case, we have
+\[
+  M(x)= 
+    \begin{cases}
+      A e^{\sqrt{2\lambda} x} + \frac{1}{\lambda} &x<z  \\
+      B e^{\sqrt{2\lambda} x} + C e^{-\sqrt{2\lambda} x}  &z<x<r   \\
+      D e^{-\sqrt{2\lambda} x}  &x>r  \\
+    \end{cases}
+\]
+Use boundary conditions
+\begin{align*}
+  M(z+0) &= M(z-0),  \\
+  M'(z+0) &= M'(z-0), \\
+  M(r+0) &= M(r-0), \\
+  M'(r+0) - M'(r-0) &= 2\gamma M(r),
+\end{align*}
+we get
+\[
+  M(x)= 
+    \begin{cases}
+      -\frac{\gamma}{2\lambda(\gamma+\sqrt{2\lambda})}
+        e^{\sqrt{2\lambda}(x+z-2r)} - \frac{e^{\sqrt{2\lambda}(x-z)}}{2\lambda}
+        + \frac{1}{\lambda},
+      &x<z \\
+      -\frac{\gamma}{2\lambda(\gamma+\sqrt{2\lambda})}
+        e^{\sqrt{2\lambda}(x+z-2r)} + \frac{e^{\sqrt{2\lambda}(z-x)}}{2\lambda},
+      &z<x<r \\
+      -\frac{1}{\sqrt{2\lambda} (\gamma+\sqrt{2\lambda})}
+        e^{\sqrt{2\lambda} (z-x)},  &x>r
+    \end{cases}
+\]
+Take derivate with respect to $z$ and all three cases can be expressed as
+\[
+  \frac{\partial M(x)}{\partial z} 
+    = \frac{e^{-\sqrt{2\lambda} |x-z|} }{\sqrt{2\lambda}}
+      - \frac{\gamma}{\sqrt{2\lambda} (\gamma+\sqrt{2\lambda})}
+        e^{ -\sqrt{2\lambda} (|x-r|+|z-r|) }
+\]
+Similarly when $z>r$, the solution has form
+\[
+  M(x)= 
+    \begin{cases}
+      A e^{\sqrt{2\lambda} x} + \frac{1}{\lambda}, &x<r  \\
+      B e^{\sqrt{2\lambda} x} + C e^{-\sqrt{2\lambda} x} + \frac{1}{\lambda},
+        &r<x<z   \\
+      D e^{-\sqrt{2\lambda} x},  &x>z  \\
+    \end{cases}
+\]
+and satisfies boundary conditions
+\begin{align*}
+  M(r+0) &= M(r-0), \\
+  M'(r+0) - M'(r-0) &= 2\gamma M(r), \\
+  M(z+0) &= M(z-0),  \\
+  M'(z+0) &= M'(z-0). 
+\end{align*}
+The solution is
+\[
+  M(x)= 
+    \begin{cases}
+      -\frac{\gamma}{\lambda(\gamma+\sqrt{2\lambda})} e^{\sqrt{2\lambda}(x-r)}
+      - \frac{e^{\sqrt{2\lambda}(x-z)}}{\sqrt{2\lambda}(\gamma+\sqrt{2\lambda})}
+        + \frac{1}{\lambda},
+      &x<r \\
+      -\frac{\gamma}{2\lambda(\gamma+\sqrt{2\lambda})}
+        e^{\sqrt{2\lambda}(2r-x-z)} - \frac{e^{\sqrt{2\lambda}(x-z)}}{2\lambda}
+      -\frac{\gamma}{\lambda(\gamma+\sqrt{2\lambda})} e^{\sqrt{2\lambda}(r-x)}
+        + \frac{1}{\lambda},
+      &r<x<z \\
+      -\frac{\gamma}{\lambda(\gamma+\sqrt{2\lambda})} e^{\sqrt{2\lambda}(r-x)}
+      +\frac{\gamma}{2\lambda(\gamma+\sqrt{2\lambda})}
+        e^{\sqrt{2\lambda}(2r-x-z)} + \frac{e^{\sqrt{2\lambda}(z-x)}}{2\lambda},
+      &x>z
+    \end{cases}
+\]
+Take derivate with respect to $z$ and all three cases can be expressed as
+\[
+  \frac{\partial M(x)}{\partial z} 
+    = \frac{e^{-\sqrt{2\lambda} |x-z|} }{\sqrt{2\lambda}}
+      - \frac{\gamma}{\sqrt{2\lambda} (\gamma+\sqrt{2\lambda})}
+        e^{ -\sqrt{2\lambda} (|x-r|+|z-r|) }
+\]
+this is the same formula as in the case of $z<r$.
+Thus 
+\begin{equation} \label{E:H1.1.3.5}
+  E_x[ e^{-\gamma l(\tau,r)}; W_{\tau}\in dz ]
+  = \frac{\sqrt{\lambda}}{\sqrt{2}} e^{-\sqrt{2\lambda} |x-z|}
+    - \frac{\gamma \sqrt{\lambda/2} }{ \gamma+\sqrt{2\lambda} }
+      e^{ -\sqrt{2\lambda} (|x-r|+|z-r|) }.
+\end{equation}
+

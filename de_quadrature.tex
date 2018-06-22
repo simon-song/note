@@ -1,0 +1,112 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Double Exponential Quadrature}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Starting Point}
+
+Starting from the celebrated Euler-Maclaurin formula, 
+\footnote{J. Stoer and R. Bulirsch, Introduction to Numerical Analysis, 2nd ed.,
+Springer (1993), section 3.3, eq. (3.3.4).}
+\begin{align}
+  \int_a^b f(x) dx 
+    &= h\sum_{j=0}^n f(x_j) - \frac{h}{2}(f(a)+f(b)) \notag \\
+    &- \sum_{i=1}^m \frac{h^{2i} B_{2i}}{ (2i)! } 
+       \left( f^{(2i-1)}(b) - f^{(2i-1)}(a)  \right)
+       - E_m, \notag \\
+\end{align}
+where $m>0,n>0$, $h=(b-a)/n$,$x_j=a+jh$,
+and $B_k$ denote the Bernoulli numbers, i.e., 
+\begin{equation}
+  \frac{x}{e^x-1} = \sum_{k=0}^{\infty} \frac{B_k x^k}{k!},
+\end{equation}
+and 
+\begin{equation}
+  E_m = h^{2m+2} \frac{B_{2m+2}}{(2m+2)!} (b-a) f^{(2m+2)}(\xi)
+\end{equation}
+for some $\xi \in (a,b)$.
+
+If function $f(x)$ and all its derivatives are zero at the end points (as in a
+smooth, bell-shaped function), then the second and third terms vanish and 
+\begin{equation}
+  \int_a^b f(x) dx = h\sum_{j=0}^n f(x_j) - E_m.
+\end{equation}
+Since $E_m$ is $O(h^{(2m+2)})$ for arbitrary $m$, we can say the error of the
+trapezoidal rule decreases faster than any power of $h$. For a function defined
+on $(-\infty,\infty)$, the Euler-Maclaurin formula still applies to the
+resulting doubly infinite sum approximation, provided that the function and all
+of its derivatives tend rapidly to zero for large positive and negative
+arguments.
+
+The double exponential quadrature 
+\footnote{T. Ooura and M. Mori, A Robust Double Exponential Formula for
+Fourier-type Integrals, Journal of Computational and Applied Mathematics, 112,
+229-241 (1999).}
+exploits this fact by converting the original
+integral into an integral over the entire real axis whose integrand tends to
+zero rapidly for large positive and negative arguments, i.e., let $x=\phi(t)$,
+we have
+\[
+  \int_a^b f(x) dx = \int_{-\infty}^{\infty} f(\phi(t)) \phi'(t) dt,
+\]
+the trapezoidal rule is optimal if $f(\phi(t)) \phi'(t)$ tends to zero rapidly
+when $t\to \pm \infty$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$\int_{-1}^1 f(x) dx$}
+
+For integral $I=\int_{-1}^1 f(x) dx$, we introduce the following change of
+variables
+\begin{equation}
+  x = \phi(t) = \tanh \left( \frac{\pi}{2} \sinh t \right),
+\end{equation}
+this yields 
+\begin{equation}
+  \phi'(t) = \frac{ \frac{\pi}{2} \cosh t }{ \cosh^2 (\frac{\pi}{2} \sinh t) }
+           \approx O \left( \exp( -\frac{\pi}{2} e^{|t|} ) \right)
+           \qquad \text{as $|t|\to \infty$}.
+\end{equation}
+and it is optimal to approximate the integral by summation
+\begin{equation}
+  I_h = h \sum_{k=-\infty}^{\infty} 
+    f\left( \tanh \left( \frac{\pi}{2} \sinh kh \right)  \right)
+    \frac{ \frac{\pi}{2} \cosh kh }{ \cosh^2 (\frac{\pi}{2} \sinh kh) }
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$\int_{c}^{\infty} f(x) dx$}
+
+For integral $I=\int_c^{\infty} f(x) dx$, we introduce 
+\begin{equation}
+  x = \phi(t) = c + \exp \left( \frac{\pi}{2} \sinh t \right),
+\end{equation}
+this yields
+\begin{equation}
+  \phi'(t) = 
+    \exp \left( \frac{\pi}{2} \sinh t \right)  
+    \frac{\pi}{2} \cosh t.
+\end{equation}
+Note first that as $t\to -\infty$, $\phi'(t)\to \exp(-\exp|t|)$.
+And for the integral to converge, the integrand $f(x)$ must decrease at least
+faster than $1/x$ as $x\to \infty$. We assume that $f(x)\sim x^{-1-\alpha}$ as
+$x\to \infty$, where $\alpha>0$. Hence when $x\to \infty$ (i.e. $t\to \infty$),
+\begin{align*}
+  f(\phi(t)) \phi'(t)
+    &= \left( c+ \exp \left( \frac{\pi}{2} \sinh t \right)  \right)^{-1-\alpha}
+       \exp \left( \frac{\pi}{2} \sinh t \right)  \frac{\pi}{2} \cosh t 
+       \notag \\
+    &\sim \left( c+ \exp \left( \frac{\pi}{2} \sinh t \right)  \right)^{-\alpha}
+          \frac{\pi}{2} \cosh t \notag \\
+    &\sim \frac{\pi}{4} \exp \left( t-\frac{\pi \alpha}{4} e^t \right).
+       \notag \\
+\end{align*}
+Thus we can again apply the trapezoidal rule 
+\begin{equation}
+  I_h = h \sum_{k=-\infty}^{\infty} 
+    f\left( c+ \exp \left( \frac{\pi}{2} \sinh kh \right)  \right)
+    \exp \left( \frac{\pi}{2} \sinh kh \right)  
+    \frac{\pi}{2} \cosh kh 
+\end{equation}
+to approximate the integral.
+
+
+

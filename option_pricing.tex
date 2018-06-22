@@ -1,0 +1,514 @@
+\chapter{Single-period Option Pricing}
+
+In this chapter we lay out the foundation of option pricing under discrete
+setting.
+We mostly follow Chapter 1, Single-period Option Pricing of Hunt and Kennedy's
+Financial Derivatives in Theory and Practice, revised edition.
+
+We consider an economy $\mathcal{E}$ comprising $n$ assets with $m$ possible
+states at time $1$. Let $\Omega$ be the set of all possible states. We denote
+the individual states by $w_j,j=1,2,\cdots,m$, and the $i$-th asset price at 
+time $0$ by $A_0^{(i)}$ and at state $w_j$ at time $1$ by $A_1^{(i)}(w_j)$.
+We define matrix $(A_1)_{n\times m}$ as
+\begin{equation}
+  (A_1)_{n\times m} = 
+    \begin{pmatrix}
+      A_1^{(1)}(w_1) & A_1^{(1)}(w_2) & \cdots & A_1^{(1)}(w_m) \\
+      A_1^{(2)}(w_1) & A_1^{(2)}(w_2) & \cdots & A_1^{(2)}(w_m) \\
+      \vdots         & \vdots         & \ddots & \vdots         \\
+      A_1^{(n)}(w_1) & A_1^{(n)}(w_2) & \cdots & A_1^{(n)}(w_m) \\
+    \end{pmatrix}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+The economy $\mathcal{E}$ admits $\mathbf{arbitrage}$ if there exists a 
+portfolio $\phi\in R^n$ such that one of the following conditions holds:
+\begin{enumerate}
+  \item[(1)] $\phi\cdot A_0<0$, and $\phi\cdot A_1(w_j)\ge 0$ for all $j$.
+  \item[(2)] $\phi\cdot A_0\le 0$, and $\phi\cdot A_1(w_j)\ge 0$ for all $j$,
+    with strict inequality for some $j$.
+  \item[(3)] $\phi\cdot A_0=0$, and $\phi\cdot A_1(w_j)\ge 0$ for all $j$,
+    with strict inequality for some $j$.
+\end{enumerate}
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}
+The three conditions in the defintion of arbitrage are equivalent.
+\end{proposition}
+\begin{proof}
+TODO. May need a numeraire.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+A derivative $X$ is said to be $\mathbf{attainable}$ if there exists some 
+$\phi\in R^n$ such that for all $j=1,2,\cdots,m$
+\begin{equation}
+  X_1(w_j) = \phi\cdot A_1(w_j).
+\end{equation}
+where $X_1(w_j)$ is the price of $X$ at time $1$ if the state is $w_j$.
+Or in matrix form $X_1=A_1^T \phi$.
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+A pricing kernel $Z\in R^m$ is any strictly positive vector with the
+property
+\footnote{Alternatively pricing kernel can be defined as the Arrow-Debreu 
+  price, i.e. $Z_j$ is the time $0$ price of an instrument that pays $\$1$
+  if it is in state $w_j$ at time $1$ and pays nothing otherwise.}
+\begin{equation}
+  A_0 = \sum_{j=1}^m Z_j A_1(w_j) = A_1 Z.
+\end{equation}
+\end{definition}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pricing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:price}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.4, pp.6-7}
+Suppose that the economy $\mathcal{E}$ is arbitrage-free and let $X$ be an
+attainable contingent claim, i.e., a derivative which can be replicated with
+other assets. Then the fair value of $X$ is given by 
+\begin{equation}
+  X_0 = \phi\cdot A_0,
+\end{equation}
+where $\phi$ solves for $j=1,2,\cdots,m$
+\[
+  X_1(w_j) = \phi\cdot A_1(w_j).
+\]
+Furthermore, if $Z$ is some pricing kernel for the economy then $X_0$ can also
+be represented as
+\[
+  X_0 = \sum_j Z_j X_1(w_j).
+\]
+\end{theorem}
+\begin{proof}
+The first part follows by the following arbitrage argument. 
+If $X_0>\phi\cdot A_0$, then
+the portfolio of $\phi$ minus one unit of $X$ would have negative value at time
+$0$ but value zero at all states of time $1$, hence would admit an arbitrage.
+Similarly if $X_0>\phi\cdot A_0$ there would also exist an arbitrage. Since the
+economy is arbitrage-free, the equality follows.
+
+The second part is valid because
+\[
+  X_0=\phi\cdot A_0 = \sum_j Z_j (\phi\cdot A_1(w_j)) = \sum_j Z_j X_1(w_j).
+\]
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Condition for No-arbitrage: Existence of Pricing Kernel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:no_arb}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.7, pp. 7-9. This is similar to Farkas's 
+    Lemma \ref{T:farkas}.}
+The economy $\mathcal{E}$ is arbitrage-free iff there exists a pricing kernel,
+i.e., a strictly positive $Z$ such that
+\[
+  A_0 = \sum_j Z_j A_1(w_j).
+\]
+\end{theorem}
+\begin{proof} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Suppose there exist a pricing kernel $Z$, then for any $\phi$ such that 
+$\phi\cdot A_0<0$ we have
+\[
+  \phi\cdot A_0 = \sum_j Z_j (\phi\cdot A_1(w_j)) < 0,
+\]
+since $Z_j>0$ for all $j$, there exists a $k$ such that $\phi\cdot A_1(w_k)<0$,
+hence there is no arbitrage.
+
+%To verify the converse, we need the separating hyperplane theorem.
+%\footnote{Precise statement? Proof? Elliott and Kopp, Mathematics of Finance,
+%    2nd ed., section 3.1, pp.57-59}
+%TODO
+Conversely, suppose no such $Z$ exists, we will construct an arbitrage
+portfolio. Let $C$ be the convex cone constructed from $A_1(\cdot)$,
+\[
+  C = \{a: a=\sum_j Z_j A_1(w_j), Z>0  \}.
+\]
+The set $C$ is a non-empty convex set not containing $A_0$, hence by the
+separating hyperplane theorem \ref{T:sep_plane}
+%\footnote{Precise statement? Proof? Elliott and Kopp, Mathematics of Finance,
+%    2nd ed., section 3.1, pp.57-59}
+there exists a hyperplane $H=\{x:\phi\cdot x=\beta\}$ that separates $A_0$ and
+$C$,
+\[
+  \phi\cdot A_0 \leq \beta \leq \phi\cdot a, \qquad \forall a\in C.
+\]
+The vector $\phi$ represents an arbitrage portfolio, as we now demonstrate.
+
+First observe that if $a\in\bar{C}$ (the closure of $C$) then for any 
+$\mu\geq 0$ we have $\mu a\in\bar{C}$, and 
+\[
+  \beta\leq \mu(\phi\cdot a).
+\]
+Taking $\mu=0$ yields $\phi\cdot A_0\leq \beta\leq 0$. Letting
+$\mu\uparrow\infty$ shows that $\phi\cdot a\geq 0$ for all $a\in \bar{C}$, in
+particular $\phi\cdot A_1(w_j)\geq 0$ for all $j$. So we have
+\[
+  \phi\cdot A_0\leq 0 \leq \phi\cdot A_1(w_j), \qquad \forall j,
+\]
+and it only remains to show that this is not always identically zero. but in
+this case $\phi\cdot A_0=\phi\cdot C=0$ which violates the separating property
+for $H$.
+\end{proof} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Completeness: Uniqueness of Pricing Kernel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Rank-nullity Theorem] \label{T:rank}
+Let $V$ and $W$ be two vector spaces and let $T:V\to W$ be a linear map. The
+kernel of $T$ is defined as
+\[
+  ker T = \{v\in V: T(v)=0 \}.
+\]
+The dimension of the image of $T$ is called the rank, and the dimension of the
+kernel is called the nullity. And we have
+\[
+  dim(im T) + dim(ker T) = dim V.
+\]
+\end{theorem}
+\begin{proof}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Here we prove the theorem in the finite-dimensional case.
+\footnote{Adapted from Wikipedia
+    (http://en.wikipedia.org/wiki/Rank-nullity\_theorem) and
+    MacLean and Birkhoff, Algebra, 3rd ed., VI.3, Theorem 8, pp. 202-203.
+    A more general proof which also covers infinite dimensional case is in
+    Roman, Advanced Linear Algebra, 3rd ed., Theorem 2.8, p.63}
+Suppose $\{u_1,\cdots,u_m\}$ forms a basis of $ker T$. We can extend this to 
+form a basis of $V$: $\{u_1,\cdots,u_m,w_1,\cdots,w_n\}$. Since the dimension
+of $ker T$ is $m$ and the dimension of $V$ is $m+n$, it suffices to show that
+the dimension of $im T$ is $n$.
+
+Since any vector $v\in V$ is a linear combination
+\[
+  v = \sum_{i=1}^m a_i u_i + \sum_{j=1}^n b_j w_j,
+\]
+for suitable lists $a$ and $b$ of scalars, and since $Tu_i=0$ for 
+$i=1,\cdots,m$, we get
+\[
+  Tv = \sum_{j=1}^n b_j Tw_j,
+\]
+i.e. the list $\{Tw_1,\cdots,Tw_n\}$ spans $im T$. For this to be a basis, we
+only need to verify that it is linearly independent. Note that 
+$\sum_{j=1}^n c_j (Tw_j)=0$ means that $T(\sum_{j=1}^n c_j w_j)=0$, i.e. 
+$\sum_{j=1}^n c_j w_j\in ker T$, hence
+\[
+  \sum_{j=1}^n c_j w_j = \sum_{i=1}^m d_i u_i,
+\]
+and since $\{u_1,\cdots,u_m,w_1,\cdots,w_n\}$ is linearly independent,
+all $c_j$ and $d_i$ must be zero, hence the list $\{Tw_1,\cdots,Tw_n\}$ 
+is linearly independent in $im T$, and thus a basis, as asserted.
+\end{proof}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:comp}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.9, p.10}
+The economy $\mathcal{E}$ is complete iff there exists a (generalized) left
+inverse $A^{-1}$ for the matrix $A$
+\[
+  A_{ij} = A_1^{(i)}(w_j), \qquad i=1,2,\cdots,n, \, j=1,2,\cdots,m.
+\]
+Equivalently, $\mathcal{E}$ is complete iff there exists no non-zero solution to
+the equation $Ax=0$.
+\end{theorem}
+\begin{proof}
+For the economy to be complete, given any contingent claim $X$, we must be able
+to solve $\phi$ such that
+\[
+  X_1(w_j) = \phi\cdot A_1(w_j), \qquad j=1,2,\cdots,m
+\]
+which can be written as a matrix equation
+\footnote{ \textdbend $(X_1)_{m\times 1} = (A^T)_{m\times n} (\phi)_{n\times 1}$.
+          We can not simply solve this equation by multiplying both sides
+          by the left inverse of $A^T$ because it does not necessarily
+          exist, even in the case of $m=n$. Think about it!}
+\[
+  X_1 = A^T \phi.
+\]
+For this equation to have a solution for any $X_1$, it is necessary and
+sufficient that the equation to have a solution for $m$ vectors 
+$(1,0,\cdots,0)^T$, $(0,1,0,\cdots,0)^T$,etc,$(0,0,\cdots,0,1)^T$ each of 
+size $m$, i.e. the standard basis of vector space $R^m$.
+Let the solutions be $b_1,b_2,\dots,b_m$, each of size $n\times 1$, and
+let $B$ be a $n\times m$ matrix made up of column vectors
+$b_1,b_2,\dots,b_m$, then $A^T B=I_m$, i.e. $B$ is a right inverse of $A^T$.
+%This is equivalent to the condition that 
+%$A^T$ has a right inverse, i.e. there exists a $n\times m$
+%matrix $B$ such that $A^T B= I$, where $I$ is the $m\times m$ identity matrix.
+And this in turn is equivalent to the condition that $A$ has a left inverse 
+since
+\[
+  I_m = (A^T B)^T = B^T A.
+\]
+
+% Next we verify that $A$ has a left inverse is equivalent to the condition that
+% equation $Ax=0$ only has zero solution. First note that if $A$ has a left
+% inverse, then for any vector $x$ satisfying $Ax=0$ we have
+% \[
+%   A^{-1} (Ax) = x = 0.
+% \]
+
+%To verify the converse, note that if $x\neq 0$ and $Ax=0$, then equation
+%$x=A^T \phi$ does not have a solution because for any $\phi$
+%\[
+%  0 = (\phi^T (Ax) )^T = x^T (A^T \phi),
+%\]
+%but $x^T x\neq 0$. Hence $A^T$ does not have a right inverse, thus $A$ does not
+%have a left inverse.
+
+%To verifty the converse, suppose $A$ does not have a left inverse, thus $A^T$
+%does not have a right inverse, hence there exists a $n\times 1$ vector 
+%$x\neq 0$ such that for all $\phi$ we have $x\neq A^T \phi$. This implies that 
+%equation
+%\[
+%  a x = \sum_i b_i (A^T \phi)_i
+%\]
+%only has zero solution $a=b_1=b_2=\cdots=0$, where $\{(A^T \phi)_i\}_i$ is the 
+%basis of linear space $A^T \phi$. The same conclusion applies to equation
+%\[
+%  a (x^T x) = \sum_i b_i (x^T (A^T \phi)_i).
+%\]
+%Thus for all $\phi$ we have
+%\[
+%  x^T (A^T \phi) =0.
+%\]
+%Hence $Ax=0$ because for all $\phi$ 
+%\[
+%  0 = (x^T (A^T \phi))^T = \phi^T (Ax).
+%\]
+
+%To verify the converse, suppose there exists a vector $x\neq 0$ such that
+%$Ax=0$. Suppose that there exists a vector $\phi$ such that $A^T \phi=x$,
+%\[
+%  x^T x= (A^T \phi)^T x = \phi^T (Ax) = 0,
+%\]
+%this is in conflict with the assumption $x\neq 0$, hence there is no solution
+%for equation $x=A^T \phi$. 
+
+% To verify the converse, note that if there exists no non-zero solution to
+% equation $Ax=0$, the nullity of $A$ is zero, and due to the rank-nullity
+% theorem, the rank of $A$ (and $A^T$) is $m$. Let $e_1,e_2,\cdots,e_m$ be a
+% basis of the column space $F^n$ of $A^T$, then $A^T e_1,A^T e_2,\cdots,A^T e_m$ 
+% is a basis of the row space $F^m$ of $A^T$.
+% \footnote{Roman, Advanced Linear Algebra, 3rd ed., Theorem 2.4, p.62,
+% where $A^T:F^n \to F^m$ is a linear mapping.}
+% Thus for any vector $y$ in $F^m$ 
+% there exists $c_1,c_2,\cdots,c_m$ such that
+% \[
+%   y = \sum_{i=1}^m c_i A^T e_i = A^T \sum_i c_i e_i,
+% \]
+% i.e. there exists a vector $\phi$ in $F^n$ such that $y=A^T \phi$.
+
+Next we verify that economy $\mathcal{E}$ is complete iff there exists no 
+non-zero solution to the equation $Ax=0$. Now $\mathcal{E}$ is complete iff
+$A^T:F^n\to F^m$ is surjective, i.e. $rank(A^T)=rank(A)=m$. 
+\footnote{Proof of $rank(A^T)=rank(A)$ see Roman, Advanced Linear Algebra, 
+          3rd ed., Theorem 1.16, p.53}
+From the rank-nullity theorem \ref{T:rank}, this is equivalent to the condition
+that $dim(ker A)=0$, i.e. there exists no non-zero solution to equation
+$Ax=0$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:comp2}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.12, p.11}
+Suppose the economy $\mathcal{E}$ is arbitrage-free. Then it is complete iff 
+there exists a unique pricing kernel $Z$.
+\end{theorem}
+\begin{proof}
+By Theorem \ref{T:no_arb} there exists some positive vector $Z$ satisfying
+\begin{equation} \label{E:ker}
+  A_0 = \sum_j Z_j A_1(w_j).
+\end{equation}
+By Theorem \ref{T:comp}, it suffices to show that $Z$ being unique is equivalent
+to there being no nonzero solution to $A x=0$. If $Z_2\neq Z$ also solves
+Eq. \ref{E:ker}, then $x=Z_2-Z\neq 0$ solves $Ax=0$. Conversely, if $Z$ solves
+Eq. \ref{E:ker} and $x\neq 0$ solves $A x=0$, then $Z_2=Z+\epsilon x$ also solves
+Eq. \ref{E:ker}, with small enough $\epsilon$ we can have a positive $Z_2$ thus a
+second pricing kernel.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Probabilistic formulation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+A numeraire $N$ of an economy $\mathcal{E}$ is an attainable contigent claim 
+(i.e. there exist a vector $\psi$ such that $N_1=\psi\cdot A_1$) that is 
+strictly positive (i.e. $N_0>0$ and $P(N_1>0)=1$).
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:no_arb2}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.15, p.12}
+The economy $\mathcal{E}$ is arbitrage-free iff there exists a strictly positive
+random variable $Z$ such that
+\begin{equation} \label{E:ker2}
+  A_0 = E[Z A_1].
+\end{equation}
+We also call $Z$ a pricing kernel for the economy $\mathcal{E}$.
+
+Suppose further that there exists a numeraire $N$ of the economy,
+%\begin{equation}
+%  U_0 = E[Z U_1],
+%\end{equation}
+then the economy $\mathcal{E}$ is arbitrage-free iff there exists a strictly 
+positive random variable $k$ such that $E[k]=1$ and
+\begin{equation} \label{E:ker3}
+  E\left[ k \frac{A_1}{N_1} \right] = \frac{A_0}{N_0}.
+\end{equation}
+\end{theorem}
+\begin{proof}
+The first result follows immediately from Theorem \ref{T:no_arb} by setting
+\[
+  Z(w_j) = \frac{Z_j}{P(w_j)},
+\]
+because
+\[
+  E[Z A_1] = \sum_j P(w_j) Z(w_j) A_1(w_j).
+\]
+
+To prove the second part we show that \ref{E:ker2} and \ref{E:ker3} are
+equivalent. This follows since, given either $Z$ or $k$, we can define
+the other via
+\[
+  Z(w_j) = k(w_j) \frac{N_0}{N_1(w_j)}.
+\]
+It is easy to see that $E(k)=1$ if $Z$ exists because 
+\[
+  E(k) = E[Z N_1] / N_0 = 1.
+\]
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.19, p.14}
+Two probability measures $P$ and $Q$ on the finite sample space $\Omega$ are
+said to be equivalent, written $P\sim Q$, if 
+\[
+  P(F)=0 \Leftrightarrow Q(F)=0,
+\]
+for all $F\subset Q$. If $P\sim Q$ we can define the Radon-Nikodym derivative of
+$P$ with respect to $Q$, $\frac{dP}{dQ}$, by
+\[
+  \frac{dP}{dQ}(S) = \frac{P(S)}{Q(S)}.
+\]
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:emm}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.20, p.14}
+Let $N$ be a numeraire of economy $\mathcal{E}$, then $\mathcal{E}$ is 
+arbitrage-free iff there exists a probability measure $Q$ equivalent to $P$ such
+that
+\begin{equation} \label{E:emm}
+  E_Q\left[ \frac{A_1}{N_1}  \right] = \frac{A_0}{N_0}.
+\end{equation}
+The measure $Q$ is called an equivalent martingale measure (EMM) for $N$.
+\end{theorem}
+%%%%%%%%%%%%%%%%
+\begin{proof}
+By Theorem \ref{T:no_arb2} we must show that Equation \ref{E:emm} is equivalent
+to the existence of a strictly positive random variable $k$ with $E(k)=1$ such
+that
+\[
+  E\left[ k \frac{A_1}{N_1} \right] = \frac{A_0}{N_0}.
+\]
+Suppose $\mathcal{E}$ is arbitrage-free and such $k$ exists. Define $Q\sim P$ by
+$Q(w_j)=k(w_j) P(w_j)$. Then
+\[
+  E_Q \left[ \frac{A_1}{N_1} \right] 
+  =  E\left[ \frac{dQ}{dP} \frac{A_1}{N_1} \right] 
+  =  E\left[ k \frac{A_1}{N_1} \right] 
+  = \frac{A_0}{N_0},
+\]
+as required.
+
+Conversely, if Equation \ref{E:emm} holds then define $k(w_j)=Q(w_j)/ P(w_j)$. 
+It follows easily that $E[k]=1$. Furthermore,
+\[
+  E\left[ k \frac{A_1}{N_1} \right] 
+  =  E\left[ \frac{dQ}{dP} \frac{A_1}{N_1} \right] 
+  = E_Q \left[ \frac{A_1}{N_1} \right] 
+  = \frac{A_0}{N_0},
+\]
+and there is no arbitrage by Theorem \ref{T:no_arb2}.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.21, p.15}
+Let $N$ be a numeraire of an arbitrary free economy $\mathcal{E}$, then 
+$\mathcal{E}$ is complete iff there exists a unique equivalent martingale
+measure for numeraire $N$.
+\end{theorem}  
+\begin{proof}
+Observe that in the proof of Theorem \ref{T:emm} we established a one-to-one
+correspondence between pricing kernels and equivalent martingale measures. The
+result now follows from Theorem \ref{T:comp2} which establishes the equivalence
+of completeness to the existence of a unique pricing kernel.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+\footnote{Hunt and Kennedy, Financial Derivatives in Theory and Practice, 
+    revised edition, Theorem 1.22, p.15}
+Suppose $\mathcal{E}$ is arbitrage-free and $N$ is a numeraire, and that $X$ is
+an attainable contingent claim. Then the fair value of $X$ is given by 
+\[
+  X_0 = N_0 E_Q[X_1 / N_1],
+\]
+where $Q$ is an equivalent martingale measure for numeraire $N$.
+\end{theorem}  
+\begin{proof}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+From Theorem \ref{T:emm} we know that
+\[
+  E_Q\left[ \frac{A_1}{N_1}  \right] = \frac{A_0}{N_0}.
+\]
+Now since $X$ is attainable, there exists a vector $\phi$ such that 
+$X_1=\phi\cdot A_1$, hence
+\[
+  E_Q\left[ \frac{\phi\cdot A_1}{N_1}  \right] = \frac{\phi\cdot A_0}{N_0},
+\]
+Now since $\mathcal{E}$ is arbitrage-free, from Theorem \ref{T:price} we have
+$X_0 = \phi\cdot A_0$ and hence
+\[
+  E_Q\left[ \frac{X_1}{N_1}  \right] = \frac{X_0}{N_0}.
+\]
+\end{proof}    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} \label{R:radon_num}
+Let $N,S$ be two numeraires and $T>t$, then we have
+\[
+	V_t = N_t \cdot E_N\left[ \frac{V_T}{N_T} \bigg| \mathcal{F}_t \right]
+    	= S_t \cdot E_S\left[ \frac{V_T}{S_T} \bigg| \mathcal{F}_t \right]
+			= S_t \cdot E_N\left[ \frac{dQ^S}{dQ^N} \frac{V_T}{S_T} \bigg|
+     			\mathcal{F}_t \right]
+\]
+thus the Radon-Nikodym derivative between the two measures using $S$ and $N$
+as numeraires is
+\[
+	\frac{dQ^S}{dQ^N} = \frac{S_T/S_t}{N_T/N_t}.
+\]
+\end{remark}

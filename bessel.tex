@@ -1,0 +1,371 @@
+\chapter{Bessel Process}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+Bessel process with dimension $\delta$ is described by SDE:
+\begin{equation}
+  dR_t = dW_t + \frac{\delta-1}{2R_t} dt.
+\end{equation}
+
+Squared Bessel process (BESQ) with dimension $\delta$ is described by SDE:
+\begin{equation}
+  d\rho_t = 2\sqrt{\rho_t} dW_t + \delta dt.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Transition Densities}
+
+\begin{lemma} \label{L:pde_besq}
+The solution of the partial differential equation
+\begin{equation}
+  \frac{\partial}{\partial t} u(t,x) = 2x \frac{\partial^2}{\partial x^2} u(t,x)
+                                  + \delta \frac{\partial}{\partial x} u(t,x),
+\end{equation}
+with initial condition $u(0,x)=e^{-\lambda x}$ is
+\begin{equation}
+  u(t,x) = \frac{1}{(1+2\lambda t)^{\delta /2}} 
+           \exp \left(-\frac{\lambda x}{1+2\lambda t} \right).
+\end{equation}
+\end{lemma}
+\begin{proof}
+The following is a heuristic proof.
+\footnote{How to solve this rigorously?}
+First we solve a simpler setting with $\delta=0$, i.e.
+\[
+  \frac{\partial}{\partial t} u(t,x) = 2x \frac{\partial^2}{\partial x^2} u(t,x)
+\]
+with initial condition $u(0,x)=e^{-\lambda x}$. We guess the solution to be
+\[
+  u(t,x) = \exp \left( -\lambda x f(t) \right),
+\]
+thus $f(t)$ satisfies $f(0)=1$ and
+\[
+  f'(t)+2\lambda f^2(t) = 0.
+\]
+Solve this we get
+\[
+  f(t) = \frac{1}{1+2\lambda t}.
+\]
+hence we have the solution for the case with $\delta=0$
+\[
+  u(t,x) = \exp \left(-\frac{\lambda x}{1+2\lambda t} \right).
+\]
+
+Next we tackle the case with nonzero $\delta$. This time we guess that the
+solution is something like
+\[
+  u(t,x) = g(t) \exp \left(-\frac{\lambda x}{1+2\lambda t} \right).
+\]
+With this guess, we have $g(0)=1$ and
+\[
+  g'(t) = -\frac{\delta \lambda}{1+2\lambda t} g(t).
+\]
+Solve this we get
+\[
+  g(t) = \frac{1}{(1+2\lambda t)^{\delta /2}}, 
+\]
+and the solution of the origial PDE
+\[
+  u(t,x) = \frac{1}{(1+2\lambda t)^{\delta /2}} 
+           \exp \left(-\frac{\lambda x}{1+2\lambda t} \right).
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:besq_exp}
+For a squared Bessel process (BESQ) $\rho_t$ with dimension $\delta$ 
+we have
+\begin{equation}
+  Q_x^{\delta}[\exp(-\lambda\rho_t)] 
+    = \frac{1}{(1+2\lambda t)^{\delta /2}} 
+      \exp \left(-\frac{\lambda x}{1+2\lambda t} \right).
+\end{equation}
+\begin{proof}
+From the definition of BESQ, the infinitestimal generator is 
+\[
+  L = 2x\frac{\partial^2}{\partial x^2} + \delta\frac{\partial}{\partial x}.
+\]
+Thus from the Feynman-Kac formula (for the general diffusion process) we get
+that $Q_x^{\delta}[\exp(-\lambda\rho_t)]$ is the unique solution of PDE
+\[
+  \frac{\partial}{\partial t} u(t,x) = 2x \frac{\partial^2}{\partial x^2} u(t,x)
+                                  + \delta \frac{\partial}{\partial x} u(t,x),
+\]
+with initial condition $u(0,x)=e^{-\lambda x}$. From Lemma \ref{L:pde_besq} we
+prove the theorem.
+\end{proof}
+\end{theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}
+Let $\delta=2\nu+2$, the transition densition $q_t^{(\nu)}$ of a $BESQ^{\nu}$
+with dimension $\delta$ and $\nu>-1$ is
+\begin{equation}
+  q_t^{\nu}(x,y) = \frac{1}{2t} \left(\frac{y}{x}\right)^{\nu/2}
+    \exp\left( -\frac{x+y}{2t} \right)  I_{\nu}\left(\frac{\sqrt{xy}}{t}\right),
+\end{equation}
+where $I_{\nu}$ is the modified Bessel function \ref{D:bessel_mod}.
+\begin{proof}
+First note that
+\[
+  q_t^{\nu}(x,y) = L_{\lambda}^{-1}[Q_x^{\delta}[e^{-\lambda \rho_t}]].
+\]
+From Theorem \ref{T:besq_exp} we get
+\begin{align*}
+  q_t^{\nu}(x,y) 
+    &= L_{\lambda}^{-1}
+      \left[
+        \frac{1}{(1+2\lambda t)^{\delta /2}} 
+        \exp \left(-\frac{\lambda x}{1+2\lambda t} \right)
+      \right]  \notag \\
+    &= e^{-x/2t} L_{\lambda}^{-1}
+      \left[
+        \frac{1}{(1+2\lambda t)^{\nu+1}} 
+        \exp \left(\frac{x/2t}{1+2\lambda t} \right)
+      \right].  \notag \\
+\end{align*}
+Using the property of inverse Laplace transform
+\[
+  L_{\lambda}^{-1}[F(a\lambda+b)] 
+    =\frac{1}{a} e^{-by/a} f\left(\frac{y}{a}\right),
+\]
+we get
+\[
+  q_t^{\nu}(x,y) 
+    = e^{-(x+y)/2t} \left(\frac{1}{2t}\right)
+      L_{\lambda}^{-1}  \left[
+        \lambda^{-\nu-1} \exp\left(\frac{x/2t}{\lambda}\right)
+      \right].
+\]
+Using inverse Laplace transform \ref{E:ilt5} we prove the proposition.
+\end{proof}
+\end{proposition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}
+Let $\delta=2\nu+2$, the transition densition $p_t^{(\nu)}$ of a Bessel process
+with dimension $\delta$ and $\nu>-1$ is
+\begin{equation}
+  p_t^{\nu}(x,y) = \frac{y}{t} \left(\frac{y}{x}\right)^{\nu}
+    \exp\left( -\frac{x^2+y^2}{2t} \right)  I_{\nu}\left(\frac{xy}{t}\right),
+\end{equation}
+where $I_{\nu}$ is the modified Bessel function \ref{D:bessel_mod}.
+\begin{proof}
+Note that first $\rho_t=R_t^2$ thus $\rho_0=x^2$ and
+\[
+  P[y<R_t<y+dy]=p_t(x,y)dy = P[y^2<\rho_t<(y+dy)^2]=q_t(x^2,y^2) 2ydy,
+\]
+i.e.
+\begin{equation} \label{E:bes_besq}
+  p_t(x,y) = 2y \, q_t(x^2,y^2).
+\end{equation}
+Using the transition density of BESQ we then get the transition density of the
+Bessel process $p_t(x,y)$.
+\end{proof}
+\end{proposition}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bessel Process with Arbitrary Index}
+
+We define the Bessel process $R_t$ with arbitrary index $\nu\in R$ by the
+stochastic differential equation
+\begin{equation}
+  dR_t = \frac{2\nu+1}{2R_t} dt + dW_t,
+\end{equation}
+thus the dimension is $\delta=2\nu+2$. The infinitesimal generator is
+\begin{equation}
+  \mathcal{G} = \frac{1}{2} \frac{d^2}{dx^2} + \frac{2\nu+1}{2x} \frac{d}{dx}.
+\end{equation}
+In this section we compute the transition density following Section
+\ref{S:diff}.
+
+First note that for Bessel process with index $\nu\in R$, we can easily compute
+the scale density $s'(x)=x^{-1-2\nu}$ and speed density $m(x)=2x^{1+2\nu}$.
+
+Next we solve the corresponding Sturm-Liouville equation
+\[
+  (\mathcal{G}-\alpha) u(x) = 0,
+\]
+i.e.
+\[
+  \frac{1}{2} \frac{d^2}{dx^2} u(x) + \frac{2\nu+1}{2x} \frac{d}{dx} u(x)
+    - \alpha u(x) = 0.
+\]
+Let $u(x)=x^{-\nu} v(x)$, we get
+\[
+  x^2 v''(x) + x v'(x) - (\nu^2+2\alpha) v(x) = 0.
+\]
+Using a simple variable change $y=\sqrt{2\alpha} x$ and the definition 
+\ref{D:bessel_mod} of the modified Bessel functions we get
+\[
+  v(x) = A I_{\nu}(\sqrt{2\alpha}x) + B K_{\nu}(\sqrt{2\alpha}x),
+\]
+where $A$ and $B$ are arbitrary constants, hence the solution of the
+Sturm-Liouville equation for the Bessel process is
+\[
+  u(x) = A x^{-\nu} I_{\nu}(\sqrt{2\alpha}x) + 
+         B x^{-\nu} K_{\nu}(\sqrt{2\alpha}x).
+\]
+
+First we observe that
+\[
+  \lim_{x\to\infty} x^{-\nu} I_{\nu}(\sqrt{2\alpha}x) \to\infty,
+\]
+hence when $x\to\infty$, the solution is
+\[
+  \phi(x) = x^{-\nu} K_{\nu}(\sqrt{2\alpha}x).
+\]
+
+We then proceed to solve the boundary value problem at $x=0$. 
+For convenience we rewrite the general solution as
+\footnote{Note from the general definition of $K_{\nu}$, any two functions out
+    of $I_{\nu}$,$I_{-\nu}$, and $K_{\nu}$ are linear independent.}
+\[
+  u(x) = A' x^{-\nu} I_{\nu}(\sqrt{2\alpha}x) + 
+         B' x^{-\nu} I_{-\nu}(\sqrt{2\alpha}x).
+\]
+For the Dirichlet boundary condition $\lim_{x\to 0} f(x)=0$, we observe 
+that for small value of $|x|$ we have
+\[
+  x^{-\nu} I_{\nu}(a x) = \frac{(a/2)^{\nu}}{\Gamma(\nu+1)} 
+                          \left( 1+ O(x^2) \right),
+\]
+and 
+\[
+  x^{-\nu} I_{-\nu}(a x) = \frac{(a/2)^{-\nu} x^{-2\nu}}{\Gamma(-\nu+1)} 
+                          \left( 1+ O(x^2) \right),
+\]
+hence the solution for the Dirichlet condition is
+\[
+  \psi(x) = x^{-\nu} I_{-\nu}(\sqrt{2\alpha} x), \qquad (\nu<0).
+\]
+
+Similarly for the Neumann boundary condition
+\[
+  \lim_{x\to 0} \frac{f'(x)}{s'(x)}=0,
+\]
+where the scale density $s'(x)=x^{-1-2\nu}$,
+we observe that for small $|x|$ we have
+\[
+  \frac{1}{s'(x)} \frac{d}{dx} [x^{-\nu} I_{\nu}(a x)] 
+    = 2\frac{(a/2)^{\nu+2} x^{2\nu+2}}{\Gamma(\nu+2)} \left( 1+ O(x^2) \right),
+\]
+and 
+\[
+  \frac{1}{s'(x)} \frac{d}{dx} [x^{-\nu} I_{-\nu}(a x)] 
+    = -2\nu \frac{(a/2)^{-\nu}}{\Gamma(-\nu+1)} \left( 1+ O(x^2) \right),
+\]
+hence the solution for the Neumann boundary is
+\[
+  \psi(x) = x^{-\nu} I_{\nu}(\sqrt{2\alpha} x), \qquad (\nu>-1).
+\]
+
+Next we calculate the Wronskian $w_{\alpha}$ defined by
+\[
+  w_{\alpha} = \frac{1}{s'(x)} (\phi_{\alpha}(x) \psi_{\alpha}'(x)
+                                - \psi_{\alpha}(x) \phi_{\alpha}'(x) ).
+\]
+We know that $w_{\alpha}$ is independent of $x$ for any two independent
+solutions $\phi_{\alpha}(x)$ and $\psi_{\alpha}(x)$ of the Sturm-Liouville
+equation, hence 
+\[
+  w_{\alpha}[\phi_{\alpha}(x),\psi_{\alpha}(x)] = w_{\alpha}(x=0).
+\]
+From the asymptic we used above ($a=\sqrt{2\alpha}$), we get the 
+\begin{align*}
+  w_{\alpha}[x^{-\nu} I_{\nu}(ax), x^{-\nu} I_{-\nu}(ax)]
+  &= \lim_{x\to 0} w_{\alpha}[x^{-\nu} I_{\nu}(ax), x^{-\nu} I_{-\nu}(ax)]
+     \notag \\
+  &= \frac{(a/2)^{\nu}}{\Gamma(\nu+1)} 
+     \frac{-2\nu (a/2)^{-\nu}}{\Gamma(-\nu+1)} \left( 1+ O(x^2) \right)
+     \notag \\
+  &= \frac{-2\nu}{\Gamma(\nu+1)\Gamma(1-\nu)}
+     = \frac{-2}{\Gamma(\nu)\Gamma(1-\nu)}, \notag 
+\end{align*}
+using Euler's reflection formula \ref{P:gamma_pp}, we get
+\begin{equation}
+  w_{\alpha}[x^{-\nu} I_{\nu}(\sqrt{2\alpha} x), 
+    x^{-\nu} I_{-\nu}(\sqrt{2\alpha}x)]
+  = \frac{-2\pi}{\sin(\pi\nu)},
+\end{equation}
+and hence
+\begin{equation}
+  w_{\alpha}[x^{-\nu} K_{\nu}(\sqrt{2\alpha} x), 
+    x^{-\nu} I_{\pm\nu}(\sqrt{2\alpha}x)] = 1.
+\end{equation}
+
+Hence under the Dirichlet boundary condition, the Green's function is
+\footnote{Borodin \& Salminen, Handbook of Brownian Motion, 2nd ed. (2002), 
+    p.133}
+\begin{equation}
+  G_{\alpha}(x,y) = 
+    \begin{cases}
+      x^{-\nu} K_{\nu}(\sqrt{2\alpha} x) y^{-\nu} I_{-\nu}(\sqrt{2\alpha}y)
+        & x\ge y  \\
+      x^{-\nu} I_{-\nu}(\sqrt{2\alpha}x) y^{-\nu} K_{\nu}(\sqrt{2\alpha} y) 
+        & x\le y
+    \end{cases}
+\end{equation}
+it exists only if $\nu<0$. And under the Neumann boundary condition, the Green's
+function is
+\begin{equation}
+  G_{\alpha}(x,y) = 
+    \begin{cases}
+      x^{-\nu} K_{\nu}(\sqrt{2\alpha} x) y^{-\nu} I_{\nu}(\sqrt{2\alpha}y)
+        & x\ge y  \\
+      x^{-\nu} I_{\nu}(\sqrt{2\alpha}x) y^{-\nu} K_{\nu}(\sqrt{2\alpha} y) 
+        & x\le y
+    \end{cases}
+\end{equation}
+it exists only if $\nu>-1$. 
+
+And we can compute the transition density with respect to the speed measure
+$p_m(t,x,y)$ as the inverse Laplace transform of the Green's function:
+\footnote{Borodin \& Salminen, Handbook of Brownian Motion, 2nd ed. (2002), 
+    p.134}
+\[
+  p_m(t,x,y) = L_{\alpha}^{-1}[G_{\alpha}(x,y)].
+\]
+Using the inverse Laplace transform \ref{E:ilt6}, we thus get that under the
+Dirichlet boundary condition
+\begin{equation}
+  p_m(t,x,y) = \frac{(xy)^{-\nu}}{2t} \exp\left( -\frac{x^2+y^2}{2t} \right)
+      I_{-\nu} \left( \frac{xy}{t} \right) \qquad \nu<0,
+\end{equation}
+and under the Neumann boundary condition
+\begin{equation}
+  p_m(t,x,y) = \frac{(xy)^{-\nu}}{2t} \exp\left( -\frac{x^2+y^2}{2t} \right)
+      I_{\nu} \left( \frac{xy}{t} \right) \qquad \nu>-1.
+\end{equation}
+And because speed density is $m(x)=2x^{1+2\nu}$, we can then compute
+the transition density in the normal measure $p(t,x,y)$ using the fact that
+\[
+  p_m(t,x,y) m(y) dy = p(t,x,y) dx.
+\]
+Thus under the Dirichlet boundary condition
+\begin{equation}
+  p(t,x,y) = \frac{y}{t} \left( \frac{y}{x} \right)^{\nu} 
+     \exp\left( -\frac{x^2+y^2}{2t} \right)
+    I_{-\nu} \left( \frac{xy}{t} \right) \qquad \nu<0,
+\end{equation}
+and under the Neumann boundary condition
+\begin{equation}
+  p(t,x,y) = \frac{y}{t} \left( \frac{y}{x} \right)^{\nu} 
+     \exp\left( -\frac{x^2+y^2}{2t} \right)
+      I_{\nu} \left( \frac{xy}{t} \right) \qquad \nu>-1.
+\end{equation}
+
+Using Eq. \ref{E:bes_besq}, we get the transition density of a $BESQ^{\nu}$
+process: under the Dirichlet boundary condition
+\begin{equation}
+  q(t,x,y) = \frac{1}{2t} \left( \frac{y}{x} \right)^{\nu/2} 
+     \exp\left( -\frac{x+y}{2t} \right)
+    I_{-\nu} \left( \frac{\sqrt{xy}}{t} \right) \qquad \nu<0,
+\end{equation}
+and under the Neumann boundary condition
+\begin{equation}
+  q(t,x,y) = \frac{1}{2t} \left( \frac{y}{x} \right)^{\nu/2} 
+     \exp\left( -\frac{x+y}{2t} \right)
+      I_{\nu} \left( \frac{\sqrt{xy}}{t} \right) \qquad \nu>-1.
+\end{equation}

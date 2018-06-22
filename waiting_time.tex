@@ -1,0 +1,443 @@
+\chapter{Waiting Time for Patterns}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+Suppose we are tossing a fair coin without stop, what is the average waiting
+time until the first apperance of pattern HHHHH (5 consecutive heads)?
+How about pattern HTHTH? Moreover, what is the average waiting time for the
+first appearence of HHHTH or HTHTH? What is the probability that pattern HHHHT
+appears earlier than HHHTH? In this note, we give an elegant method (the method
+of gambling teams) to answer all these questions as presented in V. Pozdnyakov
+and M. Kulldorff's charming article on \textit{American Mathematical Monthly},
+February 2006 issue, 134-143.
+\footnote{An alternative approach can be found in Graham, Knuth, and Patashnik,
+Concrete Mathematics, 2ed, section 8.4, pp. 401-410.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Single patterns}
+In this section we focus on single patterns $A=a_1 a_2 \dots a_m$, where the
+probability $P(Z=a_i)>0$. First we introduce an important defintion.
+
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Let $A=a_1 a_2 \dots a_m$ and $B=b_1 b_2 \dots b_k$ be two patterns (no specific
+requirement of the relation between $m$ and $k$). For each pair $(i,j)$ write
+\begin{equation}
+  \delta_{ij}=
+  \begin{cases}
+    \frac{1}{P(Z=b_j)},  &\text{if $1 \le i \le m$, $1\le j \le k$, and
+                               $a_i=b_j$;}  \\
+    0,                   &\text{otherwise.}
+  \end{cases}
+\end{equation}
+Then define
+\begin{equation}
+  A\ast B = \delta_{11} \delta_{22} \dots \delta_{mm}
+            + \delta_{21} \delta_{32} \dots \delta_{m\, m-1} 
+            + \dots + \delta_{m1}
+\end{equation}
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:toss_stop}
+Let $\tau_A$ be the waiting time until pattern $A=a_1 a_2 \dots a_m$ appears for
+the first time, then $E(\tau_A)<\infty$.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%
+\begin{proof}[Proof1.]
+Note that the waiting time $\tau_A$ is bounded by $mT$, where
+\[
+  T = \min\{k: Z_{mk+1}Z_{mk+2}\dots Z_{mk+m}=A \}.
+\]
+Let 
+\[
+  p_1 = P[Z_{mk+1}Z_{mk+2}\dots Z_{mk+m}=A], \qquad q_1=1- p_1,
+\]
+apparently $p_1$ is independent of $k$. Then it is easy to see that
+\[
+  E[T] = 0 \times p_1 + 1(q_1 p_1) + 2 (q_1^2 p1) + \cdots
+       = \sum_{k=0}^{\infty} k(q_1^k p_1) = \frac{1}{p_1} <\infty,
+\]
+hence $E[\tau_A]\le E[mT]<\infty$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%
+\begin{proof}[Proof2.]
+Note that for any $n\in\mathbb{N}$, 
+\[
+  P(\tau_A\le n+m | \mathcal{F}_n) > p1, 
+\]
+where
+\[
+  p_1 = P[Z_{1}Z_{2}\dots Z_{m}=A] > 0.
+\]
+We can now apply Lemma \ref{L:finite_stop} to verify that
+$E[\tau_A]<\infty$.
+\end{proof}
+
+The following theorem gives the expectation of the waiting time for a single
+pattern. It was first discovered by S. Li, \textit{Ann. Probab.}, 
+\textbf{8}, 1171-1176 (1980).
+
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+Let $\tau_A$ be the waiting time until pattern $A=a_1 a_2 \dots a_m$ appears for
+the first time, then
+\begin{equation}
+  E(\tau_A)=A \ast A
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Assume that a new gambler arrives just before each time horizon $n=1,2, \dots$.
+He bets \$1 that 
+\[
+  Z_n=a_1.
+\]
+If he loses, he leaves the game. If he wins, he gets $1/P(Z=a_1)$ dollars. Then
+he bets the whole amount (at time $n+1$) on the event
+\[
+  Z_{n+1}=a_2.
+\]
+Again if he loses, he leaves. If he wins the total capital is now
+\[
+  \frac{1}{P(Z=a_1)} \times \frac{1}{P(Z=a_2)} 
+\]
+dollars, and he bets his whole fortune (at time $n+2$) on the next event
+\[
+  Z_{n+2}=a_3,
+\]
+and so on through the $m$ letters of patten $A$. If any gambler is lucky enough
+to bet correctly on all $m$ letters of patten $A$ he leaves with his winnings
+(after time horizon $n+m-1$).
+
+Let $X_n$ be the net amount of money collected by the casino from all gamblers
+up to and including time $n$. Apparently $X$ is a martingale.
+Now what is the value of $X_{\tau_A}$, that is, 
+the value of the martingale $X_n$ stopped at time $\tau_A$? First note that in
+total $\tau_A$ gamblers have entered the game, each pays the casino \$1, so that
+the casino receives $\tau_A$ dollars. Next we note that all gamblers entered the
+game before time $\tau_A-m+1$ have lost all their money (otherwise $\tau_A$
+would not be the first time pattern A appears). Only those gamblers who enter
+the game after time $\tau_A-m+1$ have a chance to
+win any money from the casino at time horizon $\tau_A$. For gambler 
+$\tau_A-m+1$, he made all $m$ bets correctly and wins
+\[
+  \delta_{11}\times\delta_{22}\times\dots \times \delta_{mm}
+\]
+dollars. For gambler who enters the game at $\tau_A-m+2$, he made $m-1$ bets, 
+which are $a_1 a_2 \dots a_{m-1}$, while the outcomes of the events are 
+$a_2 a_3 \dots a_m$. And the money he wins is
+\[
+  \delta_{21}\times\delta_{32}\times\dots \times \delta_{m\, m-1}
+\]
+dollars. For gambler who enters the game at $\tau_A-m+3$, he made $m-2$ bets, 
+which are $a_1 a_2 \dots a_{m-2}$, while the outcomes of the events are 
+$a_3 a_4 \dots a_m$. So the money he wins is
+\[
+  \delta_{31}\times\delta_{42}\times\dots \times \delta_{m\, m-2}
+\]
+dollars. Similarly for gamblers who enter the games at time $\tau_A-m+4$,
+at time $\tau_A-m+5$, etc., until at time $\tau_A$ (who wins $\delta_{m1}$
+dollars). Hence we can conclude that
+\[
+  X_{\tau_A} = \tau_A - A \ast A.
+\]
+
+First note that $E(\tau_A)<\infty$ using Lemma \ref{L:toss_stop}.
+%One can show that $E(\tau_A)<\infty$ and that the increments of $X_n$ are 
+%uniformly bounded with probability 1. 
+Secondly, at any given time $n$ there are at most $m$ gamblers who bet and
+the total possible gain (and loss) of a gambler is bounded by
+$\prod_{j=1}^m 1/P(Z=a_j)$. Therefore, the increments of $X_n$ are also
+bounded.
+Now we can invoke the optional stopping theorem \ref{T:OST} and get
+\[
+  0=E(X_0)=E(X_{\tau_A})=E[\tau_A] - A \ast A,
+\]
+and we are able to conclude that
+\[
+  E(\tau_A)=A \ast A.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+Consider the example of tossing a fair coin (without stop), 
+  \begin{enumerate}
+    \item The waiting time for the first apperance of pattern A=HHHHH is 62 
+    since
+      \begin{align*}
+        A \ast A 
+          &= \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             + \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} \times 
+             \frac{1}{0.5}   \\
+          &+ \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             + \frac{1}{0.5} \times \frac{1}{0.5} + \frac{1}{0.5}   \\ 
+          &= 32 + 16 + 8 + 4 + 2 = 62
+     \end{align*}
+   \item The waiting time for the first apperance of pattern A=HTHTH is 42
+    since
+     \begin{align*}
+        A \ast A 
+          &= \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             \times \frac{1}{0.5} \times \frac{1}{0.5} + 0 
+             + \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             + 0 + \frac{1}{0.5}  \\
+          &= 32+0+8+0+2 = 42 
+   \end{align*}
+   \item The waiting time for the first apperance of pattern A=HHHHT is 32
+    since
+     \begin{align*}
+        A \ast A 
+          &= \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             \times \frac{1}{0.5} \times \frac{1}{0.5} + 0 + 0 + 0 + 0
+           = 32
+     \end{align*}
+   \item The waiting time for the first apperance of pattern A=HHHTH is 34
+    since
+     \begin{align*}
+        A \ast A 
+          &= \frac{1}{0.5} \times \frac{1}{0.5} \times \frac{1}{0.5} 
+             \times \frac{1}{0.5} \times \frac{1}{0.5} + 0 + 0 + 0 
+             + \frac{1}{0.5} \\
+          &= 32+0+0+0+2=34 
+     \end{align*}
+  \end{enumerate}
+\end{example}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multiple patterns: a method of gambling teams}
+Now we consider a collection of $K$ patterns. Without lost of generality we
+require that none of these patterns be a sub-pattern of another. Assume now that
+we have $K$ teams of betters and that the first team bets on the pattern $A_1$,
+the second team bets on the pattern $A_2$, and so on. Let $y_j$ be the initial
+amount of money with which each of the gamblers from the $j$th team starts his
+betting. As before let $X_n$ be the net gain of the casino at time $n$. The
+stopped martingale $X_{\tau}$ is given by
+\begin{equation}
+  X_{\tau} =
+    \begin{cases}
+      (y_1+\dots +y_K)\tau -(A_1\ast A_1\times y_1 + \dots +A_1\ast A_K \times
+        y_K),   &\text{if $\tau = \tau_{A_1}$,}   \\ 
+      (y_1+\dots +y_K)\tau -(A_2\ast A_1\times y_1 + \dots +A_2\ast A_K \times
+        y_K),   &\text{if $\tau = \tau_{A_2}$,}   \\ 
+      \dots   &\text{\dots}  \\
+      (y_1+\dots +y_K)\tau -(A_K\ast A_1\times y_1 + \dots +A_K\ast A_K \times
+        y_K),   &\text{if $\tau = \tau_{A_K}$.}
+    \end{cases}
+\end{equation}
+by the same arguments as earlier we find that
+\begin{equation} 
+  0=E(X_0)=E(X_{\tau}) = (y_1+\dots +y_K)E(\tau)
+                         - \sum_{j,l=1}^K \pi_{j} M_{jl}\ y_l
+\end{equation}
+where 
+\[
+  \pi_j = P(\tau=\tau_{A_j}) \quad \text{and} \quad M_{jl}=A_j \ast A_l
+\]
+Or in matrix format
+\begin{equation} \label{E:wait}
+  0=E(X_0)=E(X_{\tau}) = (y_1+\dots +y_K)E(\tau)-\Pi^T M Y,
+\end{equation}
+where
+\[
+  \Pi=(\pi_1, \pi_2, \dots, \pi_K)^T, \quad Y=(y_1, y_2, \dots, y_K)^T,
+\]
+and
+\begin{equation}
+  M=
+  \begin{pmatrix}
+    A_1\ast A_1  &A_1\ast A_2  &\cdots  &A_1\ast A_K  \\ 
+    A_2\ast A_1  &A_2\ast A_2  &\cdots  &A_2\ast A_K  \\ 
+    \cdots       &\cdots       &\cdots  &\cdots       \\
+    A_K\ast A_1  &A_K\ast A_2  &\cdots  &A_K\ast A_K  \\ 
+  \end{pmatrix}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% E(\tau)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{P:time}
+If there exist a solution $Y^* = (y_1^*, \dots, y_K^*)^T$ to the linear system
+$MY=\mathbf{1}$, where $\mathbf{1}=(1,\dots,1)^T$, then
+\[
+  E(\tau)=\frac{1}{y_1^* + y_2^* + \cdots + y_K^*}
+\]
+\end{proposition}
+\begin{proof}
+Because
+\[
+  \Pi^T M Y^* = \Pi^T \mathbf{1} = \sum_{j=1}^k \pi_j = 1  \qquad 
+                \text{(total probability)},
+\]
+from \eqref{E:wait} the proposition follows.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  \pi_1, \dots, \pi_K
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{P:prob}
+The probability vector $\Pi = (\pi_1, \dots, \pi_K)^T$ satisfies the equation 
+$M^T \Pi = E(\tau) \mathbf{1}$.
+\end{proposition}
+\begin{proof}
+From \eqref{E:wait} we learn that
+\[
+  (y_1+\dots +y_K) E(\tau) = \Pi^T M Y = Y^T (M^T \Pi)
+\]
+because it is a scalar. Let 
+\[
+  M^T \Pi = (a_1, a_2, \cdots, a_K)^T
+\]
+then
+\[
+  (y_1+\dots +y_K) E(\tau) = a_1 y_1 + a_2 y_2 + \dots + a_K y_K.
+\]
+Since this equation is true for arbitrary choice of $Y=(y_1, \cdots, y_K)^T$,
+we conclude that
+\[
+  a_1 = a_2 = \dots = a_K = E(\tau),
+\]
+and the proposition follows.
+
+% Consider the following vector of initial bets
+% \[
+%   Y^j = (0, \dots, \underbrace{1}_{\text{$j$th position}}, \dots, 0)^T
+% \]
+% From \eqref{E:wait} we learn that
+% \[
+%   0=E(\tau)-\Pi M Y^j=E(\tau)-(A_1\ast A_j, \dots, A_K\ast A_j)^T \Pi.
+% \]
+% Since this equation holds for $j=1,2,\dots,K$, the propositon follows.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+In the simple case of two patterns, there is an easier way to solve $E(\tau)$
+and $\pi_1$ and $\pi_2$. From Proposition \ref{P:prob} and total probablity we
+have
+\begin{align*}
+  & \pi_1 (A_1\ast A_1) + \pi_2 (A_2\ast A_1) = E(\tau)  \\
+  & \pi_1 (A_1\ast A_2) + \pi_2 (A_2\ast A_2) = E(\tau)  \\
+  & \pi_1 + \pi_2 = 1,
+\end{align*}
+from the first two equations we get
+\begin{equation}
+  \frac{\pi_1}{\pi_2} = 
+    \frac{A_2\ast A_2 - A_2\ast A_1}{A_1\ast A_1 - A_1\ast A_2},
+\end{equation}
+combining this with the third equation we can solve $\pi_1$ and $\pi_2$.
+\end{remark}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+  \begin{enumerate}
+
+    %%%%%%%%%%%%
+    \item The average waiting time for the first appearance of pattern
+    $A_1=HHHTH$ or $A_2=HTHTH$ is 22. This is because 
+    \[
+      A_1 \ast A_1 = 34, \quad   A_1 \ast A_2 = 10,
+      \quad  A_2 \ast A_1 = 2, \quad   A_2 \ast A_2 = 42,
+    \]
+    that is
+    \[
+      M=
+      \begin{pmatrix}
+        34  &10 \\
+        2   &42 
+      \end{pmatrix}
+    \]
+    After solving matrix equation $MY^*=\mathbf{1}$, we obtain
+    \[
+      Y^* = \left( \frac{1}{44}, \frac{1}{44} \right) ^T
+    \]
+    From Proposition \ref{P:time}, we get
+    \[
+      E(\tau) = \frac{1}{y_1^*+y_2^*}=\frac{1}{\frac{1}{44}+\frac{1}{44}}
+      =22
+    \]
+
+    %%%%%%%%%%%%
+    \item The average waiting time for the first appearance of pattern
+    $A_1=HHHHT$ or $A_2=HHHTH$ is 22 (too). This is because 
+    \[
+      A_1 \ast A_1 = 32, \quad   A_1 \ast A_2 = 16,
+      \quad  A_2 \ast A_1 = 2, \quad   A_2 \ast A_2 = 34,
+    \]
+    that is
+    \[
+      M=
+      \begin{pmatrix}
+        32  &16 \\
+        2   &34 
+      \end{pmatrix}
+    \]
+    After solving matrix equation $MY^*=\mathbf{1}$, we obtain
+    \[
+      Y^* = \left( \frac{3}{176}, \frac{5}{176} \right) ^T
+    \]
+    From Proposition \ref{P:time}, we get
+    \[
+      E(\tau) = \frac{1}{y_1^*+y_2^*} 
+        = \frac{ 1 }{ \frac{3}{176} + \frac{5}{176} }  = 22
+    \]
+
+  \end{enumerate}
+\end{example}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+What is the probability that pattern $A_1=HHHHT$ appears earlier than pattern
+$A_2=HHHTH$? The answer is $2/3$. From last example, we know for the waiting
+time of first appearance of either pattern $E(\tau)$ has expectation
+\[
+  E(\tau)=22,
+\]
+and matrix
+  \[
+    M=
+    \begin{pmatrix}
+      32  &16 \\
+      2   &34 
+    \end{pmatrix}
+  \]
+From Proposition \ref{P:prob}, we know that the probabilities $(\pi_1,\pi_2)$ 
+is the solution of linear equations $M^T \Pi=E(\tau) \mathbf{1}$, which yields
+\[
+  M^T \Pi =
+  \begin{pmatrix}
+    32  &2  \\
+    16  &34
+  \end{pmatrix}
+  \begin{pmatrix}
+    \pi_1 \\
+    \pi_2
+  \end{pmatrix}
+  = E(\tau) \mathbf{1} =
+  \begin{pmatrix}
+    22 \\
+    22 
+  \end{pmatrix}
+\]
+Solve it and we obtain
+\[
+  \pi_1 = P(\tau=\tau_{A_1}) = P(\text{$A_1$ appears before $A_2$}) 
+        = \frac{2}{3},
+\]
+and
+\[
+  \pi_2 = P(\tau=\tau_{A_2}) = P(\text{$A_2$ appears before $A_1$}) 
+        = \frac{1}{3}.
+\]
+\end{example}
+
+

@@ -1,0 +1,11 @@
+/text/*.aux
+/*.aux
+/*.idx
+/*.ilg
+/*.ind
+/*.log
+/*.out
+/*.toc
+/note.pdf
+/double*.pdf
+/graphics/texput.*

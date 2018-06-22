@@ -1,0 +1,159 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Uniform Sum Distribution}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discrete Case and Its Limiting Case}
+Let $S_n=X_1+X_2+\cdots + X_n$ be the sum of mutually independent variables each
+assuming the values $1,2,\dots, a$ with probability $1/a$. Then the probability
+generating function (PGF) of each $X$ is:
+\[
+  G_{X_i}(z)=\sum_{x=0}^{\infty} P(X_i=x) z^x = \frac{z+z^2+\cdots +z^a}{a} 
+    =\frac{z(1-z^a)}{a(1-z)}.
+\]
+Hence the PGF for $S_n$ is
+\begin{equation}
+  G_{S_n}(z)=G_{X_1}(z) G_{X_2}(z) \cdots G_{X_n}(z) 
+   = \left[ \frac{z(1-z^a)}{a(1-z)} \right]^n.
+\end{equation}
+
+From the defintion of PGF we have:
+\begin{equation}
+  P[S_n=j] = \frac{G_{S_n}^{(j)}(0)}{j!},
+\end{equation}
+now we need to calculate the coefficient of term $z^j$ in $G_{S_n}(z)$.
+Expanding it we have
+\[
+	G_{S_n}(z) = a^{-n} z^n (1-z^a)^n (1-z)^{-n} 
+          	 = a^{-n} z^n \sum_{k=0}^n (-1)^k C_n^k z^{a\cdot k} 
+                          \sum_{l=0}^{\infty} C_{n+l-1}^l z^l
+\]
+so the coefficient for term $z^j$ is
+\[
+	a^{-n} \sum_{k=0}^{\min(n,\lfloor (j-n)/a\rfloor)} (-1)^k C_n^k C_{j-ak-1}^{n-1}.
+\]
+where $\lfloor x\rfloor$ is the floor function of $x$.
+Hence
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+  vol.1, 3ed, XI.7, Problem 18, pp.284-285; 
+  Weisstein, Eric W. "Dice." From MathWorld--A Wolfram Web Resource. 
+  http://mathworld.wolfram.com/Dice.html }
+\begin{equation}
+  P[S_n=j] = \frac{G_{S_n}^{(j)}(0)}{j!}
+	= a^{-n} \sum_{k=0}^{\min(n,\lfloor (j-n)/a\rfloor)} (-1)^k C_n^k C_{j-ak-1}^{n-1}.
+\end{equation}
+
+Let
+\[
+	H_X(z) = \sum_{x=0}^{\infty} P(X\le x) z^x,
+\]
+it is easy to see that
+\[
+	G_X(z) = \sum_{x=0}^{\infty} P(X=x) z^x
+   	= \sum_{x=0}^{\infty} (P(X\le x) - P(X\le x-1)) z^x
+	  = (1-z) H_X(z).
+\]
+Hence we have 
+\[
+  H_{S_n}(z) = (1-z)^{-1} G_{S_n}(z) = a^{-n} z^n (1-z^a)^n (1-z)^{-n-1}, 
+\]
+and similarly we can calculate
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+  vol.1, 3ed, XI.7, Problem 19, p. 285, note the typo in Feller's book, 
+  $\binom{j-a\nu}{-n}$ should be $\binom{j-a\nu}{n}$.}
+\begin{equation}
+  P[S_n\le j] = \frac{H_{S_n}^{(j)}(0)}{j!}
+	= a^{-n} \sum_{k=0}^{\min(n,\lfloor (j-n)/a\rfloor)} (-1)^k C_n^k C_{j-ak}^{n}.
+\end{equation}
+
+Next we consider the limiting case when $a\to\infty$, $j\to\infty$ so that 
+$j/a\to x$. In this case $i$ $X_i/a$ becomes an uniformly distributed
+random variable in $(0,1]$ for any $i$, thus $S_n/a$ becomes the sum of $n$ 
+uniformly distributed random variables and
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+  vol.1, 3ed, XI.7, Problem 20, p. 285.}
+	\begin{equation} \label{E:lim_unif}
+	P[S_n/a\le x] = P[S_n\le j] \to \frac{1}{n!} \sum_k (-1)^k C_n^k\cdot (x-k)_+^n,
+\end{equation}
+where $(x-k)_+$ equals to $x-k$ if $x\ge k$ and zero otherwise.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Continuous Case}
+%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+  vol.2, 2ed, I.9, Theorem 1, p.p. 27-28.}
+Let $X_1,X_2,\cdots,X_n$ be independent uniformly distributed random variables 
+in $[0,1]$ and let $S_n=X_1+X_x+\cdots +X_n$. Let $U_n(x)=P(S_n\le x)$ and
+denote $u_n=U'_n$ the density of this distribution. then for $n=1,2,\dots$ and
+$x\ge 0$
+\begin{equation} \label{E:sum_uni}
+	U_n(x) = \frac{1}{n!} \sum_{k=0}^n (-1)^k C_n^k \cdot (x-k)_+^n,
+\end{equation}
+\begin{equation}
+	u_{n+1}(x) = \frac{1}{n!} \sum_{k=0}^{n+1} (-1)^k C_{n+1}^k \cdot (x-k)_+^n.
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%%%
+\begin{proof}
+For $n=1$ we have $U_1(x)=x_+ - (x-1)_+$ which is obviously true. Now we
+assume that Eq. \ref{E:sum_uni}  is true for some $n\ge 1$. Note that
+\[
+	u_{n+1}(x) = \int_0^1 u_n(x-y) u_1(y) dy = \int_0^1 u_n(x-y) dy
+	           = U_n(x) - U_n(x-1),
+\]
+we thus have
+\[
+	u_{n+1}(x) = \frac{1}{n!} \sum_{k=0}^{n+1} (-1)^k (C_n^k + C_n^{k-1}) 
+	             \cdot (x-k)_+^n
+					 	= \frac{1}{n!} \sum_{k=0}^{n+1} (-1)^k C_{n+1}^k \cdot (x-k)_+^n.
+\]
+Integrating this we get
+\begin{align*}
+	U_{n+1}(x)
+	  &=\int_{-\infty}^x u_{n+1}(y) dy    \notag \\
+	  &= \frac{1}{n!} \sum_{k=0}^{n+1} (-1)^k C_{n+1}^k 
+	      \int_{-\infty}^x (y-k)_+^n dy   \notag \\
+	  &= \frac{1}{(n+1)!} \sum_{k=0}^{n+1} (-1)^k C_{n+1}^k \cdot (x-k)_+^{n+1},
+				\notag
+\end{align*}
+hence it is true for $n+1$, and this completes the proof.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%
+\begin{example}
+Let $n_x=\min\{n:S_n\ge x\}$, we can show that $E[n_1]=e$. Actually,
+\begin{align*}
+	E[n_x] &= \sum_{n=1}^{\infty} n \cdot P[S_n\ge x, S_{n-1}<x]  \notag \\
+		&= \sum_{n=1}^{\infty} n \cdot (P[S_n\ge x] - P[S_{n-1}\ge x])  \notag \\
+		&= \sum_{n=1}^{\infty} n \cdot (-P[S_n\le x] + P[S_{n-1}\le x])  \notag \\
+	  &= \sum_{n=1}^{\infty} n \cdot (U_{n-1}(x) - U_n(x)).  \notag 
+\end{align*}
+It is easy to see that 
+\[
+	U_n(1) = \frac{1}{n!},
+\]
+hence
+\[
+	E[n_1] = \sum_{n=1}^{\infty} n\cdot (\frac{1}{(n-1)!}-\frac{1}{n!})
+       	= \sum_{n=1}^{\infty} \frac{1}{(n-2)!} = e
+\]
+It is more complicated to calculate $E[n_2]$. Now
+\[
+	U_n(2)= \frac{2^n-n}{n!},
+\]
+hence
+\[
+	E[n_2] = \sum_{n=2}^{\infty} n\cdot (U_{n-1}(2) - U_n(2))
+	  = \sum_{n=2}^{\infty} \frac{(n-2)(2^{n-1}-n)}{(n-1)!},
+\]
+after some algebraic manipulations we get
+\footnote{$e^x=1+x+x^2/2!+x^3/3!+\cdots$}
+\[
+	E[n_2]=\sum_{n=0}^{\infty} \frac{2^n}{n!} - \sum_{n=0}^{\infty} \frac{1}{n!}
+	      = e^2 - e.
+\]
+More results can be found in Weisstein, Eric W. "Uniform Sum Distribution." 
+From MathWorld--A Wolfram Web Resource. 
+\footnote{\url{http://mathworld.wolfram.com/UniformSumDistribution.html}}
+\end{example}

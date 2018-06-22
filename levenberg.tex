@@ -1,0 +1,54 @@
+\chapter{Levenberg-Marquardt Algorithm} \label{C:levenberg}
+
+Levenberg-Marquardt algorithm is an algorithm for minimizing a function and it
+is between the Gauss-Newton algorithm and the method of gradient descent.
+
+\section{Least Square Problem}
+Given a set of $m$ observations of pairs of independent and dependent variables
+$(x_i,y_i)$, optimize the parameters $\beta$ of the model curve $f(x,\beta)$ so
+that the sum of the square of the deviations
+\[
+  S(\beta) = \sum_{i=1}^m [y_i - f(x_i,\beta)]^2
+\]
+becomes minimal.
+
+\section{The Algorithm}
+The Levenberg-Marquardt algorithm is an iterative procedure. At the beginning
+the user has to provide an initial guess of the parameter vector $\beta$. In
+each step, the parameter vector $\beta$ is replaced by a new estimate
+$\beta+\delta$. To determine $\delta$, the functions $f(x_i,\beta+\delta)$ are
+approximated by
+\[
+  f(x_i,\beta+\delta) \approx f(x_i,\beta) + J_i \delta, 
+\]
+where
+\[
+  J_i = \frac{\partial f(x_i,\beta)}{\partial \beta}
+\]
+is the gradient of $f$ with respect to $\beta$. Hence 
+\[
+  S(\beta+\delta) \approx \sum_{i=1}^m (y_i - f(x_i,\beta)-J_i\delta)^2
+\]
+For this to be minimal, the derivative with respect to $\delta$ must be zero,
+this yields
+\[
+  (J^T J) \delta = J^T [y-f(\beta)],
+\]
+where $J$ is the Jacobian matrix with elements
+\[
+  J_{ij} = \frac{\partial f(x_i,\beta)}{\partial \beta_j}.
+\]
+Solving this equation we would get $\delta$. And this is the idea for
+Guass-Newton algorithm.
+
+Now Levenberg-Marquardt algorithm introduces a (non-negative damping factor
+$\lambda$
+\[
+  (J^T J + \lambda I) \delta = J^T [y-f(\beta)],
+\]
+where $I$ is the identity matrix.
+The damping factor is adjusted at every iteration. If reduction of $S$ is rapid,
+a smaller $\lambda$ can be used bringing it closer to the Gauss-Newton
+algorithm; if reduction is slow, a larger $\lambda$ can be used bringing it
+closer to gradient descent.
+

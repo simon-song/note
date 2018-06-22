@@ -1,0 +1,221 @@
+\chapter{LIBOR market model}
+
+\section{Introduction}
+
+% Under numeraire $P_n$, 
+% \begin{equation}
+%   dL_i = - L_i \sum_{j=i+1}^{n-1} \frac{\delta_j L_j}{1+\delta_j L_j} \sigma_j^T
+% \sigma_i dt + L_i \sigma_i^T dW^{(n)}.
+% \end{equation}
+% 
+% Under spot LIBOR measure $Q^L$, we have
+% \begin{equation}
+%   dL_i = L_i \sum_{j=m(t)}^{i} \frac{\delta_j L_j}{1+\delta_j L_j} \sigma_i^T
+% \sigma_j dt + L_i \sigma_i^T dW^L.
+% \end{equation}
+
+To fix notation, let $T_0,T_1,\dots,T_n$ be the tenors, and $\delta_i$ be the 
+year fraction for time period $[T_{i-1},T_i]$ and 
+\begin{equation}
+  L_t^i = L_t[T_{i-1},T_i] = \frac{D_{tT_{i-1}} - D_{tT_i}}{\delta_i D_{tT_i}}
+\end{equation}
+be the LIBOR rate for period $[T_{i-1},T_i]$ determined at time $t$, where
+$D_{tT_i}$ is the discount factor for time period $[t,T_i]$. We also define
+\begin{equation}
+  \Pi_t^i = \prod_{j=1}^i (1+\delta_j L_t^j),
+\end{equation}
+and index $m(t)$ to be such that
+\[
+  T_{m(t)-1} \leq t < T_{m(t)}.
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Forward Measure}
+We use $D_{tT_n}$ as the numeraire 
+\footnote{Adapted from Hunt and Kennedy, Financial Derivatives in Theory and
+  Practice, revised ed., Wiley(2004), 18.2, pp.338-343, 
+  Glasserman, Monte Carlo Methods in Financial Engineering, 3.7, p171}
+and define
+\begin{equation}
+  \hat{D}_t^i = \frac{D_{tT_i}}{D_{tT_n}}, \qquad i<n.
+\end{equation}
+Hence $\hat{D}_t^i$ is a martingale under the measure $Q$ for numeraire
+$D_{tT_n}$.
+
+Let the dynamcs of LIBOR rate $L_t^i$ under measure $Q$ be
+\begin{equation}
+  dL_t^i = \mu_t^i L_t^i dt + \sigma_t^i L_t^i dW_t^i,
+\end{equation}
+where 
+\begin{equation}
+  dW_t^i dW_t^j = \rho_{ij}.
+\end{equation}
+Using Ito's Lemma and the fact that
+\[
+  \hat{D}_t^{i-1} = \hat{D}_t^{i} (1+\delta_i L_t^i)
+\]
+we have
+\[
+  d\hat{D}_t^{i-1} 
+    = d\hat{D}_t^{i} (1+\delta_i L_t^i) + \hat{D}_t^{i} \delta_i dL_t^i
+    = d\hat{D}_t^{i} (1+\delta_i L_t^i) 
+      + \hat{D}_t^{i} \delta_i L_t^i \sigma_t^i dW_t^i.
+\]
+Multiply both sides by $\Pi_t^{i-1}$ and use the fact that
+$\Pi_t^i=\Pi_t^{i-1} (1+\delta_i L_t^i)$ we get
+\[
+  \Pi_t^{i-1} d\hat{D}_t^{i-1} 
+    = \Pi_t^{i} d\hat{D}_t^{i} 
+      + \Pi_t^{i} \hat{D}_t^{i} \frac{\delta_i L_t^i}{1+\delta_i L_t^i} 
+        \sigma_t^i dW_t^i
+\]
+Apply this equation recursively we get
+\[
+  \Pi_t^{i} d\hat{D}_t^{i} 
+    = \Pi_t^n d\hat{D}_t^{n}
+     +\sum_{j=i+1}^n (\Pi_t^j d\hat{D}_t^{j}) 
+       \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j.
+\]
+Since $\hat{D}_t^{n}=1$ and
+\[
+  \Pi_t^i \hat{D}_t^{i}
+    = \Pi_t^{i+1} \hat{D}_t^{i+1}
+    = \Pi_t^j \hat{D}_t^{j},
+\]
+for each $j$, 
+we have 
+\begin{equation}
+  d\hat{D}_t^{i} 
+    = \hat{D}_t^{i} \sum_{j=i+1}^n
+       \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j.
+\end{equation}
+
+Now
+\[
+  \delta_i L_t^i \hat{D}_t^{i} =  \hat{D}_t^{i-1} - \hat{D}_t^{i}  
+\]
+is also a $Q$-martingale, hence its drift is zero. Applying Ito's Lemma we
+get
+\begin{align*}
+  d( L_t^i \hat{D}_t^{i} )
+    &= L_t^i (d\hat{D}_t^{i}) + (dL_t^i) \hat{D}_t^{i} 
+      +  (dL_t^i) (d\hat{D}_t^{i})   \\
+    &= \sum_j (\dots) dW_t^j + \mu_t^i L_t^i \hat{D}_t^{i} dt
+      + (\sigma_t^i L_t^i dW_t^i) 
+        \left( \hat{D}_t^{i} \sum_{j=i+1}^n
+          \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j \right) \\
+    &= \sum_j (\dots) dW_t^j 
+      + dt (L_t^i \hat{D}_t^{i}) 
+       \left( \mu_t^i 
+          + \sigma_t^i \sum_{j=i+1}^n \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij}
+       \right).
+\end{align*}
+Since the drift is zero we get
+\begin{equation}
+  \mu_t^i = - \sigma_t^i \sum_{j=i+1}^n \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij},
+\end{equation}
+and thus
+\begin{equation}
+  dL_t^i 
+    = - L_t^i \sigma_t^i 
+      \sum_{j=i+1}^n \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij} dt
+      + L_t^i \sigma_t^i dW_t^i.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spot Measure}
+Alternatively we can define an instrument
+\begin{equation}
+  B^*(t) = D_{tT_{m(t)}} \prod_{j=1}^{m(t)-1} (1+\delta_j L_{T_{j-1}}^j)
+\end{equation}
+and use it as the numeraire. And we define
+\begin{equation}
+  \hat{D}_t^i = \frac{D_{tT_i}}{B^*_t}.
+\end{equation}
+Hence $\hat{D}_t^i$ is a martingale under the measure $Q$ for numeraire
+$B^*(t)$.
+
+Let the dynamcs of LIBOR rate $L_t^i$ under measure $Q$ be
+\begin{equation}
+  dL_t^i = \mu_t^i L_t^i dt + \sigma_t^i L_t^i dW_t^i,
+\end{equation}
+where 
+\begin{equation}
+  dW_t^i dW_t^j = \rho_{ij}.
+\end{equation}
+Using Ito's Lemma and the fact that
+\[
+  \hat{D}_t^{i-1} = \hat{D}_t^{i} (1+\delta_i L_t^i)
+\]
+we get
+\[
+  d\hat{D}_t^{i} 
+    = d\hat{D}_t^{i-1} \frac{1}{1+\delta_i L_t^i} 
+      + \hat{D}_t^{i-1} d\left( \frac{1}{1+\delta_i L_t^i} \right)
+    = d\hat{D}_t^{i-1} \frac{1}{1+\delta_i L_t^i} 
+      + \frac{\hat{D}_t^{i-1} \delta_i L_t^i \sigma_t^i dW_t^i}{(1+\delta_i L_t^i)^2} 
+\]
+Multiply both sides by $\Pi_t^{i}$ and use the fact that
+$\Pi_t^i=\Pi_t^{i-1} (1+\delta_i L_t^i)$ we get
+\[
+  \Pi_t^{i} d\hat{D}_t^{i} 
+    = \Pi_t^{i-1} d\hat{D}_t^{i-1} 
+      + \Pi_t^{i-1} \hat{D}_t^{i-1} \frac{\delta_i L_t^i}{1+\delta_i L_t^i} 
+        \sigma_t^i dW_t^i
+\]
+Apply this equation recursively we get
+\[
+  \Pi_t^{i} d\hat{D}_t^{i} 
+    = \Pi_t^{m(t)-1} d\hat{D}_t^{m(t)-1}
+     -\sum_{j=m(t)}^i (\Pi_t^{j-1} d\hat{D}_t^{j-1}) 
+       \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j.
+\]
+Since $d\hat{D}_t^{m(t)-1}=0$ and
+\[
+  \Pi_t^i d\hat{D}_t^{i}
+    = \Pi_t^{i+1} d\hat{D}_t^{i+1}
+    = \Pi_t^j d\hat{D}_t^{j},
+\]
+for each $j$, 
+we have 
+\begin{equation}
+  d\hat{D}_t^{i} 
+    = - \hat{D}_t^{i} \sum_{j=m(t)}^i
+        \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j.
+\end{equation}
+
+Now
+\[
+  \delta_i L_t^i \hat{D}_t^{i} =  \hat{D}_t^{i-1} - \hat{D}_t^{i}  
+\]
+is also a $Q$-martingale, hence its drift is zero. Applying Ito's Lemma we
+get
+\begin{align*}
+  d( L_t^i \hat{D}_t^{i} )
+    &= L_t^i (d\hat{D}_t^{i}) + (dL_t^i) \hat{D}_t^{i} 
+      +  (dL_t^i) (d\hat{D}_t^{i})   \\
+    &= \sum_j (\dots) dW_t^j + \mu_t^i L_t^i \hat{D}_t^{i} dt
+      + (\sigma_t^i L_t^i dW_t^i) 
+        \left( - \hat{D}_t^{i} \sum_{j=m(t)}^i
+          \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j dW_t^j \right) \\
+    &= \sum_j (\dots) dW_t^j 
+      + dt (L_t^i \hat{D}_t^{i}) 
+       \left( \mu_t^i 
+          - \sigma_t^i \sum_{j=m(t)}^i \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij}
+       \right).
+\end{align*}
+Since the drift is zero we get
+\begin{equation}
+  \mu_t^i = \sigma_t^i \sum_{j=m(t)}^i \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij},
+\end{equation}
+and thus under the spot measure
+\begin{equation}
+  dL_t^i 
+    = L_t^i \sigma_t^i 
+      \sum_{j=m(t)}^i \frac{\delta_j L_t^j}{1+\delta_j L_t^j} \sigma_t^j \rho_{ij} dt
+      + L_t^i \sigma_t^i dW_t^i.
+\end{equation}
+
+%d\hat{D}_t^{i-1}

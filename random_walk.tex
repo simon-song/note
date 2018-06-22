@@ -1,0 +1,710 @@
+\chapter{Random Walks}
+
+\section{Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+\footnote{Grinstead, Introduction to Probability, 2ed, 12.1, p.471}
+Let $\{X_k\}_{k=1}^{\infty}$ be a sequence of independent, identically 
+distributed discrete random variables with probability $P(X_k=1)=p$ and 
+$P(X_k=-1)=q=1-p$. For each positive integer $n$ we let $S_n$ denote the sum
+$X_1+X_2+\cdots+X_n$. The sequence $\{S_k\}_{k=1}^{\infty}$ is called a
+random walk.
+\end{definition}
+
+Let $N_n(a,b)$ be the number of possible paths from $(0,a)$ to $(n,b)$, and
+let $N_n^0(a,b)$ be the number of such paths which contains some points
+$(k,0)$ with $k>0$ on the $x$-axis.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Reflection Principle] \label{T:reflect}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(3), p.76}
+If $a,b>0$, then $N_n^0(a,b)=N_n(-a,b)$.
+\end{theorem}
+\begin{proof}
+Each path from $(0,-a)$ to $(n,b)$ intersects the $x$-axis at some earliest
+point $(k,0)$. Reflect the segment of the path with $0\le x\le k$ in the 
+$x$-axis to obtain a path joining $(0,a)$ to $(n,b)$ which intersects the 
+$x$-axis. This operation gives a one-to-one correspondence between the 
+collections of such paths, and the theorem is proved.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:count_rw}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(4), p.76}
+The number of paths from $(0,a)$ to $(n,b)$ is 
+\begin{equation}
+  N_n(a,b) = C_n^{\frac{1}{2}(n+b-a)}, 
+\end{equation}
+and the probability of the walk starting from $(0,a)$ reaches $(n,b)$ is 
+\begin{equation}
+  P(S_n=b) = C_n^{\frac{1}{2}(n+b-a)} 
+               p^{\frac{1}{2} (n+b-a)} q^{\frac{1}{2} (n-b+a)}.
+\end{equation}
+\end{lemma}
+%%%%%%%%%%%%%%
+\begin{proof}
+Let $\alpha$ and $\beta$ be the number of positve and negative steps in this
+path. Then $\alpha+\beta=n$ and $\alpha-\beta=b-a$, so that 
+$\alpha = \frac{1}{2}(n+b-a)$ and $\beta = \frac{1}{2}(n-b+a)$. 
+The number of paths is the number of ways of
+picking $\alpha$ positive steps from the $n$ available steps. That is
+\[
+  N_n(a,b) = C_n^{\alpha} = C_n^{\frac{1}{2}(n+b-a)}.
+\]
+And the probability $P(S_n=b)$ follows from the fact that 
+$X_1,X_2,\cdots,X_n$
+are independent and identically distributed
+\[
+  P(S_n=b) = N_n(a,b) p^{\alpha} q^{\beta}
+           = C_n^{\frac{1}{2}(n+b-a)} 
+               p^{\frac{1}{2} (n+b-a)} q^{\frac{1}{2} (n-b+a)}.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary}[Ballot Theorem] \label{C:ballot}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(6), p.77}
+If $b>0$ then the number of paths from $(0,0)$ to $(n,b)$ which do not revisit
+the $x$-axis equals $(b/n)N_n(0,b)$.
+\end{corollary}
+\begin{proof}
+The first step of all such paths is to $(1,1)$, and so the number of such 
+paths is
+\[
+  N_{n-1}(1,b) - N_{n-1}^0(1,b) = N_{n-1}(1,b) - N_{n-1}(-1,b)
+\]
+by the reflection principle \ref{T:reflect}. By Lemma \ref{L:count_rw} we 
+have the number of such paths is
+\begin{align*}
+   N_{n-1}(1,b) - N_{n-1}(-1,b) 
+     &= C_{n-1}^{\frac{1}{2}(n+b)-1} - C_{n-1}^{\frac{1}{2}(n+b)} \notag \\
+     &= \frac{(n-1)!}{\left(\frac{n}{2}+\frac{b}{2}-1\right)!
+                      \left(\frac{n}{2}-\frac{b}{2}\right)!}
+      - \frac{(n-1)!}{\left(\frac{n}{2}+\frac{b}{2}\right)!
+                      \left(\frac{n}{2}-\frac{b}{2}-1\right)!}    \notag \\
+     &= \frac{b}{n} \frac{n!}{\left(\frac{n}{2}+\frac{b}{2}\right)!
+                              \left(\frac{n}{2}-\frac{b}{2}\right)!}
+        = \frac{b}{n} N_n(0,b)  \notag
+\end{align*}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:rw_ballot2}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(7), pp.77-78}
+If $S_0=0$ then for $n\ge 1$,
+\begin{equation}
+  P(S_1 S_2\cdots S_n\neq 0, S_n=b) = \frac{|b|}{n} P(S_n=b),
+\end{equation}
+and therefore
+\begin{equation}
+  P(S_1 S_2\cdots S_n\neq 0) = \frac{1}{n} E(|S_n|).
+\end{equation}
+\end{theorem}
+\begin{proof}
+Suppose that $S_0=0$ and $S_n=b>0$. The events in question occurs iff the
+path of the random walk does not visit the $x$-axis in the time interval
+$[1,n]$, by the Ballot Theorem \ref{C:ballot} the number of such paths
+is $(b/n)N_n(0,b)$, hence 
+\[
+  P(S_1 S_2\cdots S_n\neq 0, S_n=b) 
+    = \frac{b}{n} N_n(0,b) p^{\frac{1}{2}(n+b)} q^{\frac{1}{2}(n-b)}
+    = \frac{b}{n} P(S_n=b).
+\]
+A similar calculation is valid if $b<0$.
+\end{proof}
+
+We write
+\[
+  M_n = \max \{S_i: 0\le i\le n \}
+\]
+for the maximal value up to time $n$. Clearly $M_n\ge S_n$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}  \label{T:rw_max}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(10), p.78}
+Suppose that $S_0=0$, then for $r\ge 1$
+\begin{equation}
+  P(M_n\ge r, S_n=b) =
+    \begin{cases}
+      P(S_n=b)                 &\text{if $b\ge r$}   \\
+      (q/p)^{r-b} P(S_n=2r-b)  &\text{if $b<r$}
+    \end{cases}
+\end{equation}
+\end{theorem}
+\begin{proof}
+The case for $b\ge r$ is trivial. For the case with $b<r$, let $N_n^r(0,b)$ be
+the number of paths from $(0,0)$ to $(n,b)$ which include some point having 
+height $r$, let $(i_{\pi},r)$ be the first such point, i.e.
+\[
+  i_{\pi} = \min \{i: 0<i<n, S_i=r \},
+\]
+we can then reflect sthe segment of the path with $i_{\pi}\le x\le n$ in the 
+line $y=r$ to obtain a path joining $(0,0)$ and $(n,2r-b)$. Any such path
+is obtained thus from a unique original path, hence $N_n^r(0,b)=N_n(0,2r-b)$.
+It follows as required that
+\begin{align*}
+  P(M_n\ge r, S_n=b) 
+    &= N_n^r(0,b) p^{\frac{1}{2}(n+b)} q^{\frac{1}{2}(n-b)} \notag \\
+    &= N_n(0,2r-b) p^{\frac{1}{2}(n+b)} q^{\frac{1}{2}(n-b)} \notag \\
+    &= (q/p)^{r-b} N_n(0,2r-b) p^{\frac{1}{2}(n+2r-b)} q^{\frac{1}{2}(n-2r+b)}
+        \notag \\
+    &= (q/p)^{r-b} P(S_n=2r-b). 
+\end{align*}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} [Hitting Time Theorem] \label{T:rw_hittime}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(14), p.79}
+The probability $f_b(n)$ that a random walk $S$ hits the point $b$ for the 
+first time at the $n$-th step, having started from $0$, statisfies
+\begin{equation}
+  f_b(n) = \frac{|b|}{n} P(S_n=b).
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%%%%
+\begin{proof}
+First we consider the case with $b>0$. We have that
+\begin{align*}
+  f_b(n) 
+    &= P(M_{n-1}=S_{n-1}=b-1, S_n=b)     \notag \\
+    &= P(S_n=b | M_{n-1}=S_{n-1}=b-1) P(M_{n-1}=S_{n-1}=b-1) \notag \\
+    &= p P(M_{n-1}=S_{n-1}=b-1) \notag \\
+    &= p [ P(M_{n-1}\ge b-1, S_{n-1}=b-1) - P(M_{n-1}\ge b, S_{n-1}=b-1) ]
+       \notag \\
+    &= p [P(S_{n-1}=b-1) - \frac{q}{p} P(S_{n-1}=b+1)]   
+       \qquad \text{(using Theorem \ref{T:rw_max})} \notag \\
+    &= p P(S_{n-1}=b-1) - q P(S_{n-1}=b+1)   \notag \\
+    &= \frac{b}{n} P(S_n=b)  \qquad \text{(using Lemma \ref{L:count_rw})}
+\end{align*}
+
+A similar calculation is valid for $b<0$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary} 
+For a symmetric random walk starting from origin, i.e. $p=q=1/2$, $S_0=0$, let
+\[
+  T_b=\min\{k: S_k=b\}
+\]
+be the first hitting time of level $b$, then 
+$P(T_b<\infty )=1$ and $E(T_b)=\infty$.
+\end{corollary} 
+%%%%%%%%%%%%%%%%
+\begin{proof}
+Using the Hitting Time Theorem \ref{T:rw_hittime} and Lemma \ref{L:count_rw} we
+get
+\[
+  P(T_b=n)= \frac{|b|}{n} P(S_n=b)
+    = \frac{|b|}{n} C_n^{\frac{1}{2}(n+b)} p^{\frac{1}{2}(n+b)} q^{\frac{1}{2}(n-b)}
+    = \frac{|b|}{n} C_n^{\frac{1}{2}(n+b)} 2^{-n}
+\]
+Without loss of generality, we only look at the case with $b>0$.
+Let $n=2k-b, k\in N$, we have
+\[
+  P(T_b=2k-b)
+    = \frac{b}{2k-b} C_{2k-b}^{k} 2^{-(2k-b)},
+\]
+using the Stirling formula
+\[
+ n! \sim \sqrt{2\pi n} \frac{n^n}{e^n},
+\]
+we get 
+\[
+  P(T_b=2k-b) \sim \frac{b}{2\sqrt{\pi }} k^{-3/2}.
+\]
+Hence
+\[
+ P(T_b\ge 2n-b) = \sum_{k=n}^{\infty} P(T_b=2k-b) = \mathcal{O}(n^{-1/2}),
+\]
+taking $n\to \infty$ we get $P(T_b=\infty)=0$, i.e. $P(T_b<\infty)=1$.
+
+Using
+\[
+  E(T_b)=\sum_{n\in N} n \, P(T_b=n) = \sum_{n\in N} P(T_b>n),
+\]
+we conclude that $E(T_b)=\infty$.
+\end{proof}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} 
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10, p.79. Feller, An Introduction to Probability Theory
+          And Applications, vol.1, 3ed, III.8, p.92}
+The close resemblance of the Hitting Time Theorem \ref{T:rw_hittime} to
+the Theorem \ref{T:rw_ballot2} can be explained by the duality of the random
+walks. If the steps of the original random walk is $X_1,X_2,\cdots,X_n$, then
+we can define a new random walk with steps
+\[
+  X_1^*=X_n, X_2^*=X_{n-1}, \cdots, X_n^*=X_1,
+\]
+and the vertices of the new random walk are determined by the partial sum
+\[
+  S_k^*=X_1^*+X_2^*+\cdots X_k^* = S_n-S_{n-k},
+\]
+we shall refer this as the dual random walk.
+It is easy to see that the events defined by
+\[
+  S_j^*>0, \qquad j=1,2,\cdots,n,
+\]
+and 
+\[
+  S_n > S_j,  \qquad j=0,1,\cdots,n-1
+\]
+are dual to each other. The second signifies that the terminal point $(n,S_n)$ 
+is not visited until step $n$, i.e. $M_{n-1}=S_{n-1}=S_n-1$. Hence if $b>0$ 
+we have
+\[
+  P(S_1S_2\cdots S_n\neq 0, S_n=b] = P(S_1S_2\cdots S_n> 0, S_n=b] 
+    = P(M_{n-1}=S_{n-1}=b-1, S_n=b) = f_b(n).
+\]
+A similar argument is valid if $b<0$.
+\end{remark} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Gambler's Ruin Problem]
+\footnote{Grinstead, Introduction to Probability, 2ed, 12.2, pp.487-489,
+  Grimmett and Stirzaker, Probability and Random Processes, 3ed, 3.9(6), p.74,
+  Feller, An Introduction to Probability Theory And Applications, vol.1, 3ed, 
+  XIV.2, pp.344-345.}
+Consider a gambler who wins or loses a dollar with probability $p$ and $q=1-p$,
+respectively. Given his initial stake $S_0=k>0$, he will continue gambling 
+until his capital is reduced to zero or has increased to $N>k$. The probability
+of ruin is
+\begin{equation}
+  q_k= 
+    \begin{cases}
+      \frac{(q/p)^k - (q/p)^N}{1 - (q/p)^N}  &\text{if $p\neq \frac{1}{2}$} \\
+      \frac{N-k}{k}                          &\text{if $p=q= \frac{1}{2}$} 
+    \end{cases}
+\end{equation}
+And the expected duration of the game is
+\begin{equation}
+  D_k= 
+    \begin{cases}
+      \frac{1}{q-p} 
+        \left[ k - N \left( \frac{1-(q/p)^k}{1-(q/p)^N} \right) \right]
+                &\text{if $p\neq \frac{1}{2}$} \\
+      k (N-k)   &\text{if $p=q= \frac{1}{2}$} 
+    \end{cases}
+\end{equation}
+\end{lemma}
+%%%%%%%%%%%%%
+\begin{proof}
+After the first trial the gambler's fortune is either $k+1$ or $k-1$, and 
+therefore we must have
+\begin{equation}
+  q_k = p q_{k+1} + q q_{k-1}.
+\end{equation}
+To solve this difference equation, first note that since $p+q=1$, we can 
+rewrite the above equation as
+\[
+  q_{k+1} - q_k = \frac{q}{p} (q_k-q_{k-1}).
+\]
+From this equation it is easy to see that
+\[
+  q_k - q_{k-1} = \left( \frac{q}{p} \right)^{k-1} (q_1 - q_0).
+\]
+Hence
+\begin{align*}
+  q_k &= q_0 + (q_1-q_0) + (q_2-q_1) + \cdots + (q_k-q_{k-1})  \\
+      &= q_0 
+         + (q_1-q_0) \left( 1+\frac{q}{p} + \cdots + 
+                           \left( \frac{q}{p} \right)^{k-1} \right) \\
+      &= q_0 + (q_1-q_0) \frac{1-(q/p)^k}{1-(q/p)}.
+\end{align*}
+Using this and the boundary condition $q_N=0$ we have
+\[
+   0 = q_N = q_0 + (q_1-q_0) \frac{1-(q/p)^N}{1-(q/p)}.
+\]
+Hence 
+\[
+  \frac{q_k-q_0}{q_N-q_0} = \frac{1-(q/p)^k}{1-(q/p)^N},
+\]
+and using this and boundary condition $q_0=1$ we get
+\[
+  q_k = \frac{(q/p)^k - (q/p)^N}{1 - (q/p)^N}.
+\]
+In case $p=q=1/2$ we instead have
+\[
+  q_k = q_0 + k (q_1-q_0)
+\]
+and
+\[
+  q_N = q_0 + N (q_1-q_0),
+\]
+hence in this case
+\[
+  q_k = \frac{N-k}{N}.
+\]
+
+With a similar argument as the one used in calculating ruin probability, we have
+the difference equation for the expected duration $D_k$,
+\begin{equation}
+  D_k = p(1+D_{k+1}) + q(1+D_{k-1}),
+\end{equation}
+the boundary conditions are $D_0=D_N=0$.
+Using the fact $p+q=1$ we get
+\[
+  D_{k+1} - D_k = \frac{q}{p} (D_k-D_{k-1}) - \frac{1}{p}.
+\]
+By applying this repeatedly, we get
+\[
+  D_k - D_{k-1} = \left( \frac{q}{p} \right)^{k-1} (D_1-D_0) 
+                  + \frac{1-(q/p)^{k-1}}{q-p}.
+\]
+Hence by this and boundary condition $D_0=0$ we get
+\begin{align*}
+  D_k &= D_0 + (D_1-D_0) + (D_2-D_1) + \cdots + (D_k-D_{k-1})  \\
+      &= \left( D_1-D_0-\frac{1}{q-p} \right) 
+         \left( \frac{1-(q/p)^k}{1-(q/p)}  \right) + \frac{k}{q-p}.
+\end{align*}
+Apply this to the case of $k=N$ we thus have
+\[
+   D_N = \left( D_1-D_0-\frac{1}{q-p} \right) 
+         \left( \frac{1-(q/p)^N}{1-(q/p)}  \right) + \frac{N}{q-p},
+\]
+and thus
+\[
+  \frac{D_k-\frac{k}{q-p}}{D_N-\frac{N}{q-p}}
+    = \frac{1-(q/p)^k}{1-(q/p)^N}.
+\]
+Using this and boundary condition $D_N=0$ we thus arrive at
+\[
+  D_k = \frac{k}{q-p} + \frac{N}{q-p} \frac{1-(q/p)^k}{1-(q/p)^N}.
+\]
+In case $p=q=\frac{1}{2}$ we instead have
+\[
+  D_k - D_{k-1} = \left( \frac{q}{p} \right)^{k-1} (D_1-D_0) - \frac{k-1}{p},
+\]
+and 
+\[
+  D_k = k(D_1-D_0) - k(k-1),
+\]
+and thus
+\[
+  D_N = N(D_1-D_0) - N(N-1),
+\]
+hence in this case
+\[
+  D_k = k(N-k).
+\]
+\end{proof}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(18), p.80}
+If $p=1/2$ and $S_0=0$, for any $b(\neq 0)$ the mean number $\mu_b$ of visit 
+of the walk to the point $b$ before returning to the origin equals $1$.
+\end{theorem}
+\begin{proof}
+TODO. Also should cover the case with $p\neq 1/2$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:rw_noreturn}
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+          vol.1, 3ed, III.3, pp.76-77,
+          Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          3.10(22), p.80}
+For a symmetric random walk starting from origin, i.e. $p=q=1/2$, $S_0=0$, 
+the probability that no return to the origin occurs up to and including
+epoch $2n$ is the same as the probability that a return occurs at epoch 
+$2n$, i.e.
+\begin{equation}
+  P(S_1 S_2\cdots S_{2n}\neq 0) = P(S_{2n}) = u_{2n}.
+\end{equation}
+This is equlvalent to 
+\begin{equation}
+  P(S_1 S_2\cdots S_{2n}> 0) = \frac{1}{2} P(S_{2n}) = \frac{1}{2} u_{2n}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Considering all the possible values of $S_{2n}$ it is clear that
+\begin{align*}
+  P(S_1 S_2\cdots S_{2n}> 0) 
+    &= \sum_{r=1}^{\infty} P(S_1 S_2\cdots S_{2n-1}>0, S_{2n}=2r) \notag \\
+    &= \sum_{r=1}^{\infty} (N_{2n-1}(1,2r)-N_{2n-1}^0(1,2r)) 2^{-2n} \notag \\
+    &= \sum_{r=1}^{\infty} (N_{2n-1}(1,2r)-N_{2n-1}(-1,2r)) 2^{-2n} \notag \\
+    &= \sum_{r=1}^{\infty} (N_{2n-1}(0,2r-1)-N_{2n-1}(0,2r+1)) 2^{-2n} \notag \\
+    &= N_{2n-1}(0,1) 2^{-2n}  = 2^{-2n} C_{2n-1}^n \notag \\
+    &= \frac{1}{2} (2^{-2n} C_{2n}^n) = \frac{1}{2} P(S_{2n}). 
+\end{align*}
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+          vol.1, 3ed, III.3, p.77}
+The above lemma can be restated as 
+\begin{equation}
+  P(S_1 S_2\cdots S_{2n} \ge 0) = P(S_{2n}=0).
+\end{equation}
+This is because a path of length $2n$ with vertices strictly above the 
+$x$-axis passes through point $(1,1)$, hence
+\begin{align*}
+  P(S_1 S_2\cdots S_{2n}> 0) 
+    &= P(S_1=1) P(S_2 S_3\cdots S_{2n}\ge 1 | S_1=1) \notag \\
+    &= \frac{1}{2} P(S_2 S_3\cdots S_{2n}\ge 0 | S_1=0) 
+       \qquad \text{(spatial homogeneity)}  \notag \\
+    &= \frac{1}{2} P(S_1 S_2\cdots S_{2n-1}\ge 0) 
+       \qquad \text{(temporal homogeneity)}  
+\end{align*}
+But $S_{2n-1}$ is an odd number, and hence $S_{2n-1}\ge 0$ means 
+$S_{2n-1}\ge 1$ which implies $S_{2n}\ge 0$, thus
+\[
+  P(S_1 S_2\cdots S_{2n}> 0) 
+    = \frac{1}{2} P(S_1 S_2\cdots S_{2n}\ge 0), 
+\]
+and 
+\[
+  P(S_1 S_2\cdots S_{2n} \ge 0) = P(S_{2n}=0).
+\]
+using the previous lemma.
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+\footnote{Feller, An Introduction to Probability Theory And Applications, 
+          vol.1, 3ed, III.3, pp.77-78.
+          Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+          Exercise 3.10.1, p.83}
+For a symmetric random walk starting from origin, i.e. $p=q=1/2$, $S_0=0$, 
+let $T=\min\{n\ge 1: S_n=0\}$ be the time of the first return to origin,
+then
+\begin{equation}
+  P(T=2n) = \frac{1}{2n-1} u_{2n},   
+\end{equation}
+where $u_{2n} = P(S_{2n}=0) = C_{2n}^n 2^{-2n}$.
+\end{lemma}
+\begin{proof}
+\begin{align*}
+  P(T=2n) 
+    &= P(S_1 S_2 \cdots S_{2n-2}\neq 0, S_{2n-1}=1) P(S_{2n}=0 | S_{2n-1}=1)
+      \notag \\
+    &\, + P(S_1 S_2 \cdots S_{2n-2}\neq 0, S_{2n-1}=-1) P(S_{2n}=0 | S_{2n-1}=-1)
+      \notag \\
+    &= P(S_1 S_2 \cdots S_{2n-2}\neq 0, S_{2n-1}=1)  \notag \\
+    &= \frac{1}{2n-1} P(S_{2n-1}=1)  
+       \qquad \text{(by Theorem\ref{T:rw_ballot2})} \notag \\
+    &= \frac{1}{2n-1} 2^{-(2n-1)} C_{2n-1}^n \notag \\
+    &= \frac{1}{2n-1} (2^{-2n} C_{2n}^n) = \frac{1}{2n-1} u_{2n}. 
+\end{align*}
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+\footnote{Revesz, Random Walk in Random and Non-random Environment, 2ed,
+  Theorem 2.5, p. 16.
+  Billingsley, Convergence of Probability Measure, 2ed, pp. 95-96.
+  Feller, An Introduction to Probability Theory And Applications, vol.1, 3ed, 
+  III.10, Exercise 3, p.96, note there is a typo, $4k$ should be $2k$ instead.}
+For any integer $a\le 0\le b$, $a<b$, $a\le J\le b$ we have the probability
+of the random walk staying inside $x=a$ and $x=b$ from $0$ to at least
+step $n$ is
+\begin{align*}
+  p_n(a,b,J) 
+    &= P\{ a < m_n \le M_n < b, S_n=J \}  \notag \\
+    &= \sum_{k=-\infty}^{\infty}
+       \left( P(S_n=J+2k(b-a)) - P(S_n=2b-J+2k(b-a)) \right).
+\end{align*}
+where $m_n = \min \{S_i: 0\le i\le n \}$ is the minimal value up to step $n$,
+$M_n = \max \{S_i: 0\le i\le n \}$ is the maximal value up to step $n$, and
+$P(S_n=j)$ is the probability the random walk reaches $j$ at time
+step $n$.
+\end{theorem}
+%%%%%%%%%%%%%%%%%
+\begin{proof}
+\footnote{Adapted from Freedman, Brownian Motion and Diffusion, 
+  Theorem 1.3(33), pp. 26-27.
+  See also Revuz and Yor, Continuous Martingales and Brownian Motion, 3ed,
+  Exercise III(3.15), p. 111,
+  and Gikhman and Skorokhod, Introduction to the Theory of Random Processes,
+  pp.286-288. The proof in Revesz and that in Billingsley use mathematical
+  induction.} 
+Let the first hit time to $x=a$ be $\tau_a=\inf \{i:S_i=a\}$,
+the first hit time to $x=b$ be $\tau_b=\inf \{i:S_i=b\}$, 
+% $A=\{\tau_a<\tau_b\}$ be the event that the random walk hits $x=a$ before $x=b$,
+% $C=\Omega\setminus A=\{\tau_b<\tau_a\}$ be the event that the random walk 
+% hits $x=b$ before $x=a$, 
+% $A^*=\{\tau_a\le n\}$ be the event that the random walk hits $x=a$ before step $n$,
+% $C^*=\{\tau_b\le n\}$ be the event that the random walk hits $x=b$ before step $n$.
+and let $r_a H=\{2a-y: y\in H\}$ and $r_b H=\{2b-y: y\in H\}$ be the reflection
+operation at $x=a$ and $x=b$, respectively.
+
+If $H\in (-\infty,a]$, then
+\[
+  P(\tau_b <\tau_a, S_n=H) = P(S_n=r_b H) - P(\tau_a<\tau_b, S_n=r_b H),
+\]
+actually using the reflection principle
+\[
+  P(\tau_b <\tau_a, S_n=H) 
+    = P(\tau_b <\tau_a, S_n=r_b H) 
+    = P(S_n=r_b H) - P(\tau_a<\tau_b, S_n=r_b H),
+\]
+Similarly if $H\in [b,\infty]$, then we have
+\[
+  P(\tau_a <\tau_b, S_n=H) = P(S_n=r_a H) - P(\tau_b<\tau_a, S_n=r_a H).
+\]
+
+Now it is easy to see that
+\[
+  p_n(a,b,J) = P(S_n=J) - P(\tau_a<\tau_b, \tau_a\le n, S_n=J)
+                        - P(\tau_b<\tau_a, \tau_b\le n, S_n=J).
+\] 
+Using the reflection principle, the second term is
+\[
+  T_2 = P(\tau_a<\tau_b, \tau_a\le n, S_n=J)
+      = P(\tau_a<\tau_b, \tau_a\le n, S_n=r_a J),
+\]
+now since $r_a J\in (-\infty,a]$, then $\{S_n=r_a J\}\subset \{\tau_a\le n\}$,
+hence 
+\begin{align*}
+  T_2 &= P(\tau_a<\tau_b, S_n=r_a J)  \notag \\
+      &= P(S_n=r_a J) - P(\tau_b<\tau_a, S_n=r_a J)  \notag \\
+      &= P(S_n=r_a J) - P(S_n=r_b r_a J)+ P(\tau_a<\tau_b, S_n=r_b r_a J) 
+         \notag \\
+      &= P(S_n=r_a J) - P(S_n=r_b r_a J)+ P(S_n=r_a r_b r_a J) - \cdots  
+\end{align*}
+
+Similarly we have the third term, i.e. the probaility of hitting $x=b$ before
+hitting $x=a$ and before step $n$ is
+\begin{align*}
+  T_3 &= P(\tau_b<\tau_a, \tau_b\le n, S_n=J)  \notag \\
+      &= P(\tau_b<\tau_a, \tau_b\le n, S_n=r_b J) 
+           \qquad \text{(reflection principle)} \notag \\
+      &= P(\tau_b<\tau_a, S_n=r_b J)  
+           \qquad \text{($r_b J>b>0$ hence $\tau_b<n$)}  \notag \\
+      &= P(S_n=r_b J) - P(\tau_a<\tau_b, S_n=r_b J)  \notag \\
+      &= P(S_n=r_b J) - P(S_n=r_a r_b J)+ P(\tau_b<\tau_a, S_n=r_a r_b J) 
+         \notag \\
+      &= P(S_n=r_b J) - P(S_n=r_a r_b J)+ P(S_n=r_b r_a r_b J) - \cdots  
+\end{align*}
+
+Now we have
+\begin{align*}
+  r_a J &= 2a - J = 2b - J - 2(b-a)    \notag \\
+  r_b r_a J &= J + 2(b-a)   \notag \\
+  r_a r_b r_a J &= 2a - J - 2(b-a) = 2b - J - 4(b-a)  \notag \\
+  r_b r_a r_b r_a J &= J + 4(b-a)   \notag \\
+  r_a r_b r_a r_b r_a J &= 2a - J - 4(b-a) = 2b - J - 6(b-a)  \notag \\
+  etc.etc.
+\end{align*}
+and
+\begin{align*}
+  r_b J &= 2b - J     \notag \\
+  r_a r_b J &= J - 2(b-a)   \notag \\
+  r_b r_a r_b J &= 2b - J + 2(b-a)  \notag \\
+  r_a r_b r_a r_b J &= J - 4(b-a)   \notag \\
+  r_b r_a r_b r_a r_b J &= 2b - J + 4(b-a)   \notag \\
+  etc.etc.
+\end{align*}
+thus 
+\begin{align*}
+  p_n(a,b,J) 
+    &= P(S_n=J) - P(\tau_a<\tau_b, \tau_a\le n, S_n=J)
+                - P(\tau_b<\tau_a, \tau_b\le n, S_n=J) \notag \\
+    &= P(S_n=J)  
+       - ( P(S_n=r_a J) - P(S_n=r_b r_a J)+ P(S_n=r_a r_b r_a J) - \cdots ) 
+       \notag \\ 
+    &- ( P(S_n=r_b J) - P(S_n=r_a r_b J)+ P(S_n=r_b r_a r_b J) - \cdots ) 
+       \notag \\ 
+    &= \sum_{k=-\infty}^{\infty}
+       \left( P(S_n=J+2k(b-a)) - P(S_n=2b-J+2k(b-a)) \right).
+\end{align*}
+
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Arc sine Laws}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Arc sine law for last visit to the origin]
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+  Theorem 3.10(19), p.80. Feller, An Introduction to Probability Theory And 
+  Applications, vol.1, 3ed, III.4, Theorem 1, p.79.}
+Suppose that $p=1/2$ and $S_0=0$. The probability that the last visit to the
+origin up to time $2n$ occurred at time $2k$ is 
+$\alpha_{2n}(2k)=P(S_{2k}=0) P(S_{2n-2k}=0)$.
+\end{theorem}
+\begin{proof}
+We have
+\begin{align*}
+  \alpha_{2n}(2k) 
+    &= P(S_{2k}=0, S_{2k+1}S_{2k+2}\cdots S_{2n}\neq 0)  \\
+    &= P(S_{2k}=0) P(S_{2k+1}S_{2k+2}\cdots S_{2n}\neq 0 | S_{2k}=0 )   \\
+    &= P(S_{2k}=0) P(S_1 S_2 \cdots S_{2n-2k}\neq 0)   \\
+    &= P(S_{2k}=0) P(S_{2n-2k}= 0)   \qquad \text{(Lemma \ref{L:rw_noreturn})}
+\end{align*}
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Arc sine law for sojourn times]
+\footnote{Grimmett and Stirzaker, Probability and Random Processes, 3ed, 
+  Theorem 3.10(21), pp.81-82. Feller, An Introduction to Probability Theory And 
+  Applications, vol.1, 3ed, III.4, Theorem 2, pp.82-83.}
+Suppose that $p=1/2$ and $S_0=0$. The probability that the walk spends exactly 
+$2k$ intervals of time, up to time $2n$, to the right of the origin equals
+$b_{2n}(2k)=P(S_{2k}=0) P(S_{2n-2k}=0)$.
+\end{theorem}
+%%%%%%%%%%%%%%%
+\begin{proof}
+From Lemma \ref{L:rw_noreturn} we have
+\[
+  b_{2n}(2n)=P(S_1 S_2 \cdots S_{2n}\ge 0) = P(S_{2n}=0) =u_{2n},  
+\]
+hence by symmetry we get $b_{2n}(0)=u_{2n}$.
+
+Let $u_n=P(S_n=0)$ and $f_{2r}=P(T=2r)$ where $T=\inf\{i>0:S_i=0\}$ is the first 
+time to origin. It is easy to see that
+\[
+  u_{2n}=\sum_{r=1}^n u_{2n-2r} f_{2r},
+\]
+because
+\[
+  P(S_{2n}=0) = \sum_{r=1}^n P(S_{2n}=0|T=2r) P(T=2r)
+              = \sum_{r=1}^n P(S_{2n-2r}=0) P(T=2r).
+\]
+
+Assume then that exactly $2k$ out of the $2n$ time units are spent on the 
+positive side, and $1\le k\le n-1$.  At the first return to origin, one of 
+two contigents could happen. Either the walk spend all first $2r$ steps on 
+the positive or it spends zero steps on the positive side.
+Hence
+\[
+  b_{2n}(2k)=\sum_{r=1}^k \frac{1}{2} P(T=2r) b_{2n-2r}(2k-2r)
+             + \sum_{r=1}^{n-k} \frac{1}{2} P(T=2r) b_{2n-2r}(2k),
+\]
+We conclude the proof by induction. Certainly it is valid for all $k$ if $n=1$.
+And we assume it to be true for all $m\le n-1$. Then we have
+\[
+  b_{2n}(2k) = \frac{1}{2} u_{2n-2k} \sum_{r=1}^k f_{2r} u_{2k-2r}
+                + \frac{1}{2} u_{2k} \sum_{r=1}^{n-k} f_{2r} u_{2n-2k-2r}
+              = u_{2k} u_{2n-2k}.
+\]
+\end{proof}

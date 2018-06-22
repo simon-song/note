@@ -1,0 +1,960 @@
+\chapter{Feynman-Kac Formula}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{One Dimensional Diffusion Process} \label{S:diff}
+We define a one-dimensional diffusion process $X_t$ by its stochastic
+differential equation
+\begin{equation}
+  dX_t = \mu(X_t) dt + \sigma(X_t) dW_t
+\end{equation}
+and initial condition $X_t=x$. The infinitesimal generator is defined as
+\begin{equation}
+  \mathcal{G} = \frac{1}{2} \sigma^2(x) \frac{d^2}{dx^2} + \mu(x)\frac{d}{dx}.
+\end{equation}
+
+It is convenient to express the infinitesimal generator in the formally
+self-adjoint form:
+%\footnote{V. Linetsky, Spectral Methods in Derivative Pricing, section 3, 
+%    Chapter 6 of Handbooks in Operations Research and Management Science, 
+%    vol.15, Financial Engineering. Note that Linetsky uses
+%    $s(x)$ to denote scale density (instead of $s'(x)$ here).}
+\footnote{V. Linetsky, Spectral Methods in Derivative Pricing, section 3, 
+    Chapter 6 of Handbooks in OR and MS, vol.15, 
+    Note that Linetsky uses
+    $s(x)$ to denote scale density (instead of $s'(x)$ here).}
+\[
+  \mathcal{G} = \frac{d}{m(x)dx} \left( \frac{d}{s'(x)dx} \right)
+              = \frac{d}{dm} \left( \frac{d}{ds} \right),
+\]
+where $m(x)$ and $s'(x)$ are speed density and scale density. 
+\footnote{Thus $dm=m(x)dx$ and $ds=s'(x)dx$.}
+It is easy to see that
+\begin{equation}
+  s'(x)=\exp\left( -\int^x \frac{2\mu(y)}{\sigma^2(y)} dy \right),
+\end{equation}
+and 
+\begin{equation}
+  m(x) = \frac{2}{\sigma^2(x) s'(x)}.
+\end{equation}
+
+It is very useful to study the solutions of the Sturm-Liouville equation:
+\[
+  \mathcal{G} u(x) = \alpha u(x),
+\]
+where $\alpha>0$ is a constant. Let $\phi_{\alpha}(x)$ and $\psi_{\alpha}(x)$ be
+two independent solutions of this equation, we have
+\begin{align*}
+  0 &= \phi_{\alpha} (\mathcal{G}-\alpha) \psi_{\alpha}
+       - \psi_{\alpha} (\mathcal{G}-\alpha) \phi_{\alpha}  \notag \\
+    &= \frac{s'(x)}{m(x)} 
+       \left( 
+         \phi_{\alpha} \frac{d}{ds} \left( \frac{d\psi_{\alpha}}{ds} \right)
+         - \psi_{\alpha} \frac{d}{ds} \left( \frac{d\phi_{\alpha}}{ds} \right)
+       \right)   \notag \\
+    &= \frac{s'(x)}{m(x)} \frac{d}{ds}
+       \left( 
+         \phi_{\alpha} \frac{d\psi_{\alpha}}{ds} 
+         - \psi_{\alpha} \frac{d\phi_{\alpha}}{ds} 
+       \right)   \notag \\
+\end{align*}
+hence
+\[
+  \frac{d}{dx} \left( 
+    \phi_{\alpha} \frac{d\psi_{\alpha}}{ds} 
+     - \psi_{\alpha} \frac{d\phi_{\alpha}}{ds} \right) = 0.
+\]
+We define the Wronskian as
+\begin{align} \label{E:wron}
+  w_{\alpha} &= \phi_{\alpha}(x) \frac{d\psi_{\alpha}(x)}{ds} 
+                - \psi_{\alpha}(x) \frac{d\phi_{\alpha}(x)}{ds} \notag \\
+    &= \frac{1}{s'(x)} \left( \phi_{\alpha}(x) \frac{d\psi_{\alpha}(x)}{dx} 
+         - \psi_{\alpha}(x) \frac{d\phi_{\alpha}(x)}{dx} \right), 
+\end{align}
+and we conclude that it is independent of $x$.
+
+We consider two types of boundary conditions at boundary point $e$. For
+Dirichlet boundary condition we mean
+\begin{equation}
+  \lim_{x\to e} f(x) = 0,
+\end{equation}
+and for the Neumann boundary condition
+\begin{equation}
+  \lim_{x\to e} \frac{f'(x)}{s'(x)} = 0.
+\end{equation}
+
+Let $p_m(t,x,y)$ be the transition density with respect to the speed measure
+$m(dx)=m(x)dx$, i.e.
+\begin{equation}
+  p_m(t,x,y) m(y)dy =P_x[X_t\in dy] = p(t,x,y) dy.
+\end{equation}
+Using the Feynman-Kac formula for transition density \ref{P:kac_tran}, we get
+that
+\[
+  \frac{\partial}{\partial t} p_m(t,x,y) = \mathcal{G} p_m(t,x,y),
+\]
+and 
+\[
+  p_m(0,x,y) = \frac{\delta(x-y)}{m(y)}.
+\]
+
+We introduce the Green's function as the Laplace transform of the transition
+density
+\begin{equation}
+  G_{\alpha}(x,y) = \int_0^{\infty} e^{-\alpha t} p_m(t,x,y) dt,
+\end{equation}
+and it satisfies the following equation:
+\begin{equation}
+  (\mathcal{G} - \alpha) G_{\alpha}(x,y) = -\frac{\delta(x-y)}{m(y)}.
+\end{equation}
+
+To solve this equation, let $\phi_{\alpha}(x)$ and $\psi_{\alpha}(x)$ be the
+independent solutions of the corresponding Sturm-Liouville equation
+(with the appropriate boundary condition, e.g. Dirichlet or Neumann)
+\[
+  (\mathcal{G} - \alpha) u(x) = 0,
+\]
+and assume that $\phi_{\alpha}(x)$ is decreasing and $\psi_{\alpha}(x)$ is
+increasing. Hence the Green's function can be written as
+\[
+  G_{\alpha}(x,y) = 
+    \begin{cases}
+      A(y) \phi_{\alpha}(x)   & x \ge y \\
+      B(y) \psi_{\alpha}(x)   & x \le y 
+    \end{cases}.
+\]
+To solve $A(y)$ and $B(y)$, first note that $G_{\alpha}(x,y)$ is continuous,
+i.e.
+\[
+  G_{\alpha}(x,y)\big|_{x=y^-}^{x=y^+} = 0,
+\]
+and by integrating the equation for $G_{\alpha}(x,y)$ we have
+\[
+  \int_{y^-}^{y^+} (\mathcal{G}-\alpha) G_{\alpha}(x,y) dx
+    = \frac{1}{m(y)} \left( \frac{dG_{\alpha}(x,y)}{s'(x)dx} \right)
+      \bigg|_{x=y^-}^{x=y^+} 
+    = \int_{y^-}^{y^+} \frac{-\delta(x-y)}{m(y)} dx = -\frac{1}{m(y)}.
+\]
+Thus 
+\[
+  A(y)=\psi_{\alpha}(y)/w_{\alpha}, \qquad B(y)=\phi_{\alpha}(y)/w_{\alpha}
+\]
+and
+\begin{equation}
+  G_{\alpha}(x,y) = 
+    \begin{cases}
+      w_{\alpha}^{-1} \psi_{\alpha}(y) \phi_{\alpha}(x)   & x \ge y \\
+      w_{\alpha}^{-1} \phi_{\alpha}(y) \psi_{\alpha}(x)   & x \le y 
+    \end{cases},
+\end{equation}
+where Wronskian $w_{\alpha}$ is defined in Eq. \ref{E:wron} and is independent
+of $x$. And the transition density under speed measure $p_m(t,x,y)$ can be 
+obtained by taking the inverse Laplace transform of the Green's function.
+
+Note that from the definition of the Wronskian $w_{\alpha}$ in Eq. \ref{E:wron}
+\[
+	\frac{d}{dx} \left( - \frac{1}{w_{\alpha}}
+	\frac{\phi_{\alpha}(x)}{\psi_{\alpha}(x)} \right)
+	= \frac{1}{w_{\alpha}} \frac{\phi_{\alpha}'(x)\psi_{\alpha}(x) -
+	\phi_{\alpha}(x)\psi_{\alpha}'(x)}{\psi_{\alpha}(x)^2}
+	= \frac{s'(x)}{\psi_{\alpha}(x)^2},
+\]
+hence we can rewrite the green's function as
+\footnote{Cs\'{a}ki, F\"{o}ldes, and Salminen, \it{On the joint distribution of
+	the maximum and its location for a linear diffusion},
+        Ann.Inst.H.Poincar\'{e}, 23 (1987), 179-194, eq. (2.14)}
+\begin{equation}
+  G_{\alpha}(x,y) 
+  = \psi_{\alpha}(x) \psi_{\alpha}(y) 
+  \left( \int_{x\vee y}^r \frac{s(du)}{\psi_{\alpha}(u)^2} 
+	  + \frac{1}{w_{\alpha}} \frac{\phi_{\alpha}(r)}{\psi_{\alpha}(r)} 
+      \right),
+\end{equation}
+where $r$ is the right hand endpoint of the interval $I$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Diffusion Process: An Analytic Approach} \label{S:diff_ana}
+
+\begin{definition}
+A Markov process $X_t$ in $\mathbb{R}$ with transition function 
+$P(\Gamma,t|x,s)=P(X_t\in\Gamma | X_s=x)$
+is called a diffusion process
+\footnote{Pavliotis, Stochastic Processes and Applications, Defintion 2.2, p.44;
+  Gikhman \& Skorokhod, Introduction to the Theory of Random Processes, p. 372;}
+if the the following conditions are satisfied:
+\begin{enumerate}
+  \item[(i)] (Continuity). For every $x$ and every $\epsilon>0$,
+    \begin{equation}
+      \int_{|x-y|>\epsilon} P(dy,t|x,s) = o(t-s),
+    \end{equation}
+    uniformly over $s<t$.
+  \item[(ii)] (Definition of drift coefficient). There exists a function
+    $\mu(x,s)$ such that for every $x$ and every $\epsilon>0$,
+    \begin{equation}
+      \int_{|x-y|\le\epsilon} (y-x) P(dy,t|x,s) = \mu(x,s)(t-s) + o(t-s),
+    \end{equation}
+    uniformly over $s<t$.
+  \item[(iii)] (Definition of diffusion coefficient). There exists a function
+    $\sigma(x,s)$ such that for every $x$ and every $\epsilon>0$,
+    \begin{equation}
+      \int_{|x-y|\le\epsilon} (y-x)^2 P(dy,t|x,s) = \sigma^2(x,s)(t-s) + o(t-s),
+    \end{equation}
+    uniformly over $s<t$.
+\end{enumerate}
+\end{definition}
+
+Assume that the transition function has a density  with respect to the Lebesgue
+measure that is a smooth function
+\[
+  P(dy,t|x,s) = p(y,t|x,s)dy.
+\]
+We can obtain an equation with respect to the "forward" variables $y,t$, namely
+the forward Kolmogorov or Fokker-Planck equation.
+
+%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Kolmogorov] 
+For any diffusion process $X_t$ with smooth transition density function
+$p(y,t|.,.)$, smooth drift coefficient $\mu(y,t)$ and smooth diffusion
+coefficient $\sigma(y,t)$. Then the transition probability density is the
+solution to the initial value problem
+\begin{equation} \label{E:kolm_forw}
+  \frac{\partial p}{\partial t} = - \frac{\partial}{\partial y} (\mu(y,t) p)
+    + \frac{1}{2} \frac{\partial^2}{\partial y} (\sigma^2(y,t) p),
+  \qquad p(y,s|x,s)=\delta(y-x).
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%
+\begin{proof}
+For any function $f(y)\in C_0^2(\mathbb{R})$, we have for small $h>0$
+\begin{align*}
+  & \hspace{0.4cm} \int_{\mathbb{R}} f(y) p(y,s+h|x,s) dy - f(x)  \\
+  &= \int_{\mathbb{R}} (f(y)-f(x)) p(y,s+h|x,s) dy  \\
+  &= \int_{|y-x|\le\epsilon} (f(y)-f(x)) p(y,s+h|x,s) dy  
+     + \int_{|y-x|>\epsilon} (f(y)-f(x)) p(y,s+h|x,s) dy  \\
+  &= \int_{|y-x|\le\epsilon} (f(y)-f(x)) p(y,s+h|x,s) dy  + o(h) \\
+  &= \frac{df}{dx}(x) \int_{|y-x|\le\epsilon} (y-x) p(y,s+h|x,s) dy  
+     + \frac{d^2 f}{dx^2}(x) \int_{|y-x|\le\epsilon} (y-x)^2 p(y,s+h|x,s) dy  
+     + o(h) 
+\end{align*}
+here we have used Taylor's theorem. Hence
+\[
+  \lim_{h\to 0} \frac{1}{h} \left( \int_{\mathbb{R}} f(y) p(y,s+h|x,s) dy - f(x) \right)
+  = \mu(x,s) \frac{df}{dx}(x) + \sigma^2(x,s) \frac{d^2 f}{dx^2}(x).
+\]
+
+Using this equation and the Chapman-Kolmogorov equation, we get
+\begin{align*}
+  & \hspace{0.4cm} \int f(y) \frac{\partial}{\partial t} p(y,t|x,s) dy 
+    = \frac{\partial}{\partial t} \int f(y) p(y,t|x,s) dy  \\
+  &= \lim_{h\to 0} \frac{1}{h} \int (p(y,t+h|x,s)-p(y,t|x,s)) f(y) dy \\
+  &= \lim_{h\to 0} \frac{1}{h} \left( \int p(y,t+h|x,s) f(y) dy - \int p(y,t|x,s) f(y)dy \right) \\
+  &= \lim_{h\to 0} \frac{1}{h} \left( \int \left(\int p(y,t+h|z,t) p(z,t|x,s) dz\right) f(y) dy 
+     - \int p(z,t|x,s) f(z)dz \right) \\
+  &= \lim_{h\to 0} \frac{1}{h} \left( \int p(z,t|x,s) 
+       \left( \int f(y) p(y,t+h|z,t) dy - f(z) \right) dz  \right) \\
+  &= \int p(z,t|x,s) \left( \mu(z,t)\frac{df}{dz}(z) 
+      + \frac{1}{2}\sigma^2(z,t) \frac{d^2 f}{dz^2}(z) \right) dz
+\end{align*}
+
+Integrate this by parts, we get
+\[
+  \int f(y) \frac{\partial}{\partial t} p(y,t|x,s) dy  
+  = \int \left( - \frac{\partial}{\partial z} (\mu(z,t)p(z,t|x,s))
+    + \frac{1}{2} \frac{\partial^2}{\partial z^2} (\sigma^2(z,t)p(z,t|x,s))
+    \right) f(z) dz.
+\]
+Since this equation is valid for every test function $f$, the forward Kolmogorov
+equation follows.
+\end{proof}
+  
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Feynman-Kac Formula for Brownian Motion}
+
+%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:heat}
+Function $u(t,x)=E_x\left[f(W_t) \right]$ is the unique solution of problem
+(heat equation)
+\begin{align}
+  \frac{\partial}{\partial t} u(t,x) 
+    &= \frac{1}{2} \frac{\partial^2}{\partial x^2} u(t,x),  \\
+  u(0,x) &= f(x).
+\end{align}
+\end{lemma}
+\begin{proof}
+Straightforward from the definition of $u(t,x)$
+\[
+  u(t,x) = \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi t}}
+           e^{-\frac{(y-x)^2}{2t}} f(y) \, dy.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:green}
+Let the Green operator $G_{\lambda}$ be defined as
+\begin{equation}
+  G_{\lambda} f(x) = E_x 
+    \left[ 
+      \int_0^{\infty} e^{-\lambda t} f(W_t) \, dt
+    \right],
+\end{equation}
+then it is the unique solution of problem
+\begin{equation}
+  \left( \frac{1}{2} \frac{d^2}{dx^2} -\lambda \right) u(x) = - f(x).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let $u(t,x)=E_x\left[f(W_t) \right]$ and 
+\[
+  u(x) = E_x 
+    \left[ 
+      \int_0^{\infty} e^{-\lambda t} f(W_t) \, dt
+    \right]
+    = \int_0^{\infty} e^{-\lambda t} u(t,x)\, dt.
+\]
+Using Lemma \ref{L:heat}, we get
+\begin{align*}
+  \frac{1}{2} u''(x) &= \int_0^{\infty} e^{-\lambda t} 
+                      \frac{1}{2} \frac{\partial^2}{\partial x^2} u(t,x)\,dt\\
+                     &= \int_0^{\infty} e^{-\lambda t} 
+                        \frac{\partial}{\partial t} u(t,x)\, dt \\
+                     &= e^{-\lambda t} u(t,x) \vert_0^{\infty} 
+                        + \lambda \int_0^{\infty} e^{-\lambda t} u(t,x)\, dt \\
+                     &= - f(x) + \lambda u(x)
+\end{align*}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:kac1}
+Let $f(x)$ and $k(x)$ be piecewise continuous then
+\begin{equation}
+  M(x) = E_x 
+        \left[
+          \int_0^{\infty} e^{-\lambda t} f(W_t) 
+            e^{-\int_0^t k(W_u) du} \, dt 
+        \right],
+\end{equation} 
+is the unique continuous bounded solution of problem
+\begin{equation}
+  \frac{1}{2} \frac{d^2 M(x)}{dx^2} - (\lambda+k(x)) M(x) = -f(x)  
+\end{equation}
+\end{theorem}
+\begin{proof}
+Let $G_{\lambda}$ be the Green operator as defined in Lemma \ref{L:green},
+then
+\begin{align*}
+  & G_{\lambda} f(x) - M(x)  \\
+  &= E_x 
+     \left[  
+       \int_0^{\infty} e^{-\lambda t} f(W_t) 
+         \left( 1-e^{-\int_0^t k(W_u)\, du} \right) \, dt
+     \right] \\
+  &= E_x 
+     \left[  
+       \int_0^{\infty} e^{-\lambda t} f(W_t) 
+         \left( \int_0^t e^{-\int_s^t k(W_u)\, du} k(W_s)\, ds \right) \, dt
+     \right] \\
+  &= E_x 
+     \left[  
+       \int_0^{\infty}
+         \left( 
+           \int_s^{\infty} e^{-\lambda t} f(W_t) e^{-\int_s^t k(W_u)\, du} dt 
+         \right)
+         k(W_s) \, ds
+     \right] \\
+  &= \int_0^{\infty} E_x 
+       \left[ E_x
+         \left[  
+           \left( 
+             \int_s^{\infty} e^{-\lambda t} f(W_t) e^{-\int_s^t k(W_u)\, du} dt 
+           \right)
+           k(W_s) | \mathcal{F}_s
+         \right] 
+       \right] \, ds \\
+  &= \int_0^{\infty} E_x 
+       \left[ E_x
+         \left[  
+           \int_s^{\infty} e^{-\lambda t} f(W_t) e^{-\int_s^t k(W_u)\, du} dt 
+           | \mathcal{F}_s
+         \right] k(W_s)
+       \right] \, ds \\
+  &= \int_0^{\infty} E_x 
+       \left[ E_x
+         \left[  
+           \int_0^{\infty} e^{-\lambda (t+s)} f(W_t) 
+             e^{-\int_0^t k(W_{u+s})\, du} dt | \mathcal{F}_s
+         \right] k(W_s)
+       \right] \, ds \\
+  &= \int_0^{\infty} E_x 
+       \left[ e^{-\lambda s} M(W_s) k(W_s) \right] \, ds \\
+  &= E_x \left[ \int_0^{\infty} e^{-\lambda s} M(W_s) k(W_s) \, ds\right] \\
+  &= G_{\lambda} (Mk)(x)
+\end{align*}
+Apply $\left( \frac{1}{2} \frac{d^2}{dx^2} - \lambda \right)$ on both sides and use Lemma 
+\ref{L:green}, we prove the theorem.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:kac2}
+Let $f(x)$ and $k(x)$ be piecewise continuous and
+\begin{equation}
+  l(t,x) = \lim_{\epsilon \to 0} \frac{1}{\epsilon}
+           \int_0^t 1_{[x,x+\epsilon)}(W_s) \, ds
+\end{equation}
+be the local time, then
+\begin{equation}
+  M(x) = E_x 
+        \left[
+          \int_0^{\infty} e^{-\lambda t} f(W_t) 
+            e^{-\int_0^t k(W_u) du - \sum_n c_n l(t,a_n)} \, dt 
+        \right],
+\end{equation} 
+is the unique solution of problem
+\begin{align}
+  \frac{1}{2} \frac{d^2 M(x)}{dx^2} - (\lambda+k(x)) M(x) &= -f(x)
+    \label{E:kac1} \\
+  M'(a_n+0) - M'(a_n-0) &= 2 c_n M(a_n), \\
+  M(a+0) = M(b-0) &= 0
+\end{align}
+\end{theorem}
+\begin{proof}
+From Theorem \ref{T:kac1} and use in place of $k(x)$ function
+\[
+  k(x) + \lim_{\epsilon \to 0} \frac{1}{\epsilon} \sum_l c_l
+  \, 1_{[a_l,a_l+\epsilon)}(x),
+\]
+we get 
+\[
+  \frac{1}{2} \frac{d^2 M(x)}{dx^2} 
+  - \left( \lambda + k(x)
+      + \lim_{\epsilon \to 0} \frac{1}{\epsilon} \sum_l c_l
+        \, 1_{[a_l,a_l+\epsilon)}(x)
+    \right) M(x) = -f(x).
+\]
+When $x\neq a_l$, this becomes
+\[
+  \frac{1}{2} \frac{d^2 M(x)}{dx^2} - (\lambda+k(x)) M(x) = -f(x),
+\]
+When $x=a_n$, apply $\int_{a_n-\epsilon}^{a_n+\epsilon} dx$ on both sides and
+take the limit of $\epsilon \to 0$, we get
+\[
+  M'(a_n+0) - M'(a_n-0) = 2 c_n M(a_n).
+\]
+\end{proof}
+
+\begin{remark}
+For piecewise continuous functions $f(x)$ and $k(x)$ equation \ref{E:kac1} 
+should be understood in the following way: it holds at all points of 
+continuity of the functions $f(x)$ and $k(x)$, and at points of discontinuity 
+of $f(x)$ and $k(x)$ its solution is continuous together with the first 
+derivative.
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} 
+Let $f(x)$ and $k(x)$ be piecewise continuous then
+\begin{equation}
+  u(t,x)=E_x 
+    \left[
+      f(W_t) e^{-\int_0^t k(W_s) ds}
+      + \int_0^t g(t-\theta,W_{\theta}) e^{-\int_0^{\theta} k(W_s) ds} d\theta
+    \right]
+\end{equation}
+is the unique solution of problem
+\begin{align}
+  \frac{\partial}{\partial t} u(t,x)  + k(x) u(t,x)
+    &= \frac{1}{2} \frac{\partial^2}{\partial x^2} u(t,x) + g(t,x),   \\ 
+  u(0,x) &= f(x).
+\end{align}
+\end{theorem} 
+
+\begin{proof}
+Let $M_{\lambda}(x)$ be the Laplace transform of the solution $u(t,x)$  of the
+above Cauchy problem
+\[
+  M_{\lambda}(x) = \int_0^{\infty} e^{-\lambda t} u(t,x) dt 
+    = L_{\lambda}[u(t,x)],
+\]
+Using the properties of Laplace transform 
+\[
+  L_{\lambda}\left[\frac{\partial u(t,x)}{\partial t} \right]
+    = - u(0,x) + \lambda L_{\lambda}[u(t,x)],
+\]
+\[
+  L_{\lambda}\left[\frac{\partial^2 u(t,x)}{\partial x^2} \right]
+    = \frac{\partial^2 u(t,x)}{\partial x^2} L_{\lambda}[u(t,x)],
+\]
+and 
+\[
+    L_{\lambda}[k(x) u(t,x)] = k(x) L_{\lambda}[u(t,x)],
+\]
+we get that 
+\[
+  \frac{1}{2} \frac{d^2 M_{\lambda}(x)}{dx^2} - (\lambda+k(x)) M_{\lambda}(x)
+    = -( f(x)  + g_{\lambda}(x) ),
+\]
+where $g_{\lambda}(x) = L_{\lambda}[g(t,x)]$ is the Laplace transform of 
+$g(t,x)$.
+Using Theorem \ref{T:kac1} we have
+\[
+  M_{\lambda}(x) = E_x 
+        \left[
+          \int_0^{\infty} e^{-\lambda t} ( f(W_t) + g_{\lambda}(W_t) )
+            e^{-\int_0^t k(W_s) ds} \, dt 
+        \right].
+\]
+Note that
+\begin{align*}
+  \int_0^{\infty} e^{-\lambda t} g_{\lambda}(W_t) e^{-\int_0^t k(W_s) ds} \, dt 
+  &= \int_0^{\infty} e^{-\lambda t}  
+       \left( \int_0^{\infty} e^{-\lambda\theta} g(\theta,W_t) d\theta \right)
+     e^{-\int_0^t k(W_s) ds} \, dt    \notag \\
+  &= \int_0^{\infty} dt \int_0^{\infty} d\theta \,
+       e^{-\lambda (t+\theta)} g(\theta,W_t) e^{-\int_0^t k(W_s) ds} 
+     \notag \\
+  &= \int_0^{\infty} dt \int_0^t d\theta \,
+       e^{-\lambda t} g(t-\theta,W_{\theta}) e^{-\int_0^{\theta} k(W_s) ds} 
+\end{align*}
+here we have used
+\[
+  \int_0^{\infty} dt \int_0^{\infty} ds \,f(t,s)
+  = \int_0^{\infty} dt \int_t^{\infty} ds \,f(t,s-t)
+  = \int_0^{\infty} ds \int_0^s dt \,f(t,s-t)
+  = \int_0^{\infty} dt \int_0^t ds \,f(s,t-s)
+\]
+in the last step.
+
+Hence we have
+\[
+  M_{\lambda}(x) = E_x 
+    \left[
+      \int_0^{\infty} e^{-\lambda t} 
+      \left( 
+         f(W_t) e^{-\int_0^t k(W_s) ds} 
+         + \int_0^t g(t-\theta,W_{\theta}) e^{-\int_0^{\theta}k(W_s)ds} d\theta
+      \right)  \, dt 
+    \right],
+\]
+thus 
+\[
+  u(t,x)=E_x 
+    \left[
+      f(W_t) e^{-\int_0^t k(W_s) ds}
+      + \int_0^t g(t-\theta,W_{\theta}) e^{-\int_0^{\theta} k(W_s) ds} d\theta.
+    \right]
+\]
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Feynman-Kac Formula for Diffusion Process}
+In this section, we denote $X_t$ the diffusion process satisfying 
+\begin{equation}
+  dX_t = \mu(X_t) dt + \sigma(X_t) dW_t
+\end{equation}
+and initial condition $X_t=x$ with infinitesimal generator
+\begin{equation}
+  \mathcal{G} = \frac{1}{2} \sigma^2(x) \frac{d^2}{dx^2} + \mu(x)\frac{d}{dx}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:kac_diff}
+Let $X_t$ be a diffusion process as defined in the beginning of the section.
+Let $f(x)$ and $k(x)$ be continuous functions such that $k\ge 0$ and $f(x)=O(|x|)$
+as $|x|\rightarrow \infty$. Then function
+\begin{equation}
+  u(t,x)=E_x  \left[ f(X_t) e^{-\int_0^t k(X_s) ds} \right]
+\end{equation}
+is the unique solution of Cauchy problem
+\begin{equation}
+  \frac{\partial u}{\partial t}=\mathcal{G} u - k u,
+\end{equation}
+with initial condition $u(0,x)=f(x)$.
+\end{theorem}
+\begin{proof}
+\footnote{
+We follow Steven Lalley's lecture notes of class Stat. 391 of U. of Chicago
+(2001), Lecture 12: Stochastic Differential Equations, Diffusion Processes, and 
+the Feynman-Kac Formula. }
+Fix $t>0$, we consider the stochastic process
+\[
+  Y_s = e^{-R_s} u(t-s,W_s),
+\]
+where
+\[
+  %R_s = e^{-\int_0^s k(X_r) dr}.
+  R_s = \int_0^s k(X_r) dr.
+\]
+By Ito's lemma, we have
+\begin{align*}
+  dY_s = 
+       &-k(X_s) e^{-R_s} u(t-s,X_s) ds - u_t(t-s,X_s) e^{-R_s} ds \notag\\
+       &+ u_x(t-s,X_s) e^{-R_s} (\mu(X_s)ds+\sigma(X_s)dW_s)  \notag \\
+       &+ \frac{1}{2} u_{xx}(t-s,X_s) \sigma^2(X_s) ds.      \notag \\
+\end{align*}
+Since
+\[
+  \frac{\partial u}{\partial t} 
+    = \frac{1}{2} \sigma^2(x) \frac{\partial^2 u}{\partial x^2} 
+      + \mu(x) \frac{\partial u}{\partial x} - k u,
+\]
+we get
+\[
+  dY_s = u_x(t-s,X_s) e^{-R_s} \sigma(X_s) dW_s,
+\]
+hence $Y_s$ is a martingale up to time $t$.
+\footnote{To make this argument rigorous, one will need to use the boundness of
+    $u$ and the dominated convergence theorem.}
+By the definition of martingale, we get
+\[
+  Y_0 = u(t,x) = E_x[Y_t] = E_x \left[e^{-R_t} u(0,X_t) \right]
+      = E_x \left[e^{-R_t} f(X_t) \right].
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{P:kac_tran}
+The transition density $p(t,x,y)$ 
+\footnote{$p(t,x,y)dy=P_x[X_t\in dy]$}
+is the unique solution of
+\begin{equation}
+  \frac{\partial u}{\partial t}=\mathcal{G} u,
+\end{equation}
+with initial condition $u(0,x)=\delta(x-y)$.
+\end{proposition}
+\begin{proof}
+Directly from Theorem \ref{T:kac_diff} with $k=0$ and $f(x)=\delta(x-y)$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:kac_diff2}
+\footnote{Karatzas and Shreve, Brownian Motion and Stochastic Calculus, 2ed,
+  Chapter 5, Theorem 7.6, pp.366-367} 
+Suppose that $v(t,x):[0,T]\times R^d\to R^d$ is continuous, is of class 
+$C^{1,2}([0,T)\times R^d)$, and satisfies the Cauchy problem
+\begin{equation}
+  \frac{\partial}{\partial t} v(t,x) 
+  + \mu(t,x) \frac{\partial}{\partial x} v(t,x) 
+  + \frac{1}{2} \sigma^2(t,x) \frac{\partial^2}{\partial x^2} v(t,x) 
+  - k(t,x) v(t,x) = -g(t,x),  \qquad \text{in $[0,T)\times R^d$}
+\end{equation}
+\begin{equation}
+  v(T,x)= f(x), \qquad x\in R^d
+\end{equation}
+where $f(x):R^d\to R$, $\mu(t,x),\sigma(t,x),g(t,x):[0,T]\times R^d\to R$, 
+$k(t,x):[0,T]\times R^d\to [0,\infty)$ are continuous and satisfy 
+\begin{equation} 
+  |f(x)|\le L(1+ \| x \|^{2\lambda}) \qquad \text{or $f(x)\ge 0$}
+   \qquad \forall x\in R^d
+\end{equation} 
+\begin{equation} 
+  |g(t,x)|\le L(1+ \| x \|^{2\lambda}) \qquad \text{or $g(t,x)\ge 0$}
+   \qquad \forall t\in [0,T], x\in R^d
+\end{equation} 
+for some $L>0$, $\lambda\ge 1$.
+
+Suppose that $v(t,x)$ satisfies the polynomial growth condition 
+\begin{equation}
+  \max_{0\le t\le T} |v(t,x)| \le M(1+|x|^{2\mu}), \qquad x\in R^d
+\end{equation}
+for some $M>0$, $\mu\ge 1$. 
+Let $(X_t)_{t\ge 0}$ denote the solution to the SDE
+\[
+  dX_s = \mu(s,X_s)ds + \sigma(s,X_s)dW_s \qquad \forall s\in [t,T]
+\]
+with $X_t=x$. Then $v(t,x)$ admits the stochastic representation
+\begin{equation}
+  v(t,x) = E\left[ 
+              f(X_T) e^{-\int_t^T k(s,X_s) ds}  
+              + \int_t^T g(s,X_s) e^{-\int_t^s k(u,X_u) du} ds \bigg| X_t = x
+            \right]
+\end{equation}
+on $[0,T]\times R^d$, in particular, such a solution is unique.
+
+\end{theorem}
+\begin{proof}
+Let $Y_s=v(s,X_s) e^{-\int_t^s k(u,X_u) du}$, then by Ito's formula we get
+\begin{align*}
+  dY_s 
+    &= e^{-\int_t^s k(u,X_u) du} 
+    \left( ds (-k v + \frac{\partial v}{\partial s} 
+          + \mu \frac{\partial v}{\partial X}
+          + \frac{1}{2} \sigma^2 \frac{\partial^2 v}{\partial X^2} )
+      + \sigma \frac{\partial v}{\partial X} dW_s \right)  \\
+    &= e^{-\int_t^s k(u,X_u) du} (-g(s,X_s) ds 
+        + \sigma(s,X_s) \frac{\partial v}{\partial X}(s,X_s) dW_s ).
+\end{align*}
+Let $\tau_n=\inf\{s\ge t: \| x_s \| \ge n\}$, then we have
+\begin{align*}
+  E[Y_{T\wedge \tau_n} | X_t=x] - v(t,x) = 
+   &-E[\int_t^{T\wedge \tau_n} e^{-\int_t^s k(u,X_u) du} g(s,X_s) ds| X_t=x] \\
+   &+E[\int_t^{T\wedge \tau_n} e^{-\int_t^s k(u,X_u) du} 
+         \sigma(s,X_s) \frac{\partial v}{\partial X}(s,X_s) dW_s | X_t =x ]
+\end{align*}
+
+It can be shown that 
+$\int_t^{T\wedge \tau_n} e^{-\int_t^s k(u,X_u) du} 
+\sigma(s,X_s) \frac{\partial v}{\partial X}(s,X_s) dW_s$ is a martingale hence
+has mean zero. Thus
+\[
+  v(t,x) = E[Y_{T\wedge \tau_n} | X_t=x] 
+   + E[\int_t^{T\wedge \tau_n} e^{-\int_t^s k(u,X_u) du} g(s,X_s) ds| X_t=x].
+\]
+Taking the limit of $n\to \infty$ we then get 
+\footnote{using dominated convergence theorem, details see 
+  Karatzas and Shreve, Brownian Motion and Stochastic Calculus, 2ed,
+  Chapter 5, Theorem 7.6, pp.366-367} 
+\[
+  v(t,x) = E\left[ 
+              f(X_T) e^{-\int_t^T k(s,X_s) ds}  
+              + \int_t^T g(s,X_s) e^{-\int_t^s k(u,X_u) du} ds \bigg| X_t = x
+            \right].
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+We provide a heuristic explanation of the above theorem.
+\footnote{Inspired by Karlin and Taylor, A Second Course of Stochastic 
+  Processes, pp.202-204, pp.222-224.}
+Let $h$ be a small positive number, we have
+\begin{align*}
+  &E\left[ f(X_T) e^{-\int_t^T k(s,X_s) ds}  \bigg| X_t=x \right] \\
+  =& E[ E[ f(X_T) e^{-\int_t^{t+h} k(s,X_s) ds} e^{-\int_{t+h}^T k(s,X_s) ds}  
+     | X_{t+h} ] | X_t=x ] \\
+  =& E[ e^{-\int_t^{t+h} k(s,X_s) ds}  E[ f(X_T) e^{-\int_{t+h}^T k(s,X_s) ds}  
+     | X_{t+h} ] | X_t=x ]   \\
+  =& (1-h k(t,x) + o(h)) 
+     E[ E[ f(X_T) e^{-\int_{t+h}^T k(s,X_s) ds} | X_{t+h} ] | X_t=x ] 
+\end{align*}
+and
+\begin{align*}
+  &E\left[ \int_t^T g(s,X_s) e^{-\int_t^s k(u,X_u)du} ds \bigg| X_t=x \right] \\
+  =&E[ \int_t^{t+h} g(s,X_s) e^{-\int_t^s k(u,X_u)du} ds | X_t=x ] \\
+   &+ E[ E[ \int_t^{t+h} g(s,X_s) e^{-\int_t^{t+h} k(u,X_u)du} 
+            e^{-\int_{t+h}^s k(u,X_u)du} ds | X_{t=h} ] | X_t=x ] \\
+  =& h g(t,x) + o(h)     
+   + (1-h k(t,x) + o(h)) 
+     E[ E[ \int_{t+h}^T g(s,X_s) e^{-\int_{t+h}^s k(u,X_u)du} ds | X_{t+h} ] | X_t=x ] 
+\end{align*}
+Hence
+\begin{align*}
+  v(t,x) 
+   &= E\left[ f(X_T) e^{-\int_t^T k(s,X_s) ds}  
+              + \int_t^T g(s,X_s) e^{-\int_t^s k(u,X_u) du} ds \bigg| X_t = x
+       \right]   \\
+   &= h g(t,x) + o(h) \\
+   &+ (1-h k(t,x)) 
+     E[ E[ f(X_T) e^{-\int_{t+h}^T k(s,X_s) ds} 
+      + \int_{t+h}^T g(s,X_s) e^{-\int_{t+h}^s k(u,X_u)du} ds 
+     | X_{t+h} ] | X_t=x ]   \\
+   &= h g(t,x) + o(h) + (1- h k(t,x)) E[ v(t+h, X_{t+h}) | X_t=x ] 
+\end{align*}
+Using the Taylor expansion
+\[
+  v(t+h,X_{t+h}) = v(t,x) + h \frac{\partial v}{\partial t}(t,x)
+         + (X_{t+h}-x) \frac{\partial v}{\partial X}(t,x)
+         + \frac{1}{2} (X_{t+h}-x)^2 \frac{\partial^2 v}{\partial X^2}(t,x),
+\]
+and the definition of diffusion process 
+\footnote{Karlin and Taylor, A Second Course of Stochastic Processes, p.159 }
+\begin{align*}
+  \mu(t,x)    &= \lim_{h\to 0} \frac{1}{h} E[X_{t+h}-X_t | X_t=x]  \\
+  \sigma^2(t,x) &= \lim_{h\to 0} \frac{1}{h} E[(X_{t+h}-X_t)^2 | X_t=x],
+\end{align*}
+we get
+\[
+  \frac{\partial}{\partial t} v(t,x) 
+  + \mu(t,x) \frac{\partial}{\partial x} v(t,x) 
+  + \frac{1}{2} \sigma^2(t,x) \frac{\partial^2}{\partial x^2} v(t,x) 
+  - k(t,x) v(t,x) = -g(t,x), 
+\]
+and it is obvious that $v(T,x)=f(x)$.
+\end{remark}
+
+
+The following theorem connects the solution of the Dirichlet problem with
+a functional of time-homogeneous diffusion:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} \label{T:kac_diff3}
+\footnote{Karatzas and Shreve, Brownian Motion and Stochastic Calculus, 2ed,
+  Chapter 5, Proposition 7.2, pp.364-365} 
+Let $k:D\to [0,\infty)$, and
+\[
+  dX_t = \mu (X_t) dt + \sigma(X_t) dW_t
+\]
+then
+\begin{equation}
+  u(x) = E_x \left[ f(X_{\tau_D}) e^{-\int_0^{\tau_D} k(X_s) ds}  
+                    + \int_0^{\tau_D} g(X_t) e^{-\int_0^t k(X_s) ds} dt \right]
+\end{equation}
+is the unique solution of Dirichlet problem
+\begin{equation}
+  \mu(x) \frac{d}{dx} u(x) + \frac{1}{2} \sigma^2(x) \frac{d^2}{dx^2} u(x) 
+    - k(x) u(x) = -g(x),  \qquad x\in D 
+\end{equation}
+\begin{equation}
+  u(x)= f(x), \qquad x\in \partial D
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Let 
+\[
+  Y_t = u(X_t) e^{-\int_0^t k(X_s)ds},
+\]
+using Ito's lemma we have 
+\begin{align*}
+  dY_t 
+    &= e^{-\int_0^t k(X_s)ds} 
+    \left( 
+      dt \left( \mu(X_t) \frac{du}{dx}(X_t) 
+                + \frac{1}{2} \sigma^2(X_t) \frac{d^2u}{dx^2}(X_t)  
+                - k(X_t) u(X_t) \right)
+      + dW_t \sigma(X_t) \frac{du}{dx}(X_t)
+    \right)   \\
+    &= -g(X_t) e^{-\int_0^t k(X_s)ds} dt
+      +\sigma(X_t) \frac{du}{dx}(X_t) e^{-\int_0^t k(X_s)ds} dW_t,
+\end{align*}
+thus
+\[
+  Y_{\tau\wedge\tau_D} - Y_0
+    = -\int_0^{\tau\wedge\tau_D} g(X_t) e^{-\int_0^t k(X_s)ds} dt
+      +\int_0^{\tau\wedge\tau_D} \sigma(X_t) \frac{du}{dx}(X_t) 
+                                 e^{-\int_0^t k(X_s)ds} dW_t.
+\]
+Taking expectations on both sides we get
+\[
+  u(x) = E_x[Y_0] 
+    = E_x[Y_{\tau\wedge\tau_D}] 
+      + E_x\left[ 
+          \int_0^{\tau\wedge\tau_D} g(X_t) e^{-\int_0^t k(X_s)ds} dt \right]
+      - E_x\left[ \int_0^{\tau\wedge\tau_D} \sigma(X_t) \frac{du}{dx}(X_t) 
+                  e^{-\int_0^t k(X_s)ds} dW_t  \right].
+\]
+Now the Ito integral
+\[
+   \int_0^{\tau\wedge\tau_D} \sigma(X_t) \frac{du}{dx}(X_t) 
+                                 e^{-\int_0^t k(X_s)ds} dW_t
+\]
+is a martingale 
+\footnote{To make this rigorous, see e.g. Klebaner, Introduction to Stochastic
+  Calculus with Applications, 2ed, Theorem 6.15, p.161}
+hence has zero expectation. 
+
+Taking the limit $\tau\to\infty$ and using the dominated convergence theorem
+we have
+\[
+  u(x) = E_x \left[ f(X_{\tau_D}) e^{-\int_0^{\tau_D} k(X_s) ds}  
+                    + \int_0^{\tau_D} g(X_t) e^{-\int_0^t k(X_s) ds} dt \right]
+\]
+\end{proof}
+  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+Suppose $x\in (a,b)$, let $\tau_{ab}$ be the first time for $X_t$ to hit $a$ 
+or $b$. From Theorem \ref{T:kac_diff3}, set $k(x)=g(x)=0$, 
+\[
+  f(x)=I_{ \{ x=b \} }
+\]
+then 
+\[
+  u(x) = E_x[ I_{X_{\tau_{ab}}=b} ] = P_x[\tau_{ab}=\tau_b] 
+       = P_x[\tau_b<\tau_a]
+\]
+is the unique solution of
+\[
+  \mathcal{G} u(x)  
+    = \mu(x) \frac{d}{dx} u(x) + \frac{1}{2} \sigma^2(x) \frac{d}{dx} u(x)
+    = \frac{d}{dm} \left( \frac{d}{ds} u(x) \right)
+    = 0,
+\]
+with boundary condition 
+\[
+  f(x)=I_{ \{ x=b \} }, \qquad x=a,b,
+\]
+where $s$ is the scale function and $m$ is the speed measure.
+Use the fact that $u(a)=0$ and $u(b)=1$ we get
+\footnote{Karlin and Taylor, A Second Course of Stochastic Processes, 
+  eq.(3.10), p.195}
+\begin{equation}
+  P_x[\tau_b<\tau_a] = \frac{s(x)-s(a)}{s(b)-s(a)}.
+\end{equation}
+\end{example}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example} \label{Ex:hit2}
+Set $f(x)=1$, $g(x)=0$, and $k(x)=\alpha>0$, from Theorem \ref{T:kac_diff3}
+we have that
+\[
+  u(x) = E_x[e^{-\alpha \tau_y}]
+\]
+is the unique solution of
+\[
+  \mathcal{G} u(x) = \alpha u(x),
+\]
+with boundary condition
+\[
+  u(x)=1, \qquad x\in \partial D.
+\]
+
+Let $\psi_{\alpha}(x)$ and $\phi_{\alpha}(x)$ be the two fundamental solutions
+of the above ODE, with $\psi$ increasing and $\phi$ decreasing. Then if
+$y>x$ then $u(y)=1$ and $u(-\infty)=0$, and we have
+\[
+	u(x)=\frac{\psi_{\alpha}(x)}{\psi_{\alpha}(y)}.
+\]
+Else if $y<x$ then $u(y)=1$ and $u(\infty)=0$, and we have
+\[
+	u(x)=\frac{\phi_{\alpha}(x)}{\phi_{\alpha}(y)}.
+\]
+For the special case of a standard brownian motion, we have
+\[
+  u(x)= E_x[e^{-\alpha \tau_y}]
+    = \begin{cases}
+        e^{\sqrt{2\alpha}(x-y)}     &  y>x  \\
+        e^{-\sqrt{2\alpha}(x-y)}    &  y<x
+      \end{cases}.
+\]
+\end{example}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+Let $f(x)=k(x)=0$, $g(x)=1$, then from Theorem \ref{T:kac_diff3}
+\[
+  u(x)=E_x[\tau_{ab}] 
+\]
+is the unique solution to problem
+\[
+  \mathcal{G} u(x)  
+    = \mu(x) \frac{d}{dx} u(x) + \frac{1}{2} \sigma^2(x) \frac{d}{dx} u(x)
+    = \frac{d}{dm} \left( \frac{d}{ds} u(x) \right)
+    = -1,
+\]
+with boundary condition
+\[
+  u(a)=u(b)=0.
+\]
+Solve this we get
+\footnote{Karlin and Taylor, A Second Course of Stochastic Processes,pp.196-197}
+\[
+  u(x) = E_x[\tau_{ab}] = -\int_a^x [\int_a^{\eta} m(\xi)d\xi] ds(\eta)
+        + \frac{s(x)-s(a)}{s(b)-s(a)}  \int_a^x [\int_a^b m(\xi)d\xi] ds(\eta).
+\]
+In case of standard Brownian motion $s(x)=x$, $m(x)=2$, and we have
+\footnote{One can also simply solve $u"(x)=-2$ with boundary condition 
+  $u(a)=u(b)=0$.}
+\[
+  u(x) = E_x[\tau_{ab}] = (x-a)(b-x).
+\]
+\end{example}

@@ -1,0 +1,80 @@
+\chapter{A Useful Calculation} \label{A:useful}
+
+Given a Gaussian random variable $X\sim N(\mu,\sigma^2)$, we have
+\begin{equation} \label{E:int_call}
+  E[(e^X-K)^+] = 
+    e^{\mu+\frac{\sigma^2}{2}} 
+      \Phi \left( \frac{\mu-\log{K}}{\sigma}+\sigma \right)
+    -K \Phi \left( \frac{\mu-\log{K}}{\sigma} \right),
+\end{equation}
+and
+\begin{equation} \label{E:int_put}
+  E[(K-e^X)^+] = 
+    K \Phi \left( \frac{\log{K}-\mu}{\sigma} \right)
+    - e^{\mu+\frac{\sigma^2}{2}} 
+      \Phi \left( \frac{\log{K}-\mu}{\sigma}-\sigma \right),
+\end{equation}
+where 
+\[
+  \Phi(x) = \int_{-\infty}^x \frac{e^{-t^2/2}}{\sqrt{2\pi}} dt
+\]
+is the cumulative Gaussian function.
+
+Note that these satisfy
+\[
+  E[(e^X-K)^+] - E[(K-e^X)^+] = e^{\mu+\frac{\sigma^2}{2}} - K.
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+\begin{align*}
+  E[(e^X-K)^+] 
+    &= E[ (e^X-K) 1_{e^X>K} ] \notag \\
+    &= E[ (e^X-K) 1_{X>\log K} ] \notag \\
+    &= \int_{\log K}^{\infty} (e^x-K) 
+       \frac{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}{\sigma\sqrt{2\pi}} dx \notag \\
+\end{align*}
+Let
+\[
+  y = \frac{\mu -x}{\sigma},
+\]
+then we have
+\begin{align*}
+  E[(e^X-K)^+] 
+    &= \int_{-\infty}^{\frac{\mu-\log K}{\sigma}} (e^{\mu-\sigma y}-K)
+         \frac{e^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy \notag \\
+    &= \int_{-\infty}^{\frac{\mu-\log K}{\sigma}} e^{\mu+\frac{\sigma^2}{2}}
+         \frac{e^{-\frac{(y+\sigma)^2}{2}}}{\sqrt{2\pi}} dy 
+       - K \int_{-\infty}^{\frac{\mu-\log K}{\sigma}} 
+         \frac{e^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy \notag \\
+   &= e^{\mu+\frac{\sigma^2}{2}} 
+        \Phi \left( \frac{\mu-\log{K}}{\sigma}+\sigma \right)
+      -K \Phi \left( \frac{\mu-\log{K}}{\sigma} \right). \notag \\
+\end{align*}
+
+Similarly we have
+\begin{align*}
+  E[(K-e^X)^+] 
+    &= E[ (K-e^X) 1_{e^X<K} ] \notag \\
+    &= E[ (K-e^X) 1_{X<\log K} ] \notag \\
+    &= \int^{\log K}_{-\infty} (K-e^x) 
+       \frac{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}{\sigma\sqrt{2\pi}} dx \notag \\
+\end{align*}
+Now let
+\[
+  y = \frac{x- \mu}{\sigma},
+\]
+then we have
+\begin{align*}
+  E[(e^X-K)^+] 
+    &= \int_{-\infty}^{\frac{\log K-\mu}{\sigma}} (K-e^{\mu+\sigma y})
+         \frac{e^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy \notag \\
+    &=  K \int_{-\infty}^{\frac{\log K-\mu}{\sigma}} 
+         \frac{e^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy 
+        - \int_{-\infty}^{\frac{\log K-\mu}{\sigma}} e^{\mu+\frac{\sigma^2}{2}}
+         \frac{e^{-\frac{(y-\sigma)^2}{2}}}{\sqrt{2\pi}} dy      \notag \\
+   &= K \Phi \left( \frac{\log{K}-\mu}{\sigma} \right) 
+      - e^{\mu+\frac{\sigma^2}{2}} 
+        \Phi \left( \frac{\log{K}-\mu}{\sigma}-\sigma \right)     \notag \\
+\end{align*}
+\end{proof}

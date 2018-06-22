@@ -1,0 +1,250 @@
+\chapter{One Dimensional Heat Equation}
+
+In this chapter, we study the solutions of one-dimensional heat equation under
+various initial-boundary conditions that arise naturally in the study of
+Brownian motion.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{General Theory}
+
+We are trying to find the solution $u(x,t)$ of the following initial-boundary
+value problem:
+\footnote{Polyanin, Handbook of Linear Partial Differential Equations, 2ed.,
+  p.1200}
+\begin{gather} \label{E:heat_ibv}
+  \frac{\partial u}{\partial t}(x,t) - k \frac{\partial^2 u}{\partial x^2}(x,t)
+    = Q(x,t) \\
+  \left( \alpha_1 \frac{\partial u}{\partial x}(x,t) + \beta_1 u(x,t) \right)
+    \bigg\rvert_{x=x_1} = g_1(t), \qquad \text{(BC)}  \notag \\
+  \left( \alpha_2 \frac{\partial u}{\partial x}(x,t) + \beta_2 u(x,t) \right)
+    \bigg\rvert_{x=x_2} = g_2(t), \qquad \text{(BC)}  \notag \\
+  u(x,0) = f(x) \qquad \text{(IC)} \notag
+\end{gather}
+
+We define the Green's function $G(x,t;\xi,\tau)$ as the solution of problem
+\begin{gather} \label{E:heat_gre}
+  \frac{\partial G}{\partial t}(x,t;\xi,\tau) 
+    - k \frac{\partial^2 G}{\partial x^2}(x,t;\xi,\tau) 
+    = \delta(x-\xi)\delta(t-\tau) \\
+  \left( \alpha_1 \frac{\partial G}{\partial x}(x,t;\xi,\tau) 
+    + \beta_1 G(x,t;\xi,\tau) \right) \bigg\rvert_{x=x_1} = 0, 
+    \qquad \text{(BC)}  \notag \\
+  \left( \alpha_2 \frac{\partial G}{\partial x}(x,t;\xi,\tau) 
+    + \beta_2 G(x,t;\xi,\tau) \right) \bigg\rvert_{x=x_2} = 0, 
+    \qquad \text{(BC)}  \notag  \\
+  G(x,t;\xi,\tau)=0 \qquad \text{if $t<\tau$ (causality)} \notag
+\end{gather}
+
+To express $u(x,t)$ as an expression of the Green's function $G(x,t;\xi,\tau)$,
+we first need to prove the reciprocity property
+\footnote{Morse \& Feshbach, Methods of Theoretical Physics, vol. 1, p. 858;
+  Duffy, Green's Function with Applications, 2ed., p.285}
+of the Green's function:
+\begin{equation} \label{E:green_rec}
+  G(x,t;\xi,\tau)= G(\xi,-\tau;x,-t).
+\end{equation}
+
+To prove this, we start from the following two equations
+\begin{align*}
+  \frac{\partial G}{\partial t}(x,t;\xi,\tau) 
+    - k \frac{\partial^2 G}{\partial x^2}(x,t;\xi,\tau) 
+    = \delta(x-\xi)\delta(t-\tau) \\
+  -\frac{\partial G}{\partial t}(x,-t;\xi_1,-\tau_1) 
+    - k \frac{\partial^2 G}{\partial x^2}(x,-t;\xi_1,-\tau_1) 
+    = \delta(x-\xi_1)\delta(t-\tau_1).
+\end{align*}
+Mulitiplying the first equation by $G(x,-t;\xi_1,-\tau_1)$ and the second by
+$G(x,t;\xi,\tau)$, substracting, then integrating over the area of interest and
+from $-\infty$ to $\tau_1^+$ for $t$, 
+\footnote{By causality, the first equation requires $t>\tau$, while the second
+  requires $t<\tau_1$.}
+we get
+\[
+  RHS = G(\xi,-\tau;\xi_1,-\tau_1) - G(\xi_1,\tau_1;\xi,\tau),
+\]
+and
+\begin{align*}
+  LHS &= \int_{-\infty}^{\tau_1^+} \int_{x_1}^{x_2}
+         \left[
+           G(x,-t;\xi_1,-\tau_1)\frac{\partial G}{\partial t}(x,t;\xi,\tau)
+          + G(x,t;\xi,\tau)\frac{\partial G}{\partial t}(x,-t;\xi_1,-\tau_1)
+         \right] dx dt  \\
+     &- k \int_{-\infty}^{\tau_1^+} \int_{x_1}^{x_2}
+         \left[
+           G(x,-t;\xi_1,-\tau_1)\frac{\partial^2 G}{\partial x^2}(x,t;\xi,\tau)
+          - G(x,t;\xi,\tau)\frac{\partial^2 G}{\partial x^2}(x,-t;\xi_1,-\tau_1)
+         \right] dx dt  \\
+     &= \int_{x_1}^{x_2} \left[ G(x,-t;\xi_1,-\tau_1) G(x,t;\xi,\tau) \right]
+        \bigg\rvert_{t=-\infty}^{\tau_1^+} dx \\
+     &- k \int_{-\infty}^{\tau_1^+} 
+         \left[
+           G(x,-t;\xi_1,-\tau_1)\frac{\partial G}{\partial x}(x,t;\xi,\tau)
+          - G(x,t;\xi,\tau)\frac{\partial G}{\partial x}(x,-t;\xi_1,-\tau_1)
+         \right] \bigg\rvert_{x=x_1}^{x_2} dt.
+\end{align*}
+Note that the second integral vanishes due to the homogeneous boundary
+conditions \ref{E:heat_gre} for the Green's function. And the first integral
+vanishes because $G(x,-\infty;\xi,\tau)=0$ and $G(x,-\tau_1^+;\xi_1,-\tau_1)=0$
+due to causality. Hence $LHS=0$ and we conclude from $LHS=RHS$
+\[
+  G(\xi_1,\tau_1;\xi,\tau) = G(\xi,-\tau;\xi_1,-\tau_1).
+\]
+
+Now we are ready to solve the original problem \ref{E:heat_ibv} using Green's
+function. 
+\footnote{Cole et. al., Heat Condution using Green's Function, 2ed., pp.63-67;
+  Morse \& Feshbach, Methods of Theoretical Physics, vol. 1, pp. 859-860;
+  Duffy, Green's Function with Applications, 2ed., p.286}
+We start from the following two equations
+\begin{align*}
+  \frac{\partial u}{\partial \tau}(\xi,\tau) 
+    - k \frac{\partial^2 u}{\partial \xi^2}(\xi,\tau) = Q(\xi,\tau) \\
+  - \frac{\partial G}{\partial \tau}(x,t;\xi,\tau) 
+    - k \frac{\partial^2 G}{\partial \xi^2}(x,t;\xi,\tau) 
+    = \delta(x-\xi)\delta(t-\tau). 
+\end{align*}
+For the second equation, we have used the reciprocity property \ref{E:green_rec}
+of the Green's function.
+
+Now multiply the first equation by $G(x,t;\xi,\tau)$ and the second by
+$u(\xi,\tau)$, substract, and integrate over the area of interest and from $0$
+to $t^+$ for $\tau$, we get
+\[
+  RHS = \int_0^{t^+} \int_{x_1}^{x_2} Q(\xi,\tau) G(x,t;\xi,\tau) d\xi d\tau
+        - u(x,t),
+\]
+and
+\begin{align*}
+  LHS &= \int_0^{t^+} \int_{x_1}^{x_2} 
+       \left[ G(x,t;\xi,\tau) \frac{\partial u}{\partial\tau}(\xi,\tau)
+         + u(\xi,\tau) \frac{\partial G}{\partial\tau}(x,t;\xi,\tau)
+       \right] d\xi d\tau  \\
+     &-k \int_0^{t^+} \int_{x_1}^{x_2} 
+       \left[ G(x,t;\xi,\tau) \frac{\partial^2 u}{\partial\xi^2}(\xi,\tau)
+         - u(\xi,\tau) \frac{\partial^2 G}{\partial\xi^2}(x,t;\xi,\tau)
+       \right] d\xi d\tau  \\
+     &= \int_{x_1}^{x_2} \left[ G(x,t;\xi,\tau) u(\xi,\tau) \right]
+        \bigg\rvert_{\tau=0}^{t^+} d\xi   
+     -k \int_0^{t^+} 
+       \left[ G(x,t;\xi,\tau) \frac{\partial u}{\partial\xi}(\xi,\tau)
+         - u(\xi,\tau) \frac{\partial G}{\partial\xi}(x,t;\xi,\tau)
+       \right] d\tau  \\
+     &= - \int_{x_1}^{x_2} G(x,t;\xi,0) u(\xi,0) d\xi   
+     -k \int_0^{t^+} 
+       \left[ G(x,t;\xi,\tau) \frac{\partial u}{\partial\xi}(\xi,\tau)
+         - u(\xi,\tau) \frac{\partial G}{\partial\xi}(x,t;\xi,\tau)
+       \right] d\tau,
+\end{align*}
+we have used the fact that $G(x,t;\xi,t^+)=0$ due to causality.
+
+Using $LHS=RHS$, we thus get the general solution 
+\footnote{For treatment of different types of boundary conditions, see
+  Cole et. al., Heat Condution using Green's Function, 2ed., pp.66-67;}
+for problem \ref{E:heat_ibv}
+\begin{align}
+  u(x,t) 
+    =& \int_0^t \int_{x_1}^{x_2} G(x,t;\xi,\tau) Q(\xi,\tau) d\xi d\tau
+       + \int_{x_1}^{x_2} G(x,t;\xi,0) u(\xi,0) d\xi  \notag \\
+    &+ k\int_0^t 
+     \left[
+   	 G(x,t;\xi,\tau) \frac{\partial u}{\partial\xi}(\xi,\tau)
+  	 -u(\xi,\tau) \frac{\partial G}{\partial\xi}(x,t;\xi,\tau)
+    \right] \bigg\rvert_{\xi=x_1}^{x_2} d\tau.
+\end{align}
+The first term is from the source $Q$, the second from initial condition, while
+the third from boundary conditions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Examples}
+
+The solution of the following nonhomogenous heat equation with nonhomogeneous
+boundaries
+\footnote{Herman, R.L., Introduction to Partial Differential Equations,
+2015-6-19 version, section 7.7, pp. 269-274}
+\begin{gather*}
+	u_t = k\, u_{xx} + Q(x,t),  \quad 0<x<L, \, t>0,   \\
+	u(0,t) = \alpha(t), \, u(L,t)=\beta(t), \qquad \text{(boundary conditions)} \\
+	u(x,0) = f(x), \quad 0<x<L, \qquad \text{(initial condition)}
+\end{gather*}
+is
+\footnote{Herman, R.L., Introduction to Partial Differential Equations,
+2015-6-19 version, p. 272, Eq. 7.145; Polyanin, Handbook of Linear Partial
+Differential Equations, 1.1.2-5}
+\begin{align}
+	u(x,t) 
+	  =& \int_0^t \int_0^L G(x,t;\xi,\tau) Q(\xi,\tau) d\xi d\tau
+	     + \int_0^L G(x,t;\xi,0) f(\xi) d\xi  \notag \\
+		&+ k\int_0^t 
+		  \left[
+				\alpha(\tau) \frac{\partial G}{\partial\xi}(x,t; 0,\tau)
+				-\beta(\tau) \frac{\partial G}{\partial\xi}(x,t; L,\tau)
+			\right] d\tau.
+\end{align}
+
+%More generally, the solution of the heat equation
+%\[
+%	u_t = k\, u_{xx} + Q(x,t),  \quad 0<x<L, \, t>0,  
+%\]
+%under general initial-boundary conditions 
+%\footnote{i.e. initial condition $u(x,0)$, and boundary conditions $u(0,t)$ and
+%          $u(L,t)$}
+%is
+%\begin{align}
+%	u(x,t) 
+%	  =& \int_0^t \int_0^L G(x,t;\xi,\tau) Q(\xi,\tau) d\xi d\tau
+%	     + \int_0^L G(x,t;\xi,0) u(\xi,0) d\xi  \notag \\
+%		&+ k\int_0^t 
+%			 \left.
+%		     \left[
+%			   	 G(x,t;\xi,\tau) \frac{\partial u}{\partial\xi}(\xi,\tau)
+%			  	 -u(\xi,\tau) \frac{\partial G}{\partial\xi}(x,t;\xi,\tau)
+%			   \right] 
+%			 \right\vert_{\xi=0}^L d\tau.
+%\end{align}
+
+The unique solution $u(x,t)$ of the 
+initial-boundary value problem (IBVP) of the following heat equation:
+\begin{gather*}
+	u_t = \frac{\sigma^2}{2} u_{xx},   \\
+	u(a,t)=0,              \qquad \text{(boundary condition)}     \\
+	u(b,t)=0,              \qquad \text{(boundary condition)}     \\
+	u(x,0) = \delta(x-x_0) \qquad \text{(initial condition)}
+\end{gather*}
+can be expressed as a Fourier series:
+\begin{equation}
+	u(x,t) = 
+	  \frac{2}{b-a} 
+		\sum_{n=1}^{\infty} e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}}
+			\sin \frac{n\pi (x_0-a)}{b-a} \sin \frac{n\pi (x-a)}{b-a}.
+\end{equation}
+
+Similarly, the solution of the initial-boundary value problem:
+\begin{gather*}
+	u_t = \frac{\sigma^2}{2} u_{xx},   \\
+	u(a,t)=1,              \qquad \text{(boundary condition)}     \\
+	u(b,t)=0,              \qquad \text{(boundary condition)}     \\
+	u(x,0) = \delta(x-x_0) \qquad \text{(initial condition)}
+\end{gather*}
+is
+\begin{equation}
+	u(x,t) = \frac{b-x}{b-a}
+	+ \sum_{n=1}^{\infty} 
+	  \left( \frac{2}{b-a} \sin \frac{n\pi (x_0-a)}{b-a} -\frac{2}{n\pi} \right)
+		e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (x-a)}{b-a}.
+\end{equation}
+
+And the solution of the initial-boundary value problem:
+\begin{gather*}
+	u_t = \frac{\sigma^2}{2} u_{xx},   \\
+	u(a,t)=0,              \qquad \text{(boundary condition)}     \\
+	u(b,t)=1,              \qquad \text{(boundary condition)}     \\
+	u(x,0) = \delta(x-x_0) \qquad \text{(initial condition)}
+\end{gather*}
+is
+\begin{equation}
+	u(x,t) = \frac{x-a}{b-a}
+	+ \sum_{n=1}^{\infty} 
+	\left( \frac{2}{b-a} \sin \frac{n\pi (x_0-a)}{b-a} +\frac{2(-)^n}{n\pi} \right)
+		e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (x-a)}{b-a}.
+\end{equation}

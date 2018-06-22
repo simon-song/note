@@ -1,0 +1,382 @@
+\chapter{Martingales}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basics of Lebesgue Integral}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Let $(X,\Sigma)$ be a measurable space, and let $A_1,A_2,\dots,A_n\in \Sigma$
+be a sequence of measurable sets, and let $a_1,a_2,\dots,a_n\in R$, a 
+simple function is a function $f:X\to R$ of the form
+\begin{equation}
+  f(x)= \sum_{k=1}^n a_k 1_{A_k}(x),
+\end{equation}
+where $1_A$ is the indicator function of the set $A$.
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Let $(X,\Sigma,\mu)$ be a measure space, for any simple function $s$, 
+the Lebesgue integral is defined as
+\begin{equation}
+  \int_E s d\mu = \sum_{i=1}^n a_i \mu(A_i \cap E).
+\end{equation}
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Let $(X,\Sigma,\mu)$ be a measure space, 
+for any non-negative measurable function $f$, the Lebesgue integral is defined
+as
+\begin{equation}
+  \int_E f d\mu = \sup \{ \int_E s d\mu: 0\le s\le f, s \in SF \},
+\end{equation}
+where $SF$ is the set of simple functions.
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:sim1}
+\footnote{Carothers, Real Analysis, Lemma 18.6, p.317}
+Let $s$ be an integrable simple function in measure space $(X,\Sigma,\mu)$.
+If $E_1\subset E_2\subset \cdots$ is an increasing sequence of measurable
+sets and $E=\cup_{n=1}^{\infty} E_n$, then
+\[
+  \int_E s d\mu = \lim_{n\to\infty} \int_{E_n} s d\mu.
+\]
+\end{lemma}
+%%%%%%%%%%%%%%
+\begin{proof}
+Write $s(x)=\sum_{i=1}^k a_i 1_{A_i}(x)$, where each $a_i\neq 0$ and where the 
+$A_i$ are pairwise disjoint measurable sets each with finite measure. Then
+\begin{align*}
+  \int_E s d\mu 
+     &= \sum_{i=1}^k a_i \mu(A_i\cap E)   \\
+     &= \sum_{i=1}^k a_i \mu( \lim_{n\to\infty} (A_i\cap E_n) )  
+      = \sum_{i=1}^k a_i \lim_{n\to\infty} \mu(A_i\cap E_n)   \\
+     &= \lim_{n\to\infty} \sum_{i=1}^k a_i \mu(A_i\cap E_n) 
+      = \lim_{n\to\infty} \int_{E_n} s d\mu,
+\end{align*}
+where we have use the following result 
+\footnote{Rudin, Real and Complex Analysis, Theorem 1.29(d), p.16,
+Federer, Geometric Measure Theory, Theorem 2.1.3(4), p.55}
+\[
+  \lim_{n\to\infty} \mu(E_n) = \mu(\cup_{n=1}^{\infty} E_n)
+    = \mu( \lim_{n\to\infty} E_n ).
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Lebesgue Monotone Convergence]  \label{T:MON}
+Let $(X,\Sigma,\mu)$ be a measure space, and let $f_1,f_2,\dots$ be a sequence
+of nondecreasing nonnegative $\Sigma$-measurable functions, i.e., for every 
+$k\ge 1$ and every $x\in X$
+\[
+  0\le f_k(x) \le f_{k+1}(x).
+\]
+Let 
+\[
+  f(x) = \lim_{n\to\infty} f_n(x),
+\]
+then $f$ is $\Sigma$-measurable and
+\begin{equation}
+  \lim_{n\to\infty} \int f_n d\mu = \int f d\mu 
+    = \int (\lim_{n\to\infty} f_n) d\mu.
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%%%%
+\begin{proof}
+We first show that $f$ is $\Sigma$-measurable. To do this it is sufficent to 
+show that the inverse image of an interval $I=[0,t]$ under $f$ is an element
+of the sigma algebra $\Sigma$ on $X$. Let
+\[
+  f^{-1}(I) = \{ x\in X | f(x)\in I \}.
+\]
+Since $I$ is closed and for any $n$ we have $f_n(x)\le f(x)$, we conclude that
+\[
+  f(x) \in I  \Leftrightarrow  f_n(x)\in I, \forall n\in N.
+\]
+Thus
+\[
+  f^{-1}(I) = \cap_n \{ x\in X | f_n(x)\in I \}.
+\]
+Since $f_n$ is $\Sigma$-measurable, we have
+\[
+ \{ x\in X | f_n(x)\in I \} \in \Sigma,
+\]
+for any $n\in N$, hence $f^{-1}(I)\in \Sigma$ because it is a countable 
+intersection of measurable sets.
+
+We will start by showing $\int f d\mu \ge \lim_n \int f_n d\mu$. Now
+\[
+  \int_E f d\mu = \sup \{ \int_E s d\mu: 0\le s\le f, s \in SF \}.
+\]
+and for any $n\in N$ we have $f_n(x)\le f(x)$, hence
+\[
+  \int_E f_n d\mu = \sup \{ \int_E s d\mu: 0\le s\le f_n, s \in SF \}
+                  \le \int f d\mu,
+\]
+thus
+\[
+  \lim_{n\to\infty} f_n d\mu \le \int f d\mu.
+\]
+
+Next we verify that $\int f d\mu \le \lim_n \int f_n d\mu$. 
+\footnote{Adapted from Rudin, Real and Complex Analysis, Theorem 1.26, p.21}
+Let
+\[
+  E_n = \{ x: f_n(x) \ge c \, s(x) \}
+\]
+where $0<c<1$ and $s$ is a simple function satisfying $0\le s\le f$.
+Since $f_1\le f_2\le \cdots$, we have $E_1\subset E_2\subset \cdots$, and
+for any $n\in N$, $E_n$ is a measurable set since it is the inverse image
+of set $[0,\infty)$ of measurable function $f_n-c\, s$.
+And $X=\cup_n E_n$.
+Since $E_n\subset X$ we have for any $n\in N$
+\[
+  \int_X f_n d\mu \ge \int_{E_n} f_n d\mu \ge c \int_{E_n} s d\mu,
+\]
+hence by Lemma \ref{L:sim1}
+\[
+  \lim_{n\to\infty} \int_X f_n  d\mu
+    \ge c \lim_{n\to\infty} \int_{E_n} s d\mu
+    =   c \int_{\lim_{n\to\infty} E_n} s d\mu
+    =   c \int_X s d\mu.
+\]
+Since this holds for any $0<c<1$, it also holds for $c=1$, i.e.
+\[
+  \lim_{n\to\infty} \int_X f_n  d\mu \ge \int_X s d\mu.
+\]
+And since this holds for any nonnegative simple function $s\le f$, we can
+conclude that
+\[
+  \lim_{n\to\infty} \int_X f_n  d\mu \ge \int_X f d\mu.
+\]
+Hence we have
+\[
+  \lim_{n\to\infty} \int_X f_n  d\mu = \int_X f d\mu.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Fatou's Lemma]  \label{L:FAT}
+\footnote{Rudin, Real and Complex Analysis, Lemma 1.28, p. 23, note that
+  Rudin's proof is flawed.}
+Let $f_1,f_2,\dots$ be a sequence of non-negative measurable functions on a 
+measure space $(X,\Sigma,\mu)$, then
+\begin{equation}
+  \int_X \left( \liminf_{n\to\infty} f_n \right) d\mu
+    \le \liminf_{n\to\infty} \int_X f_n d\mu.
+\end{equation}
+\end{lemma}
+%%%%%%%%%%%%
+\begin{proof}
+Let
+\[
+  g_k(x)=\inf_{n\ge k} f_n(x),
+\]
+then $\forall n\ge k$, we have $g_k\le f_n$, and
+\[
+  \int_X g_k d\mu \le \int_X f_n d\mu,
+\]
+hence
+\[
+  \int_X g_k d\mu \le \inf_{n\ge k} \int_X f_n d\mu.
+\]
+Also $g_1\le g_2\le \cdots$, applying monotone convergence theorem \ref{T:MON}
+we have
+\begin{align*}
+  \lim_{k\to\infty} \int_X g_k d\mu
+   &= \int_X (\lim_{k\to\infty} g_k) d\mu
+   = \int_X \left( \liminf_{n\to\infty} f_n \right) d\mu   \\
+   &\le \lim_{k\to\infty} \inf_{n\ge k} \int_X f_n d\mu
+   = \liminf_{n\to\infty} \int_X f_n d\mu.
+\end{align*}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Lebesgue's Dominated Convergence Theorem] \label{T:DOM}
+\footnote{Rudin, Real and Complex Analysis, Theorem 1.34, pp.26-27,
+  Federer, Geometric Measure Theory, Theorem 2.4.9, p.85, also
+  called Lebesgue's bounded convergence theorem.}
+Suppose $f_1,f_2,\dots$ is a sequence of measurable functions on 
+measure space $(X,\Sigma,\mu)$ such that
+\[
+  f(x) = \lim_{n\to\infty} f_n(x)
+\]
+exists for every $x\in X$. If there is a function $g\in L^1(\mu)$ such that
+\[
+  |f_n(x)| \le g(x) \qquad \forall n\in N, \forall x\in X,
+\]
+then $f\in L^1(\mu)$, 
+\begin{equation}
+  \lim_{n\to\infty} \int_X |f_n -f| d\mu = 0,
+\end{equation}
+and
+\begin{equation}
+  \lim_{n\to\infty} \int_X f_n d\mu = \int_X f d\mu.
+\end{equation}
+\end{theorem}
+%%%%%%%%%%%%%%%
+\begin{proof}
+Since $|f_n-f|\le 2g$, Fatou's Lemma \ref{L:FAT} applies to the function
+$2g-|f_n-f|$ and yields
+\[
+  \int_X \liminf_{n\to\infty} (2g-|f_n-f|) d\mu 
+   \le \liminf_{n\to\infty} \int_X (2g-|f_n-f|) d\mu,
+\]
+hence
+\begin{align*}
+  \int_X 2g d\mu
+    &\le \liminf_{n\to\infty} \int_X (2g-|f_n-f|) d\mu  \\
+    &= \int_x 2g d\mu + \liminf_{n\to\infty} \int_X (-|f_n-f|) d\mu  \\
+    &= \int_x 2g d\mu - \limsup_{n\to\infty} \int_X (|f_n-f|) d\mu.  
+\end{align*}
+Now since $\int 2g d\mu$ is finite, we may substract it and obtain
+\[
+  \limsup_{n\to\infty} \int_X (|f_n-f|) d\mu \le 0.
+\]
+If a sequence of nonnegative real numbers fails to converge to $0$, then its
+upper limit is positive. Thus we conclude that
+\[
+  \lim_{n\to\infty} \int_X (|f_n-f|) d\mu = 0,
+\]
+and the theorem follows.
+\end{proof}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Optional Stopping Theorem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Optional Stopping Theorem] \label{T:OST}
+\footnote{Adapted from Williams, Probability with Martingales, 10.10, p.100}
+Let $X$ be a supermartingale and $T$ a stopping time. Then $X_T$ is integrable 
+(i.e. $E(|X_T|<\infty$) and
+\[
+  E(X_T) \le E(X_0)
+\]
+in each of the following situations:
+\begin{itemize}
+  \item[(i)] $T$ is bounded, i.e. $\exists n\in N$ such that 
+             $\forall\omega$, $T(\omega)\le n$.
+  \item[(ii)] $X$ is bounded (for some $K$ in $R^+$, $|X_n(\omega)|\le K$ for 
+              every $n$ and every $\omega$) and $T$ is a.s. finite 
+              ($P(T<\infty)=1$).
+  \item[(iii)] $E(T)<\infty$, and with bounded increment, i.e. for some $K$ in
+               $R^+$, 
+               \[
+                 |X_n(\omega)-X_{n-1}(\omega)|\le K \qquad \forall (n,\omega).
+               \]
+\end{itemize}
+Moreover, if $X$ is a martingale then we have $E(X_T)=E(X_0)$.
+\end{theorem}
+%%%%%%%%%%%%%%
+\begin{proof}
+  \item[(i)]
+    \footnote{Adapted from Norris, Markov Chains, 4.1.1, p.130}
+    First note that because $T\le n$ we have
+    \begin{align*}
+      X_T - X_0 &= (X_T-X_{T-1}) + (X_{T-1}-X_{T-2}) + \cdots + (X_1-X_0) 
+                   \notag \\ 
+                &= \sum_{k=0}^{n-1} (X_{k+1}-X_k) I_{\{k<T\}}, \notag
+    \end{align*}
+    thus
+    \[
+      E[X_T-X_0] = \sum_{k=0}^{n-1} E[(X_{k+1}-X_k) I_{\{k<T\}}]
+           = \sum_{k=0}^{n-1} E[E[(X_{k+1}-X_k) I_{\{k<T\}}]|\mathcal{F}_k]].
+    \]
+    Since $T$ is a stopping time, $\{k<T\}=\{T\le k\}^C\in \mathcal{F}_k$, 
+    and because $X$ is a supermartingale, we have
+    \[
+      E[X_T]-E[X_0] 
+        = \sum_{k=0}^{n-1} E[E[(X_{k+1}-X_k)|\mathcal{F}_k] \, I_{\{k<T\}}]
+        \le 0.
+    \]
+  \item[(ii)]
+    \footnote{Adapted from Norris, Markov Chains, 4.1.1, p.130}
+    From (i) we have that for any $n\in N$
+    \[
+      E[X_{T\wedge n}] \le E[X_0].
+    \]
+    Now note that
+    \[
+      | E[X_{T\wedge n}] - E[X_T] | 
+         \le E[ | X_{T\wedge n} - X_T | ]
+         = E[ | X_{T\wedge n} - X_T | I_{\{ T>n \}} ]
+         \le 2K P[T>n],
+    \]
+    and because $\lim_{n\to\infty} P[T>n]=0$, we thus have
+    \[
+      E[X_T] = \lim_{n\to\infty} E[X_{T\wedge n}] \le E[X_0].
+    \]
+  \item[(iii)]
+    \footnote{Adapted from Williams, Probability with Martingales, 10.10, p.100}
+    From (i) we have for all $n\in N$
+    \[
+      E[X_{T\wedge n}] \le E[X_0].
+    \]
+    Now
+    \[
+      |X_{T\wedge n}-X_0| = |\sum_{k=0}^{T\wedge n-1} (X_{k+1} -X_k)| \le KT,
+    \]
+    and $E[KT]<\infty$, hence by dominated convergence theorem \ref{T:MON}
+    \footnote{See also Williams, Probability with Martingales, 6.2, p.59, 
+              and 5.9, pp.54-55, this theorem states the sufficient condition 
+              under which one can exchange expectation(integration)
+              with limit.}
+    \[
+      E[X_T] = E[\lim_{n\to\infty} X_{T\wedge n}] 
+             = \lim_{n\to\infty} E[X_{T\wedge n}] \le E[X_0].
+    \]
+\end{proof}
+
+A useful lemma 
+\footnote{Williams, Probability with Martingales, 10.11, p.101, and E10.5, p.233}
+for checking the finiteness of the expectation of a stopping time is the
+following:
+
+%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{L:finite_stop}
+Suppose that $T$ is a stopping time such that for some $N\in\mathbb{N}$ and
+some $\epsilon>0$, we have for every $n\in\mathbb{N}$:
+\[
+  P(T\le n+N | \mathcal{F}_n) >\epsilon, \qquad \text{a.s.}
+\]
+Then $E(T)<\infty$.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+It is easy to see that in case $n=0$ we have
+\[
+  P(T>N)=1-P(T\le N) \le 1-\epsilon.
+\]
+Now suppose for any $k>1$ we have
+\[
+  P(T>kN)\le (1-\epsilon)^k,
+\]
+then
+\begin{align*}
+  P(T>(k+1)N) 
+  &= P(T>(k+1)N ; T>kN) \\
+  &= P(T>kN+N | T>kN) \cdot P(T>kN) \\
+  &\le (1-\epsilon) (1-\epsilon)^k = (1-\epsilon)^{k+1}.
+\end{align*}
+Hence by mathematical induction, we conclude that for any $k\in\mathbb{N}$
+\[
+  P(T>kN)\le (1-\epsilon)^k.
+\]
+Thus
+\[
+  E(T) = \sum_{n=0}^{\infty} n\cdot P(T=n)
+   = \sum_{n=0}^{\infty} P(T>n)
+   \le N \sum_{k=0}^{\infty} P(T>kN)
+   \le N \sum_{k=0}^{\infty} (1-\epsilon)^k
+   = \frac{N}{\epsilon} ,
+\]
+i.e.
+\[
+  E[T]<\infty.
+\]
+\end{proof}
+

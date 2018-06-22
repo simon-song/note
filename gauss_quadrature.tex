@@ -1,0 +1,230 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Gaussian Quadrature}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Starting Point}
+
+We try to approximate an integral by a summation
+\begin{equation}
+  \int_a^b f(x) dx = c_1 f(x_1) + c_2 f(x_2) + \cdots + c_n f(x_n) + R(f),
+\end{equation}
+where $R(f)$ is the residual, and $c_1,c_2,\cdots,c_n$, and $x_1,x_2,\cdots,x_n$
+are unknowns. Since there are $2n$ unknowns, we need $2n$ equations to
+determine them. This can be solved by assuming the above approximation 
+is precise (i.e. $R(f)=0$) for polynomials of degree $2n-1$.
+Note that Gauss 
+\footnote{Gauss, C.F., Methodus Nova Integralium Valores Per Approximationem
+Inveniendi, in Werke, vol. 3, 163-196.}
+used continued fraction of his hypergeometric function 
+\footnote{Gauss, C.F., Disquisitiones Generales circa Seriem infinitam
+$1+\frac{\alpha\beta}{1\times\gamma}x
++\frac{\alpha(\alpha+1)\beta(\beta+1)}{1\cdot2\cdot\gamma(\gamma+1)}xx
++\frac{\alpha(\alpha+1)(\alpha+2)\beta(\beta+1)(\beta+2)}
+      {1\cdot2\cdot3\cdot\gamma(\gamma+1)(\gamma+2)}x^3 + etc.$,
+in Werke, vol. 3, 123-162.}
+to derive his quadrature. 
+Here we present an alternative derivation from Berezin and Zhidkov,
+Computing Methods, vol. 1.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Abscissae}
+
+%%%%%%%%%%%%%%%%
+\begin{lemma}
+\footnote{Berezin and Zhidkov, Computing Methods, vol.1, pp.236-240}
+The abscissae $x_1,x_2,\cdots,x_n$ are roots of $n$-th order Legendre polynomial
+\begin{equation} \label{E:abs}
+  w_n(x) = \frac{n!}{(2n)!} \frac{d^n}{dx^n} 
+    \left[ (x-a)^n (x-b)^n \right]
+    = (x-x_1) (x-x_2) \cdots (x-x_n).
+\end{equation}
+\end{lemma}
+\begin{proof}
+For any polynomial $q(x)$ of $(n-1)$-th order, $w_n(x) q(x)$ is of $(2n-1)$-th
+order, hence
+\begin{equation} \label{E:zeroint}
+  \int_a^b w_n(x) q(x) dx = \sum_{k=1}^n c_k w_n(x_k) q(x_k) = 0.
+\end{equation}
+Let 
+\begin{equation}
+  \phi_1(x) = \int_a^x w_n(y) dy,
+\end{equation}
+and
+\begin{equation}
+  \phi_{i+1}(x) = \int_a^x \phi_i(y) dy  \qquad i>0,
+\end{equation}
+we have
+\begin{align*}
+  0 &= \int_a^b w_n(x) q(x) dx   \notag \\
+    &= [q(x)\phi_1(x) - q'(x)\phi_2(x)+\cdots 
+        + (-1)^{n-1}q^{(n-1)}(x)\phi_n(x)]|_a^b. \notag \\
+\end{align*}
+Since for any $i=1,2,\cdots,n$ we have $\phi_i(a)=0$ and $q(x)$ is an 
+arbitrary polynomial, we must have $\phi_i(b)=0$ too. An obvious choice would be
+\[
+  \phi_n(x) = C (x-a)^n (x-b)^n,
+\]
+where $C$ is a constant. Since
+\[
+  w_n(x) = \frac{d^n}{dx^n} \phi_n(x) = \prod_{k=1} (x-x_k),
+\]
+we conclude that 
+\[
+  C = \frac{n!}{(2n)!}.
+\]
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Weights}
+
+\begin{lemma}
+\footnote{Berezin and Zhidkov, Computing Methods, vol.1, pp.241-243}
+The Weights satisfy
+\begin{equation} \label{E:weight}
+  C_k = \frac{(n!)^4 (b-a)^{2n+1}}{ [(2n)!]^2 (x_k-a) (b-x_k) [w'_n(x_k)]^2 }
+    \qquad k=1,2,\cdots,n.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let 
+\[
+  \psi_k(x) = \frac{w_n(x)}{x-x_k}
+    = (x-x_1)(x-x_2)\cdots (x-x_{k-1})(x-x_{k+1})\cdots (x-x_n),
+\]
+and it is a polynomial of degree $n-1$, hence $\psi_k^2(x)$ is of degree $2n-2$,
+thus
+\[
+  \int_a^b \psi_k^2(x) dx = \sum_i C_i \psi_k^2(x_i) = C_k \psi_k^2(x_k).
+\]
+Integrate by parts, and using
+\[
+  w'_n(x) = \frac{d}{dx} (x-x_1)(x-x_2)\cdots (x-x_n) 
+          = \sum_{i=1}^n \frac{w_n(x)}{x-x_i},
+\]
+we have
+\begin{align*}
+  \int_a^b \psi_k^2(x) dx 
+    &= \int_a^b \frac{w_n^2(x)}{(x-x_k)^2} dx  \notag \\
+    &= - \frac{w_n^2(x)}{x-x_k}\Big|^b_a + 2\int_a^b w_n(x)\frac{w'_n(x)}{x-x_k} dx
+      \notag \\
+    &= - \frac{w_n^2(x)}{x-x_k} \Big|^b_a 
+       + 2\int_a^b w_n(x) \sum_{i=1}^n \frac{w_n(x)}{(x-x_i)(x-x_k)} dx 
+      \notag \\
+    &= - \frac{w_n^2(x)}{x-x_k} \Big|^b_a 
+       + 2\int_a^b \frac{w_n^2(x)}{(x-x_k)^2} dx.
+       \qquad \text{(Using Eq. \ref{E:zeroint})}
+      \notag \\
+\end{align*}
+Thus
+\[
+  \int_a^b \psi_k^2(x) dx = \frac{w_n^2(x)}{x-x_k} \Big|^b_a 
+    = \frac{(n!)^4 (b-a)^{2n+1}}{ [(2n)!]^2 (x_k-a) (b-x_k) }.
+\]
+Using this and the fact that $\psi_k(x_k)=w'_n(x_k)$, we get Eq. \ref{E:weight}.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Error}
+To get the residual term $R(f)$ of the Gaussian quadrature, we first need the
+error of Hermite interpolation.
+
+%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Error of Hermite interpolation] \label{L:hermite}
+If $f\in C^{2n}[a,b]$, and let $h_{2n-1}(x)$ be the Hermite interpolation at
+points $x_1,x_2,\cdots,x_n$, i.e.,
+\[
+  h_{2n-1}(x_i)=f(x_i), \qquad h'_{2n-1}(x_i)=f'(x_i), \qquad i=1,2,\cdots,n,
+\]
+then given $x\in[a,b]$, there exist a $\xi=\xi(x)$ such that
+\begin{equation}
+  f(x) - h_{2n-1}(x) = \frac{f^{(2n)}(\xi)}{(2n)!} w_n^2(x),
+\end{equation}
+where again
+\[
+  w_n(x) = (x-x_1)(x-x_2) \cdots (x-x_n).
+\]
+\end{lemma}
+\begin{proof}
+We only need to prove this for $x\neq x_i, i=1,2,\cdots,n$. Let
+\[
+  \psi(t) = f(t) - h_{2n-1}(t) - \frac{ f(x)-h_{2n-1}(x) }{ w_n^2(x) } w_n^2(t),
+\]
+it is easy to see that $\psi(x_i)=0,i=1,2,\cdots,n$, and $\psi(x)=0$.
+Hence by Rolle's Theorem, $\psi'(t)$ vanishes at $n$ points which lie strictly
+between each pair of consecutive points from the set $\{x_1,x_2,\cdots,x_n,x\}$.
+Also that $\psi'(x_i)=0,i=1,2,\cdots,n$, hence $\psi(t)$ vanishes at a total of
+$2n$ distinct points in $[a,b]$. Apply Rolle's Theorem repeatly, 
+$\psi''(t)$ vanishes at $2n-1$ distinct points, $\psi'''(t)$ vanishes at $2n-2$
+distinct points, etc., and $\psi^{(2n)}$ vanishes at one point in $[a,b]$, i.e.
+there exist a $\xi\in[a,b]$ such that
+\[
+  0=\psi^{(2n)}(\xi) = f^{(2n)}(\xi) - \frac{f(x)-h_{2n-1}(x)}{w_n^2(x)} (2n)!.
+\]
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Error of Gaussian quadrature]
+\footnote{Berezin and Zhidkov, Computing Methods, vol.1, pp.240-241}
+The residual term of Gaussian quadrature is
+\begin{equation}
+  R(f) = \frac{(n!)^4 (b-a)^{2n+1}}{ [(2n)!]^3 (2n+1)} f^{(2n)}(\xi),
+\end{equation}
+where $\xi$ is some number in $(a,b)$.
+\end{lemma}
+\begin{proof}
+Let $h_{2n-1}(x)$ be the Hermite interpolation of $f(x)$ on the abscissae
+$x_1,x_2,\cdots,x_n$ as defined in Eq. \ref{E:abs}. Since $h_{2n-1}(x)$ is a
+polynomial of order $2n-1$, we have
+\[
+  \int_a^b h_{2n-1}(x) dx = \sum_k C_k h_{2n-1}(x_k) = \sum_k C_k f(x_k).
+\]
+Thus
+\[
+  R(f) = \int_a^b f(x) dx - \sum_k C_k f(x_k) = \int_a^b (f(x)-h_{2n-1}(x)) dx,
+\]
+using Lemma \ref{L:hermite}, we get
+\begin{align*}
+  R(f) &= \int_a^b \frac{f^{(2n)}(\xi(x))}{(2n)!} w_n^2(x) dx \notag \\
+       &= \frac{f^{(2n)}(\xi)}{(2n)!} \int_a^b w_n^2(x) dx 
+          \qquad \text{(using mean-value theorem)}. \notag \\
+\end{align*}
+for some $\xi\in (a,b)$.
+Apply integral by parts repeatly, we get
+\begin{align*}
+  \int_a^b w_n^2(x) dx 
+   &= \left[
+       w_n(x)\phi_1(x) - w'_n(x)\phi_2(x) + \cdots 
+       + (-1)^n w^{(n)}(x) \phi_{n+1}(x)
+     \right] \Big|_a^b  \notag \\
+   &= (-1)^n w^{(n)}(x) \phi_{n+1}(x) |_a^b = (-1)^n n!\phi_{n+1}(b). \notag \\
+\end{align*}
+Again we apply integral by parts repeatly, 
+\begin{align*}
+  \phi_{n+1}(b) 
+    &= \int_a^b \phi_n(x) dx = \int_a^b \frac{n!}{(2n)!} (x-a)^n (x-b)^n dx
+       \notag \\
+    &= \frac{n!}{(2n)!} 
+       \left[
+         \frac{(x-a)^n (x-b)^{n+1}}{n+1}\Big|_a^b
+         - \int_a^b \frac{n}{n+1} (x-a)^{n-1} (x-b)^{n+1} dx
+       \right]  \notag \\
+    &= \text{etc. etc.} \notag \\
+    &= (-1)^n \frac{(n!)^3}{[(2n)!]^2} \int_a^b (x-b)^{2n} dx \notag \\
+    &= (-1)^n \frac{(n!)^3}{[(2n)!]^2 (2n+1)} (b-a)^{2n+1} \notag \\
+\end{align*}
+Thus we have
+\begin{align*}
+  R(f) &= \frac{f^{(2n)}(\xi)}{(2n)!} \int_a^b w_n^2(x) dx 
+          = \frac{ f^{(2n)}(\xi) (-1)^n n! }{(2n)!} \phi_{n+1}(b) \notag \\
+       &= \frac{(n!)^4 (b-a)^{2n+1}}{ [(2n)!]^3 (2n+1)} f^{(2n)}(\xi). \notag \\
+\end{align*}
+\end{proof}
+
+
+
+
+

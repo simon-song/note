@@ -1,0 +1,71 @@
+\chapter{Fast Fourier Transform}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discrete Fourier transform}
+The (forward, one-dimensional) discrete Fourier transform (DFT) of an array $X$
+of $N$ complex numbers is the array $Y$ given by
+\footnote{Johnson,S.G., and Frigo, M., Implementing FFTs in Practice, Connexions
+    module: m16336, (2009)}
+\begin{equation}
+  Y[k] = \sum_{n=0}^{N-1} X[n] w_N^{nk},  \qquad 0\le k<N,
+\end{equation}
+where $w_N=e^{-2\pi i/N}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fast Fourier transform}
+The basic idea of fast Fourier transform (FFT) is quite simple. If $N$ can be
+factored into the product of two integers, i.e. $N=N_1 N_2$, let 
+\[
+  n = N_2 n_1 + n_2,  \qquad 0\le n_1<N_1,  0\le n_2 <N_2
+\]
+\[
+  k = k_1 + N_1 k_2,  \qquad 0\le k_1<N_1,  0\le k_2 <N_2
+\]
+then we have
+\begin{equation}
+  Y[k_1+k_2 N_1] = \sum_{n_2=0}^{N_2-1} 
+     \left[
+       \left( 
+         \sum_{n_1=0}^{N_1-1} X[n_1 N_2+n_2] w_{N_1}^{n_1k_1}  
+       \right) w_{N}^{n_2k_1}
+     \right]   w_{N_2}^{n_2k_2}.
+\end{equation}
+Thus the algorithm computes $N_2$ DFTs of size $N_1$ (the inner sum), multiplies
+the result by the so called twiddle factors $w_{N}^{n_2k_1}$, and finally
+computes $N_1$ DFTs of size $N_2$ (the outer sum).
+
+\begin{proof}
+Straightly from the definition of DFT and the fact that $w_N^N=1$,
+$w_N^{N_1}=w_{N_2}$, and $w_N^{N_2}=w_{N_1}$ we have
+\begin{align*}
+  Y[k_1+k_2 N_1] 
+    &= \sum_{n_2=0}^{N_2-1} \sum_{n_1=0}^{N_1-1}
+         X[n_1 N_2+n_2] w_{N}^{(n_1N_2+n_2)(k_1+k_2N_1)}  \notag \\
+    &= \sum_{n_2=0}^{N_2-1} \sum_{n_1=0}^{N_1-1}
+         X[n_1 N_2+n_2] w_{N}^{n_1k_1N_2+n_2k_2N_1+n_2k_1+n_1k_2N_1N_2}\notag \\
+    &= \sum_{n_2=0}^{N_2-1} \sum_{n_1=0}^{N_1-1}
+         X[n_1 N_2+n_2] w_{N_1}^{n_1k_1} w_{N_2}^{n_2k_2} w_{N}^{n_2k_1} 
+         \notag \\
+    &= \sum_{n_2=0}^{N_2-1} 
+     \left[
+       \left( 
+         \sum_{n_1=0}^{N_1-1} X[n_1 N_2+n_2] w_{N_1}^{n_1k_1}  
+       \right) w_{N}^{n_2k_1}
+     \right]   w_{N_2}^{n_2k_2}. \notag
+\end{align*}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%
+\begin{remark}
+In the special case of $N_2=2$ we have
+\[
+  Y[k] = \sum_{n=0}^{N/2-1} X[2n]w_{N/2}^{nk} 
+              + w_{N}^k \sum_{n=0}^{N/2-1} X[2n+1]w_{N/2}^{nk},
+\]
+and 
+\[
+  Y[k+N/2] = \sum_{n=0}^{N/2-1} X[2n]w_{N/2}^{nk} 
+              - w_{N}^k \sum_{n=0}^{N/2-1} X[2n+1]w_{N/2}^{nk},
+\]
+where $0\le k<N/2$.
+\end{remark}

@@ -1,0 +1,95 @@
+\chapter{Counting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dollar Changing Problem (Polya)}
+
+Problem. 
+\footnote{Polya and Szego, Problems and Theorems in Analysis I, Part I, 
+          Problem 1, (see also Problem 2), p.25 and p.173.
+          Sedgewick and Flajolet, An Introduction to the Analysis
+          of Algorithms, 2nd ed., p.126 }
+In how many different ways can you change a dollar? That is, in how many 
+different ways can you pay 100 cents using five different kinds of coins,
+cents, nickels, dimes, quarters and half-dollars (worth 1, 5, 10, 25, and
+50 cents, respectively)?
+
+Solution. Here we use a method with generating function. The problem 
+above is equivalent to the problem of calculating coefficient $e_{100}$
+where 
+\begin{align*}
+  \sum_{n=0}^{\infty} e_n z^n
+    =& (1 + z + z^2 + z^3 + \cdots + z^{\alpha} + \cdots) \notag \\
+    & (1 + z^5 + z^{10} + z^{15} + \cdots + z^{5\beta} + \cdots) \notag \\
+    & (1 + z^{10} + z^{20} + z^{30} + \cdots + z^{10\gamma} + \cdots) \notag \\
+    & (1 + z^{25} + z^{50} + z^{75} + \cdots + z^{10\mu} + \cdots) \notag \\
+    & (1 + z^{50} + z^{100} + z^{150} + \cdots + z^{10\nu} + \cdots) \notag \\
+    =& \frac{1}{(1-z)(1-z^5)(1-z^{10})(1-z^{25})(1-z^{50})} 
+\end{align*}
+  
+To calculate coefficient $e_n$, let
+\[
+  \frac{1}{1-z} = a_0 + a_1 z + a_2 z^2 + \cdots
+\]
+\[
+  \frac{1}{(1-z)(1-z^5)} = b_0 + b_1 z + b_2 z^2 + \cdots
+\]
+\[
+  \frac{1}{(1-z)(1-z^5)(1-z^{10})} = c_0 + c_1 z + c_2 z^2 + \cdots
+\]
+\[
+  \frac{1}{(1-z)(1-z^5)(1-z^{10})(1-z^{25})} = d_0 + d_1 z + d_2 z^2 + \cdots
+\]
+\[
+  \frac{1}{(1-z)(1-z^5)(1-z^{10})(1-z^{25})(1-z^{50})} 
+     = e_0 + e_1 z + e_2 z^2 + \cdots
+\]
+it is easy to see that $a_i=1$ and
+\[
+  b_i = 
+    \begin{cases}
+      a_i,             & i<5  \\
+      a_i + b_{i-5},   & i\ge 5  
+    \end{cases}
+\]
+\[
+  c_i = 
+    \begin{cases}
+      b_i,              & i<10  \\
+      b_i + c_{i-10},   & i\ge 10  
+    \end{cases}
+\]
+\[
+  d_i = 
+    \begin{cases}
+      c_i,              & i<25  \\
+      c_i + d_{i-25},   & i\ge 25  
+    \end{cases}
+\]
+\[
+  e_i = 
+    \begin{cases}
+      d_i,              & i<50  \\
+      d_i + e_{i-50},   & i\ge 50  
+    \end{cases}
+\]
+
+The coefficients for $a_i,b_i,c_i,d_i,e_i$ are given in the following table
+where the coeffients are the same for indexes from $0$ to $4$, from $5$ to
+$9$, from $10$ to $15$, etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}
+%\caption{Coefficients of generating functions}
+\begin{tabular}{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline\hline
+$i$   & 0 & 5 &10 &15 &20 & 25 & 30 & 35 & 40 & 45 & 50 & 55 & 60 & 65 &  70 &  75 &  80 &  85 &  90 &  95 & 100 \\
+\hline
+$a_i$ & 1 & 1 & 1 & 1 & 1 &  1 &  1 &  1 &  1 &  1 &  1 &  1 &  1 &  1 &   1 &   1 &   1 &   1 &   1 &   1 &   1 \\
+$b_i$ & 1 & 2 & 3 & 4 & 5 &  6 &  7 &  8 &  9 & 10 & 11 & 12 & 13 & 14 &  15 &  16 &  17 &  18 &  19 &  20 &  21 \\
+$c_i$ & 1 & 2 & 4 & 6 & 9 & 12 & 16 & 20 & 25 & 30 & 36 & 42 & 49 & 56 &  64 &  72 &  81 &  90 & 100 & 110 & 121 \\
+$d_i$ & 1 & 2 & 4 & 6 & 9 & 13 & 18 & 24 & 31 & 39 & 49 & 60 & 73 & 87 & 103 & 121 & 141 & 163 & 187 & 213 & 242 \\
+$e_i$ & 1 & 2 & 4 & 6 & 9 & 13 & 18 & 24 & 31 & 39 & 50 & 62 & 77 & 93 & 112 & 134 & 159 & 187 & 218 & 252 & 292 \\
+\hline
+\end{tabular}
+\end{table*}
+
+Hence the answer to our problem is $e_{100}=292$.
