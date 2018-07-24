@@ -64,6 +64,63 @@ coordinate mappings $\pi_i$ from $\Omega$ to $E_i$.
 %\index{product $\sigma$-algebra}
 \end{definition}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conditional Independence}
+
+\begin{definition}
+Let $X,Y,Z$ be random variables on $(\Omega,\mathcal{A},P)$. We say that $X$ is
+(conditionally) independent of $Y$ given $Z$ and write $X\bigCI Y \mid Z$ if
+\[
+  P(X \mid Y,Z) = P(X \mid Z),
+\]
+or equivalently,
+\[
+  P(X,Y \mid Z) = P(X \mid Z) \, P(Y \mid Z).
+\]
+\end{definition}
+
+%%%%%%%%%%%%%%%
+\begin{lemma}
+Let $X,Y,Z,W$ be random variables on $(\Omega,\mathcal{A},P)$. Then the
+following properties hold.
+\footnote{Pearl, Causality: Models, Reasoning and Interference, 2ed, p.11}
+
+(P1)[Symmetry] If $X\bigCI Y \mid Z$, then $Y\bigCI X \mid Z$.
+
+(P2)[Decomposition] If $X\bigCI Y,W \mid Z$, then $X\bigCI Y\mid Z$.
+
+(P3)[Contraction] If $X\bigCI Y \mid Z$ and $X\bigCI W \mid Y,Z$, 
+    then $X\bigCI Y,W\mid Z$.
+
+(P4)[Weak union] If $X\bigCI Y,W \mid Z$, then $X\bigCI Y\mid Z,W$.
+
+(P5)[Intersection] If $X\bigCI Y\mid Z,W$ and $X\bigCI W\mid Y,Z$, 
+    then $X\bigCI Y,W\mid Z$.
+\end{lemma}
+\begin{proof}
+\footnote{See
+https://math.stackexchange.com/questions/855002/what-does-the-decomposition-weak-union-and-contraction-rule-mean-for-conditiona}
+
+(P1) follows directly from the second defintion.
+
+(P2) from $X\bigCI Y,W \mid Z$, we get
+\[
+  P(X,Y,W\mid Z) = P(X\mid Z) \, P(Y,W\mid Z).
+\]
+Marginalizing $W$ (i.e. summing over all values of $W$), we get
+\[
+  \sum_W P(X,Y,W\mid Z) = \sum_W P(X\mid Z) \, P(Y,W\mid Z).
+\]
+thus
+\[
+  P(X,Y\mid Z) = P(X\mid Z) \, P(Y\mid Z),
+\]
+i.e. $X\bigCI Y\mid Z$.
+
+
+
+\end{proof}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
