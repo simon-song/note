@@ -117,8 +117,75 @@ thus
 \]
 i.e. $X\bigCI Y\mid Z$.
 
+(P3) By Bayes theorem, we get 
+\[
+  P(X,Y,W\mid Z)=\frac{P(X,Y,W,Z)}{P(Z)}
+    =\frac{P(X,W\mid Y,Z) \, P(Y,Z)}{P(Z)}.
+\]
+Since $X\bigCI W \mid Y,Z$, we have
+\[
+  P(X,W\mid Y,Z)=P(X\mid Y,Z)\, P(W\mid Y,Z).
+\]
+Substituting back, we get
+\[
+  P(X,Y,W\mid Z)=\frac{P(X\mid Y,Z)\, P(W\mid Y,Z)\, P(Y,Z)}{P(Z)}
+                = P(X\mid Y,Z)\, P(W,Y\mid Z).
+\]
+Now since $X\bigCI Y \mid Z$, we have $P(X\mid Y,Z)=P(X\mid Z)$, hence
+\[
+  P(X,Y,W\mid Z)=P(X\mid Z)\, P(W,Y \mid Z)
+\]
+i.e. $X\bigCI Y,W\mid Z$.
 
+(P4) By Bayes theorem, we get 
+\[
+  P(X,Y\mid Z,W)=\frac{P(X,Y,W,Z)}{P(Z,W)}
+    =\frac{P(X,Y,W\mid Z) \, P(Z)}{P(Z,W)}.
+\]
+Since $X\bigCI Y,W\mid Z$, we have 
+\[
+  P(X,Y,W\mid Z)=P(X\mid Z)\, P(Y,W\mid Z),
+\]
+hence
+\[
+  P(X,Y\mid Z,W)=\frac{P(X\mid Z)\, P(Y,W\mid Z)\, P(Z)}{P(Z,W)}
+                = P(X\mid Z)\, P(Y\mid W,Z).
+\]
+Now using decomposition (P2), we conclude that $X\bigCI W\mid Z$, and we have
+$P(X\mid W,Z)=P(X\mid Z)$, hence
+\[
+  P(X,Y\mid Z,W)= P(X\mid Z)\, P(Y\mid W,Z)
+                = P(X\mid W,Z)\, P(Y\mid W,Z),
+\]
+i.e. $X\bigCI Y\mid Z,W$.
 
+(P5) Since $X\bigCI Y\mid Z,W$ and $X\bigCI W\mid Y,Z$, we have
+\[
+  P(X\mid Y,Z,W) = P(X\mid W,Z) = P(X\mid Y,Z).
+\]
+Using Bayes theorem, we get
+\[
+  \frac{P(X,Z,W)}{P(W,Z)} = \frac{P(X,Y,Z)}{P(Y,Z)},
+\]
+hence
+\[
+  \frac{P(X,W\mid Z)}{P(W\mid Z)} = \frac{P(X,Y\mid Z)}{P(Y\mid Z)},
+\]
+thus
+\[
+  P(X,W\mid Z)\, P(Y\mid Z) = P(X,Y\mid Z)\, P(W\mid Z),
+\]
+Marginalizing $W$ (i.e. summing over all values of $W$), we get
+\[
+  \sum_W P(X,W\mid Z)\, P(Y\mid Z) = \sum_W P(X,Y\mid Z)\, P(W\mid Z),
+\]
+hence
+\[
+  P(X,Y\mid Z) = P(X\mid Z)\, P(Y\mid Z),
+\]
+i.e. $X\bigCI Y\mid Z$.
+Now using this and the contraction property (P3), we conclude that
+$X\bigCI Y,W\mid Z$.
 \end{proof}
 
 
