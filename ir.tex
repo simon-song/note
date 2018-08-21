@@ -34,7 +34,7 @@ and $\delta_j$ be the year fraction between dates $T_{j-1}$ and $T_{j}$,
 
 The current value of the coupon bond is
 \begin{equation}
-  CB(t,\{T_j\}_{j<\le n},\{c_j\}_{j\le n}) = \sum_{i=1}^n c_i D_{tT_i}.
+  CB(t,\{T_j\}_{j\le n},\{c_j\}_{j\le n}) = \sum_{i=1}^n c_i D_{tT_i}.
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,7 +73,7 @@ $\{T_0,T_1,\cdots,T_{n-1}\}$, plus the notional on $T_n$.
 
 The current value of the note is
 \begin{equation}
-  FRN(t,\{T_j\}_{j<\le n}) = D_{tT0}.
+  FRN(t,\{T_j\}_{j\le n}) = D_{tT0}.
 \end{equation}
 
 
@@ -139,7 +139,7 @@ The price of the fixed leg at time $t<T_0$ is
 \]
 while the price of the floating leg is simply
 \[
-  \sum_{j=1}^n \delta^T_j L_{T_{j-1}}[T_{j-1},T_j]
+  \sum_{j=1}^n \delta^T_j L_{T_{j-1}}[T_{j-1},T_j] D_{tT_j}
     = D_{tT_0} - D_{tT_n}.
 \]
 And the price of a payer's swap is the difference between the floating leg and
