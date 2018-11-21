@@ -340,3 +340,106 @@ $y=\lambda e_i$ for $\lambda>0$ we get
 \]
 which does not hold for large $\lambda$. Thus $(1)$ has a solution.
 \end{proof}
+
+%%%%%%%%%%%%%%%
+\begin{proof}[Proof using Fourier-Motzkin elimination]
+First we suppose that $(2)$ has a solution. 
+\footnote{This part is the same as the proof above.}
+If $(1)$ also has a soultion, then
+\[
+  \langle b,x \rangle = \langle A^T y, x \rangle = \langle y,Ax \rangle \le 0,
+\]
+because $Ax\le 0$ and $y\ge 0$. This contradicts with the assumption that
+$\langle b,x \rangle >0$, thus implies that $(1)$ does not have a solution.
+
+Next we suppose that $(2)$ does not have a solution. 
+\footnote{Adapted from
+\url{http://math.stackexchange.com/questions/225459/fakas-lemma-proof}.
+}
+First note that problem $(2)$ is equivalent to problem $D y\le d$, where
+\[
+  D=
+  \begin{pmatrix}
+    A^T \\
+    -A^T \\
+    -I
+  \end{pmatrix},
+  \qquad
+  d=
+  \begin{pmatrix}
+    b \\
+    -b \\
+    0
+  \end{pmatrix}.
+\]
+We can now apply Fourier-Motzkin Elimination (FME) 
+\footnote{see Schrijver, Theory of Linear and Integer Programming, pp.155-157}
+on the system $D y\le b$,
+removing all variables $y_1,y_2,\cdots,y_m$ in order. Define $U_i$ to be the
+matrix used to remove variable $y_i$ from the system of inequalities, i.e.,
+to find a matrix $U_1$ to make the first column of $U_1 D$ all zero, 
+a matrix $U_2$ to make the first and second column of $U_2 U_1 D$ all zero, 
+a matrix $U_3$ to make the first three columns of $U_3 U_2 U_1 D$ all zero, etc.,
+a matrix $U_n$ to make all the columns of $U_n U_{n-1}\dots U_2 U_1 D$ all zero.
+The standard procedure can be done with $U_i\ge 0$, i.e., all elements of it 
+being nonnegative. We denote $U=U_n U_{n-1}\dots U_2 U_1$, hence $U D=0$ and
+$U\ge 0$ since $U_i\ge 0$ for all $i$.
+
+Now since the system of inequalities $D y\le d$ has no solution, there must
+exist a row vector $u$ of $U$ such that $u^T D=0$ and $u^T d<0$. 
+\footnote{Since $u^T D y=0^T y=0\le u^T d$, and there will only be conflict iff
+$u^T d<0$.}
+Let 
+\[
+  u = 
+    \begin{pmatrix}
+      p \\ 
+      q \\
+      r
+    \end{pmatrix},
+\]
+where $p,q,r\ge 0$ are vectors of order $m$, we then have
+\[
+  u^T D =
+  \begin{pmatrix}
+    p^T & q^T & r^T
+  \end{pmatrix}
+  \begin{pmatrix}
+    A^T \\
+    -A^T \\
+    -I
+  \end{pmatrix}
+  =0
+\]
+and 
+\[
+  u^T d =
+  \begin{pmatrix}
+    p^T & q^T & r^T
+  \end{pmatrix}
+  \begin{pmatrix}
+    b \\
+    -b \\
+    0  
+  \end{pmatrix}
+  <0.
+\]
+From the first condiction we get
+\[
+  (q^T-p^T) A^T = -r^T \le 0,
+\]
+hence 
+\[
+  A (q-p) \le 0.
+\]
+And from the second condition we get
+\[
+  (q^T - p^T) b >0,
+\]
+hence
+\[
+  b^T (q-p)>0.
+\]
+Let $x=q-p$, it satisfies $A x\le 0$ and $b^T x>0$, i.e. $x$ is a solution of
+problem $(1)$.
+\end{proof}
