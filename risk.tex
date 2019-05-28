@@ -1,0 +1,22 @@
+\chapter{Risk}
+
+\section{Introduction}
+Suppose we have a portfolio of $N$ instruments with weight $w_i,i=1,\dots,N$
+satisfying
+\begin{equation}
+  \sum_{i=1}^N w_i = 1.
+\end{equation}
+Let $r_{i,t}=P_{i,t}/P_{i,t-1}-1$ be the return of instrument $i$ at time $t$,
+then the return of the whole portfolio is
+\begin{equation}
+  r_P = \sum_{i=1}^N w_i r_{i,t},
+\end{equation}
+of which the mean is
+\begin{equation}
+  \mu_P = \sum_{i=1}^N w_i E[r_{i,t}] = \sum_{i=1}^N \mu_i,
+\end{equation}
+and the variance is
+\begin{equation}
+  \sigma_P^2 = \sum_{i,j=1}^N w_i w_j cov(r_{i,t},r_{j,t}).
+\end{equation}
+
