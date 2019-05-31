@@ -248,3 +248,75 @@ is
 	\left( \frac{2}{b-a} \sin \frac{n\pi (x_0-a)}{b-a} +\frac{2(-)^n}{n\pi} \right)
 		e^{-\frac{n^2\pi^2 \sigma^2 t}{2(b-a)^2}} \sin \frac{n\pi (x-a)}{b-a}.
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parabolic Equations}
+Let 
+\begin{equation}
+  L u = a(x,t) \frac{\partial^2 u}{\partial x^2} 
+       + b(x,t) \frac{\partial u}{\partial x}  + c(x,t) u
+\end{equation}
+be an elliptic operator in $R$ for each $t\in[0,T]$ and 
+\begin{equation}
+  M u = L u - \frac{\partial u}{\partial t} 
+\end{equation}
+be the corresponding parabolic operator, and $G(x,t;\xi,\tau)$ 
+be the Green's function of $M$, i.e.
+\begin{equation}
+  M G(x,t;\xi,\tau) = \delta(x-\xi) \delta(t-\tau).
+\end{equation}
+
+We also define the adjoint operators
+\begin{equation}
+  L^* u = \frac{\partial^2}{\partial x^2} (a(x,t) u)
+       - \frac{\partial}{\partial x} (b(x,t) u) + c(x,t) u
+\end{equation}
+and
+\begin{equation}
+  M^* u = L^* u + \frac{\partial u}{\partial t} 
+\end{equation}
+and let $G^*(x,t;\xi,\tau)$ be the Green's function of $M^*$, i.e.
+\begin{equation}
+  M^* G^*(x,t;\xi,\tau) = \delta(x-\xi) \delta(t-\tau).
+\end{equation}
+
+\begin{align*}
+  v M u - u M^* v &=
+     \frac{\partial}{\partial x} \left(
+       v a \frac{\partial u}{\partial x} - u a \frac{\partial v}{\partial x}
+       - u v \frac{\partial a}{\partial x} + b u v
+     \right)
+     - \frac{\partial}{\partial t} (u v)
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+We have the following 
+\begin{equation}
+  G(x,t;\xi,\tau) = G^*(\xi,\tau;x,t)
+\end{equation}
+\begin{proof}
+Consider functions
+\[
+  u(x,t) = G(x,t;\xi,\tau),
+\]
+and
+\[
+  v(x,t) = G^*(x,t;\xi_1,\tau_1),
+\]
+for $y\in R, \tau<t<\tau_1$.
+Integrate over $\int dx \int dt (v M u- u M^* v)$, we get
+\[
+  RHS = G^*(\xi,\tau;\xi_1,\tau_1) - G(\xi_1,\tau_1;\xi,\tau),
+\]
+and
+\[
+  LHS = \int \left(    
+          v a \frac{\partial u}{\partial x} - u a \frac{\partial v}{\partial x}
+          - u v \frac{\partial a}{\partial x} + b u v
+        \right) \bigg\rvert_{x=x_1}^{x_2} dt
+        - \int \left( u v  \right) \bigg\rvert_{t=-\infty}^{\tau_1^+} dx 
+\]
+
+\end{proof}
+\end{lemma}
