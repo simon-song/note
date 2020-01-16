@@ -146,6 +146,45 @@ while the price of the put option is
   P(t,T,\sigma,S_t,K) = - S_t D_t^d \Phi(-d_1) + K D_t \Phi(-d_2).
 \end{equation}
 
+To calculate the greeks, first note that
+\begin{align*}
+  \frac{\partial C_t}{\partial x} 
+    &= \frac{\partial}{\partial x} (S_t D_t^d)\, \Phi(d_1)   
+      - \frac{\partial}{\partial x} (K D_t)\, \Phi(d_2)   
+      + S_t D_t^d \frac{\partial}{\partial x} \Phi(d_1)   
+      - K D_t \frac{\partial}{\partial x} \Phi(d_2) \\
+    &= \frac{\partial}{\partial x} (S_t D_t^d)\, \Phi(d_1)   
+      - \frac{\partial}{\partial x} (K D_t)\, \Phi(d_2)   
+      + S_t D_t^d \phi(d_1) \frac{\partial d_1}{\partial x} 
+      - K D_t \phi(d_2) \frac{\partial d_2}{\partial x} 
+\end{align*}
+where
+\[
+  \phi(x)=\frac{e^{-x^2/2}}{\sqrt{2\pi}}.
+\]
+It is easy to check that 
+\[
+  S_t D_t^d \phi(d_1) = K D_t \phi(d_2),
+\]
+hence
+\begin{align*}
+  \frac{\partial C_t}{\partial x} 
+    &= \frac{\partial}{\partial x} (S_t D_t^d)\, \Phi(d_1)   
+      - \frac{\partial}{\partial x} (K D_t)\, \Phi(d_2)   
+      + S_t D_t^d \phi(d_1) \frac{\partial}{\partial x} (d_1-d_2) \\
+    &= \frac{\partial}{\partial x} (S_t D_t^d)\, \Phi(d_1)   
+      - \frac{\partial}{\partial x} (K D_t)\, \Phi(d_2)   
+      + S_t D_t^d \phi(d_1) \frac{\partial}{\partial x} (\sigma\sqrt{T-t}).
+\end{align*}
+
+Similarly we have
+\[
+  \frac{\partial P_t}{\partial x} 
+    = -\frac{\partial}{\partial x} (S_t D_t^d)\, \Phi(-d_1)   
+      + \frac{\partial}{\partial x} (K D_t)\, \Phi(-d_2)   
+      + S_t D_t^d \phi(d_1) \frac{\partial}{\partial x} (\sigma\sqrt{T-t}).
+\]
+
 The deltas are: 
 \begin{align}
 	\frac{\partial C_t}{\partial S_t} &= D_t^d \Phi(d_1)   \\
@@ -172,8 +211,8 @@ The thetas are:
 
 The vegas are:
 \begin{align}
-	\frac{\partial C_t}{\partial \sigma} &= S_t D_t^d \Phi'(d1) \sqrt{T-t}   \\
-	\frac{\partial P_t}{\partial \sigma} &= S_t D_t^d \Phi'(d1) \sqrt{T-t}
+	\frac{\partial C_t}{\partial \sigma} &= S_t D_t^d \Phi'(d_1) \sqrt{T-t}   \\
+	\frac{\partial P_t}{\partial \sigma} &= S_t D_t^d \Phi'(d_1) \sqrt{T-t}
 \end{align}
 
 The rhos are:
