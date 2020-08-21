@@ -206,7 +206,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  beginning of my own code 
 \usepackage{tikz}  
-\usetikzlibrary{arrows,snakes}  
+\usetikzlibrary{arrows,snakes,automata,positioning}  
 
 %% New command for drawing snake line.
 %% e.g.  \drawsnake{(0,0)}{(0,2){$y=\sigma$}
@@ -347,6 +347,7 @@
 \include{hull_white}      % Hull-White short rate model
 \include{lmm}             % LIBOR market model
 \include{risk}            % risk, VaR, etc.
+\include{mbs}             % mortgage backed security
 
 \include{gauss_quadrature}  % Gaussian quadrature
 \include{de_quadrature}     % double exponential quadrature

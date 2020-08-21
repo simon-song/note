@@ -1,0 +1,212 @@
+\chapter{Asset Backed Securities}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Loan cashflow}
+Suppose a loan can be in one of the following states: Current, Delinquent,
+Default, Prepay. We will give in this section a simple cashflow model of a loan
+with embedded options.
+
+First we define notations:
+
+\begin{itemize}
+\item $N$, total number of payments
+\item $i$, index of payment
+\item $t(i)$, date of $i$-th payment
+\item $\tau(i)$, year fraction between dates $t(i-1)$ and $t(i)$
+\item $C$, coupon rate
+\item $\pi(i)$, conditional probability of prepayment
+\item $\lambda(i)$, conditional probability of delinquency
+\item $\chi(i,j)$, cure speed rate at the $j$-th payment of the $i$-th payment
+\item $\delta(i,j)$, conditional probability of default at the $j$-th payment 
+      of the $i$-th payment
+\item $P(i)$, original schedule of principal payment
+\item $I(i)$, original schedule of interest payment
+\item $B(i)$, original schedule of outstanding balance 
+\item $P_s(i)$, schedule of principal payment with prepayment, delinquency, and
+default
+\item $I_s(i)$, schedule of interest payment with prepayment, delinquency, and
+default
+\item $B_s(i)$, schedule of outstanding balance with prepayment, delinquency, and
+default
+\item $P_{prep}(i)$, prepayment principal
+\item $P_{dlc}(i)$, delinquency principal in the current period
+\item $P_{dlt}(i)$, accumulated delinquency principal
+\item $P_{dlr}(i)$, recovery of delinquency principal
+\item $I_{dl}(i)$, delinquency interest
+\item $P_{df}(i)$, default principal 
+\end{itemize}
+
+The original cashflow schedule can be calculated as follows, first define a
+variable $Y(i)$ satisfying
+\[
+  \frac{1}{Y(i)} = \sum_{j=1}^{N-i} \frac{1}{(1+C)^j},
+\]
+then we have
+\begin{equation}
+  I(i) = B(i-1)\times C\times \tau(i),
+\end{equation}
+and
+\begin{equation}
+  P(i) = B(i-1)\times (Y(i)-C)\times \tau(i)
+\end{equation}
+
+In case of prepayment, we have
+\begin{equation}
+  P_{prep}(i) = B_s(i-1) \cdot \pi(i).
+\end{equation}
+
+The delinquency related cashflows are
+\begin{align}
+  P_{dlc}(i) &= B_s(i-1) \cdot \lambda(i) \\ 
+  P_{dlt}(i) &= P_{dlt}(i-1) + P_{dlc}(i) - P_{dlr}(i) \\ 
+  P_{dlr}(i) &= \sum_{j=1}^{i-1} P_{dlc}(j) \cdot \chi(j,i) \\ 
+  I_{dl}(i) &= P_{dlt}(i-1) \cdot C \cdot \tau(i)
+\end{align}
+
+In case of default, we have
+\begin{equation}
+  P_{df}(i) = \sum_{j=1}^{i-1} P_{dlr}(j) \cdot \delta(j,i) 
+\end{equation}
+
+Putting together, the scheduled cashflows are:
+\begin{align}
+  P_s(i) &= B_s(i-1)\cdot\frac{P(i)}{B(i-1)} + P_{prep}(i) - P_{dlc}(i) + P_{dlr}(i) \\
+  I_s(i) &= [B_s(i-1)-P_{dlc}(i)-P_{df}(i)] \frac{I(i)}{B(i-1)} + I_{dl}(i) \\
+  B_s(i) &= B_s(i-1) - P_s(i) - P_{df}(i)
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Markov chain model of loan cashflow}
+
+In this section we give a Markov chain model of loan cashflow. Suppose there are
+$k$ total states, with the first $k-1$ states being current, delinquent for one
+period, delinquent for 2 periods, etc.; and the $k$-th state being prepayment.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\begin{tikzpicture}[font=\sffamily]
+    % Setup the style for the states
+    \tikzset{node style/.style={state, 
+                                %minimum width=2cm,
+                                minimum width=1.5cm,
+                                line width=1mm,
+                                fill=gray!20!white}}
+
+    % set loop style
+    %\tikzset{every loop/.style={min distance=10mm,in=0,out=60,looseness=10}}
+    \tikzset{
+      loop style/.style={
+        min distance=2mm,out=120,in=60,looseness=3,
+        >=latex,line width=1mm,draw=orange}
+    }
+
+    % Draw the states
+    \node[node style] at (0, 0)  (S1) {S1};
+    \node[node style] at (4, 0)  (S2) {S2};
+    \node[node style] at (8, 0)  (S3) {S3};
+    \node[node style] at (12, 0) (S4) {S4};
+    \node[node style] at (6, -3) (S5) {S5};
+
+    % Connect the states with arrows
+    \draw[every loop,
+          auto=right,
+          line width=1mm,
+          >=latex,
+          draw=orange,
+          fill=orange]
+        %(S1)     edge[loop above]                 node {$p_{11}$} (S1)
+        %(S2)     edge[loop above]                 node {$p_{11}$} (S2)
+        (S1)     edge[bend right=15, auto=left]   node {$p_{12}$} (S2)
+        (S2)     edge[bend right=15]              node {$p_{21}$} (S1)
+        (S2)     edge[bend right=15, auto=left]   node {$p_{23}$} (S3)
+        (S3)     edge[bend right=15]              node {$p_{32}$} (S2)
+        (S3)     edge[bend right=15, auto=left]   node {$p_{34}$} (S4)
+        (S4)     edge[bend right=15]              node {$p_{43}$} (S3)
+        (S3)     edge[bend right=33]              node {$p_{31}$} (S1)
+        (S4)     edge[bend right=33]              node {$p_{42}$} (S2)
+        (S4)     edge[bend right=42]              node {$p_{41}$} (S1)
+        (S1)     edge                             node {$p_{15}$} (S5)
+        (S2)     edge                             node {$p_{25}$} (S5)
+        (S3)     edge                             node {$p_{35}$} (S5)
+        (S4)     edge                             node {$p_{45}$} (S5)
+;
+
+%%  this does not work well with loops
+%    \draw[every loop,
+%          %min distance=10mm,in=0, out=60,looseness=10,
+%          min distance=1mm,in=60,out=120,looseness=1,
+%          auto=right,
+%          line width=1mm,
+%          >=latex,
+%          draw=orange,
+%          fill=orange]
+%        (S1)     edge[loop]                 node {$p_{11}$} (S1)
+%        (S2)     edge[loop]                 node {$p_{11}$} (S2)
+%;
+
+% %\path (S1) edge [out=330,in=300,looseness=8,
+% %line width=1mm,draw=orange] node[above] {0.8} (S1);
+% \path[->] (S1) edge [min distance=2mm,out=120,in=60,looseness=3,
+%      >=latex,line width=1mm,draw=orange] node[below] {$p_{11}$} (S1);
+% \path[->] (S2) edge [min distance=2mm,out=120,in=60,looseness=3,
+%      >=latex,line width=1mm,draw=orange] node[below] {$p_{22}$} (S2);
+% \path[->] (S3) edge [min distance=2mm,out=120,in=60,looseness=3,
+%      >=latex,line width=1mm,draw=orange] node[below] {$p_{33}$} (S3);
+% \path[->] (S4) edge [min distance=2mm,out=120,in=60,looseness=3,
+%      >=latex,line width=1mm,draw=orange] node[below] {$p_{44}$} (S4);
+\path[->] (S1) edge [loop style] node[below] {$p_{11}$} (S1);
+\path[->] (S2) edge [loop style] node[below] {$p_{22}$} (S2);
+\path[->] (S3) edge [loop style] node[below] {$p_{33}$} (S3);
+\path[->] (S4) edge [loop style] node[below] {$p_{44}$} (S4);
+
+\end{tikzpicture}
+\caption[][5cm]{State transition diagram of the Markov chain model of a loan 
+  with $k$ states. Given is an example with $k=5$ states, where $S_1$ being 
+  current, $S_2$ being delinquent for one period, $S_3$ being delinquent for two 
+  periods, $S_4$ being delinquent for three periods, and $S_5$ being prepayment. 
+  And $p_{ij}$ denotes the transition probability from state $i$ to state $j$.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $x_i(t)=P\{\xi(t)=e_i\}$ be the probability of the loan at state $i$ at time
+$t$, then
+\begin{equation}
+  x_j(t+1) = \sum_{i=1}^k p_{ij} x_i(t) \qquad j=1,2,\dots,k
+\end{equation}
+where
+\begin{equation}
+  p_{ij} \equiv p_{ij}(t)=P\{\xi(t+1)=e_j | \xi(t)=e_i \}
+\end{equation}
+is the transition probability from state $i$ to state $j$.
+
+
+Let $d$ be the scheduled payment, namely, $B_0 Y$ if we use level payment
+amortization, $B_0 C + B_0 / N$ if we use level principal amortization.
+Let $A_j(t)$ be the payment amount at time $t$ and state $j$, then
+\begin{align}
+  A_j(t+1) &= d \sum_i^{k-1} G_{ij}^{(1)} p_{ij} x_i(t), \qquad j=1,2,\dots,k-1 \\
+  A_{k}(t+1) &= (1+C) \sum_{i=1}^{k-1} B_i(t) p_{ik}
+\end{align}
+where
+\begin{equation}
+  G^{(1)} =
+  \begin{pmatrix}
+    1      &        &        &        & \text{\huge0} \\
+    2      & 1      &        &        &        \\
+    3      & 2      & 1      &        &        \\
+    \vdots & \vdots & \vdots & \ddots &   &   \\
+    k-1    & k-2    & k-3    & \cdots & 1 & 0 \\
+    0      & 0      & 0      & \cdots & 0 & 0
+  \end{pmatrix}
+\end{equation}
+
+Let $B_j(t)$ be the remaining balance at time $t$ and state $j$, then
+\begin{align}
+  B_j(t+1) &= \sum_{i=1}^{k-1} [(1+C) B_i(t) - d G_{ij}^{(1)} x_i(t)] p_{ij}
+       \qquad j=1,2,\dots,k-1  \notag \\ 
+  B_k(t+1) &= 0
+\end{align}
+
+Thus we have $3k$ equations for each time $t$, these can then be solved to get
+the states of the loan.
