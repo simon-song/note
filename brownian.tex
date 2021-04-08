@@ -43,9 +43,28 @@ We know from Example \ref{Ex:hit2} that when $x\le y$
 hence
 \footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 1.1.1.2,
 p.153}
-\begin{equation}
+\begin{equation} \label{E:HOBM1.1.1.2}
   P_x[ \sup_{0\le s\le \tau} W_s \ge y ] = e^{\sqrt{2\lambda}(x-y)}.
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $E_x[ \exp(-\gamma \sup_{0\le s\le \tau} W_s) ]$ (HOBM 1.1.1.1) }
+Let $M_t = \sup\{W_s: s\le t \}$ be the maximum until time $t$.
+Using Equation \ref{E:HOBM1.1.1.2}, we have
+\begin{align*}
+  E_x[e^{-\gamma M_{\tau}}] 
+    &= \int_x^{\infty} e^{-\gamma y} dP_x[M_{\tau}\le y] \\
+    &= \int_x^{\infty} e^{-\gamma y} \sqrt{2\lambda}\, e^{(x-y)\sqrt{2\lambda}} dy \\ 
+    &= \frac{\sqrt{2\lambda}}{\gamma+\sqrt{2\lambda}} e^{-\gamma x},
+\end{align*}
+hence
+\footnote{Borodin and Salminen, Handbook of Brownian Motions, 2ed., 1.1.1.1,
+p.153}
+\begin{equation} \label{E:HOBM1.1.1.1}
+  E_x[ \exp(-\gamma \sup_{0\le s\le \tau} W_s) ]
+    = \frac{\sqrt{2\lambda}}{\gamma+\sqrt{2\lambda}} e^{-\gamma x}.
+\end{equation}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
