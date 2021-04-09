@@ -130,7 +130,7 @@ Hence
 \end{align*}
 i.e.
 \footnote{cf. Borodin and Salemin, Handbook of Brownian Motions, 2ed, Appendix
-3.2, p. 650}
+3.2, Equation 2, p. 650}
 \begin{equation} \label{E:ilt_1a}
 	f(t)= L_p^{-1}\left[ e^{-a\sqrt{p}} \right]
       = \frac{a}{2\sqrt{\pi} t^{3/2}} e^{-a^2/4t}, \qquad a>0.
@@ -205,7 +205,7 @@ Hence
   \int_{DE} + \int_{GH} 
   &= \frac{1}{\pi} \int_0^{\infty} \frac{e^{-yx}}{x(\gamma^2+2x)}
        \left[
-         \gamma \sin(\alpha \sqrt{2x} + \sqrt{2x} \cos(\alpha \sqrt{2x})
+         \gamma \sin(\alpha \sqrt{2x}) + \sqrt{2x} \cos(\alpha \sqrt{2x})
        \right] \, dx  \\
   &= \frac{2\gamma}{\pi} \int_0^{\infty} 
        \frac{e^{-yu^2/2} \sin(\alpha u)}{u(u^2+\gamma^2)} \, du
@@ -299,6 +299,110 @@ Take all together and note that $f(y)=\int_{AB}$, we get
 \end{equation}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ $ L_p^{-1} [ \frac{1}{\sqrt{p}(\sqrt{p}+b)} e^{-a\sqrt{p}} ], a\ge 0 $ }
+From definition, 
+\[
+	f(t)= L_p^{-1}\left[ \frac{e^{-a\sqrt{p}}}{\sqrt{p}(\sqrt{p}+b)} \right]
+	    = \frac{1}{2\pi i} 
+			  \int_{c-i\infty}^{c+\infty} 
+				e^{zt} \frac{e^{-a\sqrt{z}}}{\sqrt{z}(\sqrt{z}+b)} dz.
+\]
+Since $z=0$ is a branch point, we use a contour around the branch cut from
+$z=-\infty$ to $z=0$ (thus remaining in the principal branch) and have
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{marginfigure} 
+  \includegraphics{graphics/contour.pdf}
+\end{marginfigure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\[
+  \oint = \int_{AB} + \int_{BCD} + \int_{DE} + \int_{EFG} + \int_{GH}
+          + \int_{HIA}
+\]
+
+Since the contour does not include any poles, using the residue theorem on the
+principal branch $\sqrt{z}$ we get $\oint =0$. 
+
+Now on contour $BCD$, 
+$z=R e^{i\theta}$, $\frac{\pi}{2}-\beta <\theta <\pi$; while on contour $HIA$, 
+$z=R e^{i\theta}$, $-\pi <\theta < -\frac{\pi}{2}+\beta$. On $BCD$ and
+$HIA$, we have
+\[
+  \lim_{R\to \infty} 
+    \max_z \left| \frac{e^{-a\sqrt{z}}}{\sqrt{z}(\sqrt{z}+b)} \right|
+  = \lim_{R\to \infty} \max_{\theta} 
+      \left| 
+        \frac{e^{-a\sqrt{R} e^{i\theta/2}}}
+             { \sqrt{R} e^{i\theta/2} (\sqrt{R} e^{i\theta/2} + b) }
+      \right|
+  = 0,
+\]
+thus by Jordan's Lemma (Corollary \ref{C:jordan}) we have
+\[
+  \int_{BCD} + \int_{HIA} = 0.
+\]
+And on the small circle contour $EFG$ we have
+\[
+	\int_{EFG} 
+	= \frac{1}{2\pi i} 
+	  \lim_{\epsilon\to 0} \int_{\pi}^{-\pi} e^{t\epsilon e^{i\theta}}
+	    \frac{e^{-a\sqrt{\epsilon} e^{i\theta/2}}}
+             { \sqrt{\epsilon} e^{i\theta/2} (\sqrt{\epsilon} e^{i\theta/2} + b)}
+        \epsilon e^{i\theta} i d\theta
+	= 0.
+\]
+
+Along line $DE$, $z=x e^{i\pi}=-x$, where $x$ ranges from $\infty$ to $0$, and 
+$\sqrt{z}=\sqrt{x} e^{i\pi /2}= i\sqrt{x}$, thus
+\[
+	\int_{DE} = \frac{1}{2\pi i} 
+      \int_{\infty}^0 e^{-tx} 
+        \frac{e^{-i a \sqrt{x}}}{i\sqrt{x}(i\sqrt{x}+b)} (-dx).
+\]
+Similarly, along line $GH$, $z=x e^{-i\pi}=-x$, where $x$ ranges from $0$ to
+$\infty$, and $\sqrt{z}=\sqrt{x} e^{-i\pi/2} = -i\sqrt{x}$, thus 
+\[
+	\int_{GH} = \frac{1}{2\pi i}  
+      \int^{\infty}_0 e^{-tx} 
+        \frac{e^{i a \sqrt{x}}}{-i\sqrt{x}(-i\sqrt{x}+b)} (-dx).
+\]
+Hence
+\begin{align*}
+  \int_{DE} + \int_{GH}
+	&= \frac{1}{\pi} 
+      \int_0^{\infty} \frac{e^{-tx}}{\sqrt{x}(x+b^2)} 
+        \left[ \sqrt{x}\sin(a\sqrt{x}) - b\cos(a\sqrt{x}) \right] dx \\
+  &= \frac{2}{\pi} 
+       \int_0^{\infty} \frac{e^{-t u^2} \sin(a u)}{u^2+b^2} \, u du
+     -\frac{2b}{\pi} 
+       \int_0^{\infty} \frac{e^{-t u^2} \cos(a u)}{u^2+b^2} \, du
+\end{align*}
+Using Equations \ref{E:int3} and \ref{E:int4}, we get
+\[
+  \int_{DE} + \int_{GH}
+    = -e^{a b + b^2 t} \erfc\left( \frac{a}{2\sqrt{t}} + b \sqrt{t} \right)
+\]
+
+Hence 
+\begin{align*}
+  \int_{AB} 
+	&= \oint - \left( \int_{BCD} + \int_{HIA} \right)
+     - \left( \int_{DE} + \int_{GH} \right) - \int_{EFG}  \\
+  &= e^{a b + b^2 t} \erfc\left( \frac{a}{2\sqrt{t}} + b \sqrt{t} \right)
+\end{align*}
+i.e.
+\footnote{cf. Borodin and Salemin, Handbook of Brownian Motions, 2ed, Appendix
+3.2, Equation 11, p. 650}
+\begin{equation} \label{E:ilt_1a}
+  f(t) = L_p^{-1} \left[ \frac{1}{\sqrt{p}(\sqrt{p}+b)} e^{-a\sqrt{p}} \right]
+       = e^{a b + b^2 t} \erfc\left( \frac{a}{2\sqrt{t}} + b \sqrt{t} \right),
+         \qquad a\ge 0 
+\end{equation}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{$ L_{\lambda}^{-1}[ 
   \frac{1}{\lambda} e^{-\alpha \sqrt{\lambda}} ] $ }
@@ -352,16 +456,31 @@ Hence
       \int_0^{\infty} \frac{ e^{-xy} }{ x } \sin( \alpha \sqrt{x} ) \, dx \\
     &= \frac{2}{\pi} \int_0^{\infty} \frac{e^{-yu^2}}{u} \sin(\alpha u) \, du
 \end{align*}
+Using Equation \ref{E:int3} with $\gamma=0$, we get
+\[
+  \int_{DE} + \int_{GH} 
+    =   \frac{1}{2} \erfc \left( -\frac{\alpha}{2\sqrt{y}} \right)
+      - \frac{1}{2} \erfc \left( \frac{\alpha}{2\sqrt{y}}  \right).
+\]
 
-
-
-
+Hence 
+\begin{align*}
+  \int_{AB} 
+	&= \oint - \left( \int_{BCD} + \int_{HIA} \right)
+     - \left( \int_{DE} + \int_{GH} \right) - \int_{EFG}  \\
+    & = 1 - \frac{1}{2} \erfc \left( -\frac{\alpha}{2\sqrt{y}} \right)
+          + \frac{1}{2} \erfc \left( \frac{\alpha}{2\sqrt{y}}  \right) \\
+    &= \erfc \left( \frac{\alpha}{2\sqrt{y}} \right) 
+\end{align*}
+i.e.
+\footnote{cf. Borodin and Salemin, Handbook of Brownian Motions, 2ed, Appendix
+3.2, Equation 6, p. 650}
 \begin{equation}  \label{E:ilt3}
   f(y) = L_{\lambda}^{-1} 
          \left[ 
            \frac{1}{\lambda} e^{-\alpha \sqrt{\lambda}}
          \right]
-       = \erf \left( \frac{|x-r|}{\sqrt{2t}} \right)
+       = \erfc \left( \frac{\alpha}{2\sqrt{y}} \right).
 \end{equation}
 
 
@@ -725,7 +844,7 @@ Hence
 \end{align*}
 i.e.
 \footnote{Doetsch, Introduction to the Theory and Application of the Laplace
-Transformation, \#60, p.321; Spigel, Schaum's Outline of Theory and Problems of
+Transformation, \#60, p.321; Spiegel, Schaum's Outline of Theory and Problems of
 Laplace Transforms, Appendix B.124, p.252, note the missing of a negative sign.}
 \begin{equation} \label{E:ilt_sinh_1A}
   f(t)

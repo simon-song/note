@@ -210,3 +210,16 @@ Let $B_j(t)$ be the remaining balance at time $t$ and state $j$, then
 
 Thus we have $3k$ equations for each time $t$, these can then be solved to get
 the states of the loan.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Revolving period}
+
+constrained nonlinear optimization problem:
+
+\begin{align*}
+  \max_{w} \quad & Y_{SP}(\{w_{ij}\}_{i,j}) \notag \\
+  \textrm{s.t.} \quad & Y_{SP}(\{w_{ij}\}_{i,j}) \le Y_{target} \notag \\
+  & \sum_j w_{ij} = 1, \qquad \forall i \notag \\
+  & 0\le w_{ij} \le 1, \qquad \forall i,j \notag \\
+  & m_{ij} \le w_{ij} \le M_{ij}, \qquad \forall i,j \notag 
+\end{align*}
