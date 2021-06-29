@@ -1,6 +1,33 @@
 \chapter{Interest Rate Products}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Day count conventions}
+
+We give the formula for calculating year fraction between two days $d_1$ and
+$d_2$ given two reference dates $d_3$ and $d_4$, using the Actual/Actual ICMA
+convention.
+
+\begin{equation}
+  YF(d_1,d_2) = \frac{Days(d_1,d_2)}{f \times Days(d_3, d_4)},
+\end{equation}
+here $f$ is the payment frequency. If $f$ is not specified, it can be estimated
+by
+\begin{equation}
+  f = \frac{12.0}{Integer(0.5 + 12 * (d_2 - d_1) / 365.0)}.
+\end{equation}
+
+If reference dates $d_3$ and $d_4$ are not given, we can usually set $d_3=d_1$
+and $d_4=d_2$, and the year fraction formula becomes
+\begin{equation}
+  YF(d_1,d_2) = \frac{Days(d_1,d_2)}{f \times Days(d_1, d_2)}
+              = \frac{1}{f}.
+\end{equation}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Prototypical Coupon Bond}
 A prototypical coupon bond is a contract that pays at dates 
 $\{T_1,T_2,\cdots,T_{n}\}$ the amounts of $\{c_1,c_2,\cdots,c_n\}$. Typically
