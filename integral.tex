@@ -8,6 +8,21 @@ We define the complementary error function
 \end{equation}
 note that $\erfc (-\infty)=2$, $\erfc (0)=1$, and $\erfc (\infty)=0$.
 
+Denote the cumulative distribution function (CDF) of the normal distribution by
+\begin{equation}
+  \Phi(x) = \int_{-\infty}^x \frac{e^{-t^2/2}}{\sqrt{2\pi}} dt,
+\end{equation}
+we have $\Phi(-\infty)=0$, $\Phi(0)=0.5$, $\Phi(\infty)=1$, and
+\begin{equation}
+  \Phi(-x) = 1 - \Phi(x).
+\end{equation}
+
+It is easy to see that
+\begin{align}
+  \Phi(x) &= \frac{1}{2} \erfc\left( -\frac{x}{\sqrt{2}} \right) \notag \\
+  \erfc(x) &= 2 \Phi( -\sqrt{2} x) 
+\end{align}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Normal Integral}
@@ -44,6 +59,7 @@ Hence,
          + e^{-2a c^2} \mathrm{erfc} \left( c b - \frac{c a}{b} \right)
        \right]  \label{E:int1}
 \end{align}
+
 And in case $b=0$ we have
 \footnote{Boros and Moll, Irresistible Integrals, Example 8.4.1, p.172.
   Edwards, A Treatise on the Integral Calculus, vol.II, sec.1046, pp.220-221}
@@ -51,6 +67,21 @@ And in case $b=0$ we have
   \int_0^{\infty} e^{-c^2 \left( x^2+\frac{a^2}{x^2} \right) } dx
     = \frac{\sqrt{\pi}}{2c} e^{-2a c^2}.
 \end{equation}
+
+Hence
+\begin{align}
+  \int_0^b e^{ -c^2 \left( x^2+\frac{a^2}{x^2} \right) } dx
+    &= \frac{\sqrt{\pi}}{4c} 
+       \left[ 
+         e^{2a c^2} \erfc \left( c b + \frac{c a}{b} \right)
+         + e^{-2a c^2} \left( 2 - \erfc \left( c b - \frac{c a}{b} \right) \right)
+       \right] \notag \\
+    &= \frac{\sqrt{\pi}}{2c} 
+       \left[ 
+         e^{2a c^2} \Phi \left( -\sqrt{2} (c b + \frac{c a}{b}) \right)
+         + e^{-2a c^2} \Phi \left( \sqrt{2} (c b - \frac{c a}{b}) \right)
+       \right] 
+\end{align}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

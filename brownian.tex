@@ -608,6 +608,55 @@ Using the definition of theta function $ss_t$ as in Eq. \ref{E:theta_ss} and Eq.
 	  ss_t \left( \frac{b-x}{\sigma}, \frac{b-a}{\sigma} \right) \, dt.
 \end{equation}
 
+Using this, we can calculate
+\begin{align*}
+  P_x[T_a<T; T_a<T_b]  
+    &= \int_0^T P_x[T_a\in dt; T_a<T_b]   \\
+    &= e^{\frac{\mu (a-x)}{\sigma^2}} 
+	   \int_0^T e^{- \frac{\mu^2 t}{2\sigma^2}}  \,
+	  ss_t \left( \frac{b-x}{\sigma}, \frac{b-a}{\sigma} \right) \, dt.
+\end{align*}
+Let 
+\begin{equation}
+  y_n = (x-a) + 2n (b-a), 
+\end{equation}
+this becomes
+\begin{align*}
+  P_x[T_a<T; T_a<T_b]  
+    &= e^{\frac{\mu (a-x)}{\sigma^2}} 
+	   \int_0^T dt \, e^{- \frac{\mu^2 t}{2\sigma^2}}  
+         \frac{1}{\sqrt{2\pi} t^{3/2}} 
+         \sum_{n=-\infty}^{\infty} \frac{y_n}{\sigma} e^{-\frac{y_n^2}{2\sigma^2 t}} \\
+    &= \frac{1}{\sqrt{2\pi}\sigma} e^{\frac{\mu (a-x)}{\sigma^2}} 
+       \sum_{n=-\infty}^{\infty} y_n
+	   \int_0^T e^{- \frac{\mu^2 t}{2\sigma^2}} \frac{1}{t^{3/2}} 
+                e^{-\frac{y_n^2}{2\sigma^2 t}} \, dt
+\end{align*}
+
+From Eq. \ref{E:int1}, we have
+\[
+  \int_0^T \frac{dt}{t^{3/2}} e^{-c_1^2 t - c_2^2/t}
+    = \frac{\sqrt{\pi}}{c_2} 
+      \left[
+        e^{2c_1c_2} \Phi\left( -\sqrt{2} (\frac{c_2}{\sqrt{T}} + c_1\sqrt{T}) \right)
+      + e^{-2c_1c_2} \Phi\left( \sqrt{2} (-\frac{c_2}{\sqrt{T}} + c_1\sqrt{T}) \right)
+      \right],
+\]
+hence
+\begin{equation}
+  P_x[T_a<T; T_a<T_b]  
+    = \frac{1}{2} e^{\frac{\mu (a-x)}{\sigma^2}} 
+      \sum_{n=-\infty}^{\infty}
+      \left[
+        e^{\frac{\mu y_n}{\sigma^2}} 
+          \Phi\left( \frac{-y_n - \mu T}{\sigma \sqrt{T}} \right)
+      + e^{-\frac{\mu y_n}{\sigma^2}} 
+          \Phi\left( \frac{-y_n + \mu T}{\sigma \sqrt{T}} \right)
+      \right].
+\end{equation}
+
+
+
 Similarly, from Theorem \ref{T:kac_diff3}, by setting $k(x)=\alpha$, $g(x)=0$, 
 and $f(x)=I_{x=b}$, then 
 \[
@@ -653,7 +702,22 @@ Using the definition of theta function $ss_t$ as in Eq. \ref{E:theta_ss} and Eq.
 	  ss_t \left( \frac{x-a}{\sigma}, \frac{b-a}{\sigma} \right) \, dt.
 \end{equation}
 
-
+Let 
+\begin{equation}
+  z_n = (b-x) + 2n (b-a), 
+\end{equation}
+we can then calculate similarly
+\begin{equation}
+  P_x[T_b<T; T_b<T_a]  
+    = \frac{1}{2} e^{\frac{\mu (b-x)}{\sigma^2}} 
+      \sum_{n=-\infty}^{\infty}
+      \left[
+        e^{\frac{\mu z_n}{\sigma^2}} 
+          \Phi\left( \frac{-z_n - \mu T}{\sigma \sqrt{T}} \right)
+      + e^{-\frac{\mu z_n}{\sigma^2}} 
+          \Phi\left( \frac{-z_n + \mu T}{\sigma \sqrt{T}} \right)
+      \right].
+\end{equation}
 
 
 
