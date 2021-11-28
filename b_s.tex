@@ -1069,4 +1069,124 @@ Alternatively, using the indefinite integral defined in \ref{F:intQ}, we have
   Q_{x_0}(T_{ab}>T) = Q(0,b) - Q(0,a).
 \end{equation}
 
+%%%%%%%%%%%%%%
+\section{misc}
+
+\[
+	\frac{dS_t}{S_t} = \mu(S_t,t) dt + \sigma(S_t,t) dt
+\]
+
+\[
+	F(0,T) = S_0 \, \exp \left( \int_0^T \mu(S_t,t) dt \right)
+	       = S_0 \, \exp \left( \int_0^T (r_t - d_t - R_t) dt \right)
+\]
+
+Dupire equation:
+
+\begin{align*}
+	& \left[
+	\frac{\partial}{\partial T} + \mu(K,t) K\frac{\partial}{\partial K}
+	- \frac{1}{2} \sigma^2(K,T) K^2 \frac{\partial^2}{\partial K^2} 
+	- (\mu(K,t) - r)
+	\right] C(K,T) = 0  \\
+	& C(K,T=0) = (S_0 - K)_+
+\end{align*}
+
+least squared error:
+
+\[
+	LSE = \sum_i \frac{1}{w_i} (C_i^{mkt} - C_i^{model})^2
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Autocallable}
+
+Autocallable is a popular type of structured product. The payoff of a typical 
+contract depends on the performance of an underlying stock index (such as
+CSI 500 in the Chinese market), and usually contains both knockout and knockin 
+features.
+
+To make it more specific, 
+let $N$ be the notional, $c$ the knockout coupon, $T_0$ the issue date, $T$
+the maturity date, $T_1,T_2,\dots,T_n$ the knockout observation dates (where
+$T_n=T$), $T'_1,T'_2,\dots,T'_m$ the knockin observation dates, 
+the payoff will be (see Figure \ref{F:autocall}):
+
+\begin{enumerate}
+\item If on any knockout observation date the price of the underlying is above a
+preset knockout barrier, than the contract is called, and the payoff is
+$N\times(1+c(T_i-T_0)/365)$, here $T_i$ is the earliest time the knockout event
+happens;
+\item If no knockout event happens during the lifetime of the contract, and on
+some knockin observation date the price of the underlying is below the knockin
+barrier, the payoff on the maturity date is $N\times(S_T/S_0)$, here $S_T$ and
+$S_0$ is the price of the underlying on the maturity date and issue date,
+respectively.
+\item If neither knockout nor knockin happens, then the payoff on the maturity
+date is $N\times(1+c(T_n-T_0)/365)$. 
+\end{enumerate}
+
+Autocallables can be priced using either PDE method or Monte Carlo method. Here
+we study only the Monte Carlo method, especially the impact of GPU computing.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% adapted from https://texample.net/tikz/examples/simple-flow-chart/
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, node distance=3cm,
+    rounded corners, minimum height=2em]
+\tikzstyle{blank} = [rectangle, node distance=1.5cm]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [rectangle, draw, fill=red!20, node distance=1.5cm,
+    minimum height=2em]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\begin{tikzpicture}[node distance = 2cm, auto]
+    % Place nodes
+    \node [blank] (T1) {$T_1$};
+    \node [block, right of=T1] (C1) {Is index > KO barrier?};
+    \node [cloud, right of=C1, node distance=6cm] (P1) {Called, repaid $N\times(1+c(T_1-T_0)/365)$};
+    %\node [blank, below of=T1, node distance=1.5cm] (T2) {$T_2$};
+    \node [blank, below of=T1] (T2) {$T_2$};
+    \node [block, right of=T2] (C2) {Is index > KO barrier?};
+    \node [cloud, right of=C2, node distance=6cm] (P2) {Called, repaid $N\times(1+c(T_2-T_0)/365)$};
+    \node [blank, below of=T2] (T3) {$T_3$};
+    \node [block, right of=T3] (C3) {Is index > KO barrier?};
+    \node [cloud, right of=C3, node distance=6cm] (P3) {Called, repaid $N\times(1+c(T_3-T_0)/365)$};
+    \node [blank, below of=T3, node distance=2cm] (Tn) {$T_n$};
+    \node [block, right of=Tn] (Cn) {Is index > KO barrier?};
+    \node [cloud, right of=Cn, node distance=6cm] (Pn) {Called, repaid $N\times(1+c(T_n-T_0)/365)$};
+    %\node [block, below of=Cn] (Cn2) {Is index < KI barrier on any of $S_1,S_2,\dots,S_m$?};
+    \node [block, below of=Cn, node distance=1.5cm] (Cn2) {Is index < KI barrier on any KI dates?};
+    \node [cloud, right of=Cn2, node distance=6cm] (Pn2) {Repaid $N\times(S_n/S_0)$};
+    \node [cloud, below of=Pn2] (Pn3) {Repaid $N\times(1+c(T_n-T_0)/365)$};
+
+	% dots 
+	\node at ($(T3)!0.5!(Tn)$) {\vdots};
+	\node at ($(C3)!0.5!(Cn)$) {\vdots};
+
+    % Draw edges
+    \path [line] (C1) -- node {Yes}(P1);
+    \path [line] (C1) -- node {No}(C2);
+    \path [line] (C2) -- node {Yes}(P2);
+    \path [line] (C2) -- node {No}(C3);
+    \path [line] (C3) -- node {Yes}(P3);
+    %\path [line, dotted] (T3) -- (Tn);
+    %\path [line, dashed] (C3) -- (Cn);
+    \path [line] (Cn) -- node {Yes}(Pn);
+    \path [line] (Cn) -- node {No}(Cn2);
+    \path [line] (Cn2) -- node {Yes}(Pn2);
+    \path [line] (Cn2) |- node [near end] {No} (Pn3);
+\end{tikzpicture}
+  \caption[][9cm]{The payoff of a prototypical autocallable, with knockout
+	  observation dates $T_1,T_2,\dots,T_n$, and knockin observation dates
+		  $T'_1,T'_2,\dots,T'_m$, notional $N$, knockout coupon $c$.}
+  \label{F:autocall}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
 
