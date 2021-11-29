@@ -1187,6 +1187,25 @@ we study only the Monte Carlo method, especially the impact of GPU computing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+The price of the underlying $S_t$ is assumed to follow a geometric Brownian 
+motion:
+\begin{equation}
+  \frac{dS_t}{S_t} = (r-q)dt + \sigma dW_t,
+\end{equation}
+where $r$ is the riskless rate, $q$ is the dividend rate, $\sigma$ is the
+volatility.
+This can be sampled as follows:
+\begin{equation}
+  S(t+\Delta t) = S_t \times 
+      \exp\left( 
+        (r-q-\sigma^2/2)\Delta t + \sigma\sqrt{\Delta t}\, N(0,1)
+          \right),
+\end{equation}
+where $N(0,1)$ is a random number sampled from normal distribution.
+
+
+
+
 
 
 
