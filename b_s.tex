@@ -1127,9 +1127,6 @@ respectively.
 date is $N\times(1+c(T_n-T_0)/365)$. 
 \end{enumerate}
 
-Autocallables can be priced using either PDE method or Monte Carlo method. Here
-we study only the Monte Carlo method, especially the impact of GPU computing.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% adapted from https://texample.net/tikz/examples/simple-flow-chart/
@@ -1187,6 +1184,25 @@ we study only the Monte Carlo method, especially the impact of GPU computing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+Many methods have been published for pricing autocallables, for example, 
+PDE method,
+\footnote{Deng, G., et.al., Modeling autocallable structured products,
+          Journal of Derivatives \& Hedge Funds, 17, 326-340 (2011)}
+Monte Carlo method,
+\footnote{Alm, T., et.al., A Monte Carlo pricing algorithm for autocallables
+          that allows for stable differentiation, Journal of Computational
+          Finance, 17(1), 43-70, (2013)}
+quadrature method (via FFT),
+\footnote{Huang, M. and Luo, G., A simple and efficient numerical method for
+          pricing discretely monitored early-exercise options,
+          arXiv:1905.13407v2 (2019)}
+semi-analytic method using Brownian bridge.
+\footnote{Lee, M. and Hong J., Semi closed-form pricing autocallable ELS using
+          Brownian Bridge, Communications for Statistical Applications and
+          Methods, 28(3), 251-265 (2021)}.
+Of these pricing methods, the Monte Carlo method is the most flexible, and is
+able to handle arbitrary type of payoff features.
+
 The price of the underlying $S_t$ is assumed to follow a geometric Brownian 
 motion:
 \begin{equation}
@@ -1204,7 +1220,26 @@ This can be sampled as follows:
 where $N(0,1)$ is a random number sampled from normal distribution.
 
 
+It is well known that Monte Carlo method though flexible and straightforward to
+understand, is slow to converge. However, the advancement of computer
+technology, with powerful multi-core hardware such as GPUs, makes such method
+more attractive.
 
+Here we study the Monte Carlo method, especially the impact of GPU computing.
+
+The basic idea of pricing options using Monte Carlo method is easy enough.
+First we generate a large number of random paths given the stochastic
+process (e.g. the geometric Brownian motion) of the underlying asset, calculate
+the payoff of the option on each path, multiply the payoff by the appropriate
+discount factor, then average the discounted payoff over the paths to
+get the final price. For options without early-exercise features (such as the
+American style options), the random paths are independent of each other, thus
+the pricing problem of these options using the Monte Carlo method is naturally
+(and "embarassingly") parallel.
+
+We run the experiments on a Linux system witha a 4-core Intel CPU (2.00GHz),
+32 GB DDR RAM and NVIDIA GTX 3090 GPU (10000 Volta FP64 cores, 24 GB HBM2) using
+CUDA 11.0.
 
 
 
