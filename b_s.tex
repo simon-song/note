@@ -1237,10 +1237,42 @@ American style options), the random paths are independent of each other, thus
 the pricing problem of these options using the Monte Carlo method is naturally
 (and "embarassingly") parallel.
 
-We run the experiments on a Linux system witha a 4-core Intel CPU (2.00GHz),
-32 GB DDR RAM and NVIDIA GTX 3090 GPU (10000 Volta FP64 cores, 24 GB HBM2) using
+We run the experiments on a Linux system witha a 16-core Intel i7 CPU (2.50GHz),
+32 GB DDR RAM and NVIDIA GeForce RTX 3090 GPU (10496 CUDA cores, 24 GB GDDR6X) using
 CUDA 11.0.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}
+%\caption{Coefficients of generating functions}
+\begin{tabular}{r|r|r|r}
+\hline\hline
+price  & 100,000 & 1,000,000 & 10,000,000 \\ 
+\hline
+single CPU & 103.6379 & 103.6266 & 103.6249 \\
+\hline
+single GPU & 103.5800 & 103.5928 & 103.6029 \\ 
+\hline
+\end{tabular}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}
+%\caption{Coefficients of generating functions}
+\begin{tabular}{r|r|r|r}
+\hline\hline
+time (s) & 100,000 & 1,000,000 & 10,000,000 \\ 
+\hline
+single CPU & 0.728 & 7.38 & 74.19 \\
+\hline
+single GPU & 0.006 & 0.015 & 0.11 \\ 
+\hline
+GPU/CPU &  121 & 492 & 674 \\
+\hline
+\end{tabular}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
