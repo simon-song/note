@@ -1102,13 +1102,13 @@ least squared error:
 %%%%%%%%%%%%%%%%%%%%%%%
 \section{Autocallable}
 
-Autocallable is a popular type of structured product. The payoff of a typical 
+Autocallable is a popular type of structured products. The payoff of a typical 
 contract depends on the performance of an underlying stock index (such as
 CSI 500 in the Chinese market), and usually contains both knockout and knockin 
 features.
 
 To make it more specific, 
-let $N$ be the notional, $c$ the knockout coupon, $T_0$ the issue date, $T$
+let $A$ be the notional, $c$ the knockout coupon, $T_0$ the issue date, $T$
 the maturity date, $T_1,T_2,\dots,T_n$ the knockout observation dates (where
 $T_n=T$), $T'_1,T'_2,\dots,T'_m$ the knockin observation dates, 
 the payoff will be (see Figure \ref{F:autocall}):
@@ -1116,15 +1116,15 @@ the payoff will be (see Figure \ref{F:autocall}):
 \begin{enumerate}
 \item If on any knockout observation date the price of the underlying is above a
 preset knockout barrier, than the contract is called, and the payoff is
-$N\times(1+c(T_i-T_0)/365)$, here $T_i$ is the earliest time the knockout event
+$A\times(1+c(T_i-T_0)/365)$, here $T_i$ is the earliest time the knockout event
 happens;
 \item If no knockout event happens during the lifetime of the contract, and on
 some knockin observation date the price of the underlying is below the knockin
-barrier, the payoff on the maturity date is $N\times(S_T/S_0)$, here $S_T$ and
+barrier, the payoff on the maturity date is $A\times(S_T/S_0)$, here $S_T$ and
 $S_0$ is the price of the underlying on the maturity date and issue date,
 respectively.
 \item If neither knockout nor knockin happens, then the payoff on the maturity
-date is $N\times(1+c(T_n-T_0)/365)$. 
+date is $A\times(1+c(T_n-T_0)/365)$. 
 \end{enumerate}
 
 
@@ -1143,21 +1143,21 @@ date is $N\times(1+c(T_n-T_0)/365)$.
     % Place nodes
     \node [blank] (T1) {$T_1$};
     \node [block, right of=T1] (C1) {Is index > KO barrier?};
-    \node [cloud, right of=C1, node distance=6cm] (P1) {Called, repaid $N\times(1+c(T_1-T_0)/365)$};
+    \node [cloud, right of=C1, node distance=6cm] (P1) {Called, repaid $A\times(1+c(T_1-T_0)/365)$};
     %\node [blank, below of=T1, node distance=1.5cm] (T2) {$T_2$};
     \node [blank, below of=T1] (T2) {$T_2$};
     \node [block, right of=T2] (C2) {Is index > KO barrier?};
-    \node [cloud, right of=C2, node distance=6cm] (P2) {Called, repaid $N\times(1+c(T_2-T_0)/365)$};
+    \node [cloud, right of=C2, node distance=6cm] (P2) {Called, repaid $A\times(1+c(T_2-T_0)/365)$};
     \node [blank, below of=T2] (T3) {$T_3$};
     \node [block, right of=T3] (C3) {Is index > KO barrier?};
-    \node [cloud, right of=C3, node distance=6cm] (P3) {Called, repaid $N\times(1+c(T_3-T_0)/365)$};
+    \node [cloud, right of=C3, node distance=6cm] (P3) {Called, repaid $A\times(1+c(T_3-T_0)/365)$};
     \node [blank, below of=T3, node distance=2cm] (Tn) {$T_n$};
     \node [block, right of=Tn] (Cn) {Is index > KO barrier?};
-    \node [cloud, right of=Cn, node distance=6cm] (Pn) {Called, repaid $N\times(1+c(T_n-T_0)/365)$};
+    \node [cloud, right of=Cn, node distance=6cm] (Pn) {Called, repaid $A\times(1+c(T_n-T_0)/365)$};
     %\node [block, below of=Cn] (Cn2) {Is index < KI barrier on any of $S_1,S_2,\dots,S_m$?};
     \node [block, below of=Cn, node distance=1.5cm] (Cn2) {Is index < KI barrier on any KI dates?};
-    \node [cloud, right of=Cn2, node distance=6cm] (Pn2) {Repaid $N\times(S_n/S_0)$};
-    \node [cloud, below of=Pn2] (Pn3) {Repaid $N\times(1+c(T_n-T_0)/365)$};
+    \node [cloud, right of=Cn2, node distance=6cm] (Pn2) {Repaid $A\times(S_n/S_0)$};
+    \node [cloud, below of=Pn2] (Pn3) {Repaid $A\times(1+c(T_n-T_0)/365)$};
 
 	% dots 
 	\node at ($(T3)!0.5!(Tn)$) {\vdots};
@@ -1178,7 +1178,7 @@ date is $N\times(1+c(T_n-T_0)/365)$.
 \end{tikzpicture}
   \caption[][9cm]{The payoff of a prototypical autocallable, with knockout
 	  observation dates $T_1,T_2,\dots,T_n$, and knockin observation dates
-		  $T'_1,T'_2,\dots,T'_m$, notional $N$, knockout coupon $c$.}
+		  $T'_1,T'_2,\dots,T'_m$, notional $A$, knockout coupon $c$.}
   \label{F:autocall}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1199,53 +1199,111 @@ quadrature method (via FFT),
 semi-analytic method using Brownian bridge.
 \footnote{Lee, M. and Hong J., Semi closed-form pricing autocallable ELS using
           Brownian Bridge, Communications for Statistical Applications and
-          Methods, 28(3), 251-265 (2021)}.
+          Methods, 28(3), 251-265 (2021)}
 Of these pricing methods, the Monte Carlo method is the most flexible, and is
 able to handle arbitrary type of payoff features.
 
-The price of the underlying $S_t$ is assumed to follow a geometric Brownian 
-motion:
+Throughout this paper, we assume that the price of the underlying $S_t$ follows 
+a geometric Brownian motion process:
 \begin{equation}
   \frac{dS_t}{S_t} = (r-q)dt + \sigma dW_t,
 \end{equation}
 where $r$ is the riskless rate, $q$ is the dividend rate, $\sigma$ is the
-volatility.
-This can be sampled as follows:
+volatility, and $W_t$ is a standard Brownian motion.
+Given a series of dates $\{t_1,t_2,\dots,t_m\}$, this can be sampled as 
+follows ($j=0,1,\dots,m-1$):
 \begin{equation}
-  S(t+\Delta t) = S_t \times 
+  S_{j+1} = S_j \times 
       \exp\left( 
-        (r-q-\sigma^2/2)\Delta t + \sigma\sqrt{\Delta t}\, N(0,1)
+        (r-q-\sigma^2/2)(t_{j+1}-t_j) + \sigma\sqrt{t_{j+1}-t_j}\, N(0,1)
           \right),
 \end{equation}
 where $N(0,1)$ is a random number sampled from normal distribution.
 
+The price of an autocallable, at the current time $t_0$, is given by its
+expected discounted payoff
+\begin{equation}
+  V_0 = E[Q(S_1,S_2,\dots,S_m)].
+\end{equation}
+The standard Monte Carlo estimator for $V_0$ is calculated as follows.
+First we generate a large number of random paths given the stochastic
+process (e.g. the geometric Brownian motion) of the underlying asset, 
+i.e. we sample a sequence of possible realizations 
+$(s^{(n)}_1, \cdots, s^{(n)}_m), n=1,\dots,N$
+of the random variables $(S_1,\dots,S_m)$.
+Next we calculate the payoff of the option on each path, multiply the 
+payoff by the appropriate discount factor to get the discounted payoff.
+Finally, we average the discounted payoff over the paths to
+get an approximation of the price $V_0$:
+\begin{equation}
+  V_0 = \frac{1}{N} \sum_{n=1}^N Q(s^{(n)}_1, \cdots, s^{(n)}_m).
+\end{equation}
+
+For options without early-exercise features (such as the
+American style options), the random paths are independent of each other, thus
+the pricing problem of these options using the Monte Carlo method is naturally
+(and "embarassingly") parallel.
 
 It is well known that Monte Carlo method though flexible and straightforward to
 understand, is slow to converge. However, the advancement of computer
 technology, with powerful multi-core hardware such as GPUs, makes such method
 more attractive.
 
-Here we study the Monte Carlo method, especially the impact of GPU computing.
-
-The basic idea of pricing options using Monte Carlo method is easy enough.
-First we generate a large number of random paths given the stochastic
-process (e.g. the geometric Brownian motion) of the underlying asset, calculate
-the payoff of the option on each path, multiply the payoff by the appropriate
-discount factor, then average the discounted payoff over the paths to
-get the final price. For options without early-exercise features (such as the
-American style options), the random paths are independent of each other, thus
-the pricing problem of these options using the Monte Carlo method is naturally
-(and "embarassingly") parallel.
+Here we study the Monte Carlo method, especially the impact of GPU computing, by
+comparing the result and computing time using CPU and GPU.
 
 We run the experiments on a Linux system witha a 16-core Intel i7 CPU (2.50GHz),
 32 GB DDR RAM and NVIDIA GeForce RTX 3090 GPU (10496 CUDA cores, 24 GB GDDR6X) using
 CUDA 11.0.
 
+The pricing test case is presented in Table~\ref{T:param}. It is an example of a
+typical autocallable.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}
+\caption{Model and simulation parameters for the autocallable pricing.}
+\begin{tabular}{l l}
+\hline\hline
+Model Parameters & Value \\
+\hline
+spot price  & 3000  \\ 
+knockout barrier  & 1.03  \\
+knockin barrier   & 0.85  \\
+maturity          & 1 year \\
+knockout observation dates & last working day every month \\
+knockin observation dates  & every working day  \\
+coupon  &  $20\%$  \\
+riskless rate &  $3\%$  \\
+dividend rate &  $0\%$  \\
+volatility    &  $13\%$ \\
+\hline
+Simulation Parameters &    \\
+\hline
+time steps  &   365  \\
+number of paths &   1,000,000 \\
+\hline
+\end{tabular}
+\label{T:param}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\medskip
+
+About $70\%$ of the paths would result in a knockout event, of the remaining
+paths, about $12\%$ would result in a knockin event, and the rest $13\%$ would
+result in no hit.
+
+Next we compare the pricing results and computing time of using a single CPU,
+and that of using a single GPU, with several different choices of paths. 
+Note that the two methods give comparable results, but the GPU case uses much
+less computing time, with an improvement of more than $490$-fold when using
+$1,000,000$ paths, and $670$-fold when using $10,000,000$ paths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}
-%\caption{Coefficients of generating functions}
-\begin{tabular}{r|r|r|r}
+\caption{Comparison of price and computing time using single CPU and 
+single GPU, with different number of random paths.}
+\begin{tabular}{r|r r r}
 \hline\hline
 price  & 100,000 & 1,000,000 & 10,000,000 \\ 
 \hline
@@ -1253,26 +1311,39 @@ single CPU & 103.6379 & 103.6266 & 103.6249 \\
 \hline
 single GPU & 103.5800 & 103.5928 & 103.6029 \\ 
 \hline
-\end{tabular}
-\end{table*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table*}
-%\caption{Coefficients of generating functions}
-\begin{tabular}{r|r|r|r}
-\hline\hline
-time (s) & 100,000 & 1,000,000 & 10,000,000 \\ 
+time (s) &  &  &  \\ 
 \hline
 single CPU & 0.728 & 7.38 & 74.19 \\
 \hline
 single GPU & 0.006 & 0.015 & 0.11 \\ 
 \hline
-GPU/CPU &  121 & 492 & 674 \\
+CPU/GPU &  121 & 492 & 674 \\
 \hline
 \end{tabular}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{table*}
+%\caption{Computing time of Monte Carlo method with single CPU and 
+%single GPU, with different number of paths.}
+%\begin{tabular}{r|r|r|r}
+%\hline\hline
+%time (s) & 100,000 & 1,000,000 & 10,000,000 \\ 
+%\hline
+%single CPU & 0.728 & 7.38 & 74.19 \\
+%\hline
+%single GPU & 0.006 & 0.015 & 0.11 \\ 
+%\hline
+%GPU/CPU &  121 & 492 & 674 \\
+%\hline
+%\end{tabular}
+%\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\medskip
+
+To conclude, our experiments show that using GPU greatly improve the
+computing time of autocallable pricing.
 
