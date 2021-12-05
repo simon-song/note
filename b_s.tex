@@ -1121,7 +1121,7 @@ happens;
 \item If no knockout event happens during the lifetime of the contract, and on
 some knockin observation date the price of the underlying is below the knockin
 barrier, the payoff on the maturity date is $A\times(S_T/S_0)$, here $S_T$ and
-$S_0$ is the price of the underlying on the maturity date and issue date,
+$S_0$ are the price of the underlying on the maturity date and issue date,
 respectively.
 \item If neither knockout nor knockin happens, then the payoff on the maturity
 date is $A\times(1+c(T_n-T_0)/365)$. 
@@ -1218,10 +1218,10 @@ follows ($j=0,1,\dots,m-1$):
         (r-q-\sigma^2/2)(t_{j+1}-t_j) + \sigma\sqrt{t_{j+1}-t_j}\, N(0,1)
           \right),
 \end{equation}
-where $N(0,1)$ is a random number sampled from normal distribution.
+where $N(0,1)$ is a random number sampled from the normal distribution.
 
 The price of an autocallable, at the current time $t_0$, is given by its
-expected discounted payoff
+expected discounted payoff:
 \begin{equation}
   V_0 = E[Q(S_1,S_2,\dots,S_m)].
 \end{equation}
@@ -1249,10 +1249,10 @@ understand, is slow to converge. However, the advancement of computer
 technology, with powerful multi-core hardware such as GPUs, makes such method
 more attractive.
 
-Here we study the Monte Carlo method, especially the impact of GPU computing, by
-comparing the result and computing time using CPU and GPU.
+Here we study the impact of running the Monte Carlo method on GPUs, by
+comparing the result with that of running on CPUs.
 
-We run the experiments on a Linux system witha a 16-core Intel i7 CPU (2.50GHz),
+We run the experiments on a Linux system with a 16-core Intel i7 CPU (2.50GHz),
 32 GB DDR RAM and NVIDIA GeForce RTX 3090 GPU (10496 CUDA cores, 24 GB GDDR6X) using
 CUDA 11.0.
 
@@ -1289,15 +1289,16 @@ number of paths &   1,000,000 \\
 
 \medskip
 
-About $70\%$ of the paths would result in a knockout event, of the remaining
-paths, about $12\%$ would result in a knockin event, and the rest $13\%$ would
+In this case, about $73.6\%$ of the paths would result in a knockout event, of the remaining
+paths, about $12.7\%$ would result in a knockin event, and the rest $13.7\%$ would
 result in no hit.
 
-Next we compare the pricing results and computing time of using a single CPU,
-and that of using a single GPU, with several different choices of paths. 
+We then compare the pricing results and computing time of running the Monte
+Carlo method on a single CPU, to that of running on a single GPU, with several
+choices of the number of paths. 
 Note that the two methods give comparable results, but the GPU case uses much
 less computing time, with an improvement of more than $490$-fold when using
-$1,000,000$ paths, and $670$-fold when using $10,000,000$ paths.
+$1,000,000$ paths, and about $670$-fold when using $10,000,000$ paths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}
@@ -1345,5 +1346,5 @@ CPU/GPU &  121 & 492 & 674 \\
 \medskip
 
 To conclude, our experiments show that using GPU greatly improve the
-computing time of autocallable pricing.
+performance of pricing autocallable using the Monte Carlo method.
 
