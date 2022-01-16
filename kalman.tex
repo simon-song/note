@@ -1,0 +1,437 @@
+\chapter{Kalman Filter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multivariate Normal Distribution}
+
+\begin{definition}
+A nongingular elliptically distributed (or elliptically contoured) variate
+\footnote{Abadir et. al., Statistics, p. 177; cf. Tong, The Multivariate Normal
+	Distribution, Definition 4.1.1., pp. 62-63; Gupta et. al., Elliptically
+	Contoured Models in Statistics and Portfolio Theory, Definition 2.1 and
+    Remark 2.1, p. 15}
+$x\sim \ec (c,A)$ is one whose p.d.f. depends on the realization $w$ only through
+$(w-c)^T A^{-1}(w-c)$, where $A$ is a positive definite matrix of constant
+parameters that provide weights for the squared norm of $(w-c)$.
+\end{definition}
+
+Multivariate normal distribution is a special case of the elliptical
+distribution:
+
+\begin{definition}
+The p.d.f of a multivariate normal variate, denoted by $x\sim N(c,A)$, is
+\footnote{Abadir et. al., Statistics, p. 178}
+\begin{equation}
+  f_x(w) = \frac{|A|^{-1/2}}{(2\pi)^{m/2}} 
+    \exp \left( \frac{1}{2} (w-c)^T A^{-1} (w-c)  \right)
+\end{equation}
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Ellipticals' linear transformations] \label{L:ell_lin}
+\footnote{Abadir et. al., Statistics, Exercise 6.49, p. 220}
+Let $y=a+Bx$, where $x\sim \ec_m(c,A)$ and $B$ is invertible (hence square).
+Then
+\begin{enumerate}
+\item[(a)] $y$ is also elliptical of the same type of $x$, and 
+      $y\sim \ec_m(a+Bc,BAB^T)$.
+\item[(b)] $E(x)=c$ when the expectation exists.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(a) The density of $x$ varies only with the realization of $(x-c)^T A^{-1} (x-c)$.
+We can express this quadratic form in terms of $y$,
+\begin{align*}
+  (x-c)^T A^{-1} (x-c) &= (x-c)^T B^T (BAB^T)^{-1} B (x-c) \\
+                       &= (y-a-Bc)^T (BAB^T)^{-1} (y-a-Bc) 
+\end{align*}
+whose realization will fully characterize the p.d.f. of $y$. Therefore, 
+$y\sim \ec_m(a+Bc,BAB^T)$.
+
+(b) Taking $a=-c$ and $B=I_m$, we get $y\sim \ec_m(0,A)$ and similarly 
+$-y\sim \ec_m(0,A)$. The two densities are identical, so $E(y)=E(-y)$ and hence
+$E(y)=0$. Thus
+\[
+  0=E(y)=E(a+Bx)=a+B E(x)=-c+E(x),
+\]
+and hence $E(x)=c$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Ellipticals' conditional distribution] \label{L:ell_cond}
+\footnote{Abadir et. al., Statistics, Exercise 6.51, pp. 221-223; for
+	the case with multivariate normal distribution see also Sarkka, Bayesian 
+	Filtering and Smoothing, Appendix A, Lemma A.2, pp. 209-210}
+Partition the $m$-dimensional vector variate $x$ into $x^T=(x_1^T, x_2^T)$ with
+dimensions $k>0$ and $m-k>0$, and its realization $w^T=(w_1^T,w_2^T)$ similarly.
+Let $x\sim \ec_m(c,A)$,  where $c$ is partitioned in the same way as $x$, and
+the symmetric $A$ correspondingly as
+\[
+  A=
+  \begin{pmatrix}
+    A_{11} & A_{12}\\
+    A_{21} & A_{22}\\
+  \end{pmatrix}
+\]
+Then the conditional distribution of $x_2|x_1$ is also elliptical, 
+$x_2|x_1 \sim \ec (c_{2|1},A_{22|1})$, where
+\[
+  c_{2|1} = c_2 + A_{21} A_{11}^{-1} (x_1-c_1),
+\]
+\[
+  A_{22|1} = A_{22} - A_{21} A_{11}^{-1} A_{12}.
+\]
+Similarly, 
+$x_1|x_2 \sim \ec (c_{1|2},A_{11|2})$, where
+\[
+  c_{1|2} = c_1 + A_{12} A_{22}^{-1} (x_2-c_2),
+\]
+\[
+  A_{11|2} = A_{11} - A_{12} A_{22}^{-1} A_{21}.
+\]
+\end{lemma}
+\begin{proof}
+Let
+\[
+  B=
+  \begin{pmatrix}
+    I_k                 & 0       \\
+    -A_{21} A_{11}^{-1} & I_{m-k} \\
+  \end{pmatrix}
+\]
+then $y=B(x-c)$ can be written as
+\[
+  y=
+  \begin{pmatrix}
+    I_k                 & 0       \\
+    -A_{21} A_{11}^{-1} & I_{m-k} \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    x_1-c_1 \\
+    x_2-c_2 \\
+  \end{pmatrix}
+  = 
+  \begin{pmatrix}
+    x_1-c_1 \\
+    x_2-c_2-A_{21}A_{11}^{-1}(x_1-c_1). \\
+  \end{pmatrix}
+\]
+Using Lemma \ref{L:ell_lin}, $y\sim EC_m(0,BAB^T)$ is elliptically distributed 
+around $0_m$, with weighting matrix
+\begin{align*}
+  BAB^T 
+  &=
+    \begin{pmatrix}
+      I_k                 & 0       \\
+      -A_{21} A_{11}^{-1} & I_{m-k} \\
+    \end{pmatrix}
+    \begin{pmatrix}
+      A_{11} & A_{12}\\
+      A_{21} & A_{22}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+      I_k  & - A_{11}^{-1} A_{12}  \\
+      0    & I_{m-k} \\
+    \end{pmatrix} \\
+  &=
+    \begin{pmatrix}
+      A_{11} & A_{12}\\
+      0      & A_{22|1}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+      I_k  & - A_{11}^{-1} A_{12}  \\
+      0    & I_{m-k} \\
+    \end{pmatrix} \\
+  &=
+    \begin{pmatrix}
+      A_{11} & 0       \\
+      0      & A_{22|1}\\
+    \end{pmatrix}
+\end{align*}
+The density of $y$ is therefore fully characterized by the realization of
+\[
+  \begin{pmatrix}
+    y_1^T & y_2^T \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    A_{11} & 0       \\
+    0      & A_{22|1}\\
+  \end{pmatrix}^{-1}
+  \begin{pmatrix}
+    y_1 \\
+	y_2 \\
+  \end{pmatrix}
+  = y_1^T A_{11}^{-1} y_1 + y_2^T A_{22|1}^{-1} y_2
+\]
+which will vary if and only if $y_2^T A_{22|1}^{-1} y_2$ changes, since we have
+conditioned on $y_1=x_1-c_1$. As a result, we have 
+$y_2|y_1\sim \ec(0,A_{22|1})$. Since $x_2=y_2+c_2+A_{21}A_{11}^{-1}(x_1-c_1)$,
+using Lemma \ref{L:ell_lin}, we conclude that
+$x_2|x_1\sim \ec(c_{2|1},A_{22|1})$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}[Ellipticals' joint distribution] \label{L:ell_joint}
+\footnote{Adapted from Sarkka, Bayesian Filtering and Smoothing, Appendix A, 
+	Lemma A.1, p. 209, which is for the case with multivariate normal
+	distribution.}
+Let $x_1\sim \ec_k(m,P)$, $x_2|x_1 \sim \ec_n (H x + u, R)$, then the joint
+distribution of $x_1,x_2$ is given as
+\[
+  \begin{pmatrix}
+    x_1 \\
+    x_2 \\
+  \end{pmatrix}
+  \sim
+  \ec 
+    \left(
+	  \begin{pmatrix}
+        m \\
+        Hm+u \\
+      \end{pmatrix},
+	  \begin{pmatrix}
+        P    & PH^T \\
+        HP   & HPH^T + R \\
+      \end{pmatrix}
+    \right),
+\]
+and the marginal distribution of $x_2$ is 
+\[
+  x_2\sim \ec (Hm + u, HPH^T + R).
+\]
+\end{lemma}
+\begin{proof}
+Let $y_1=x_1-m$, and $y_2=x_2-Hx_1-u$, then $y_1\sim \ec(0,P)$, and 
+$y_2|y_1\sim \ec(0,R)$.
+The joint density $p(y_1,y_2)=p(y_2|y_1) p(y_1)$ is characterized by the
+realization of
+\[
+  y_1^T P^{-1} y_1 + y_2^T R^{-1} y_2 =
+  \begin{pmatrix}
+    y_1^T & y_2^T \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    P & 0  \\
+    0 & R  \\
+  \end{pmatrix}^{-1}
+  \begin{pmatrix}
+    y_1 \\
+	y_2 \\
+  \end{pmatrix}
+\]
+hence 
+\[
+  \begin{pmatrix}
+    y_1 \\
+    y_2 \\
+  \end{pmatrix}
+  \sim
+  \ec 
+    \left(
+	  \begin{pmatrix}
+        0 \\
+        0 \\
+      \end{pmatrix},
+	  \begin{pmatrix}
+        P   & 0 \\
+        0   & R \\
+      \end{pmatrix}
+    \right),
+\]
+Now 
+\[
+  \begin{pmatrix}
+    x_1 \\
+    x_2 \\
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    m    \\
+    Hm+u \\
+  \end{pmatrix}
+  +
+  \begin{pmatrix}
+    I_k & 0   \\
+    H   & I_n \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    y_1 \\
+    y_2 \\
+  \end{pmatrix},
+\]
+using Lemma \ref{L:ell_lin}, and the fact that
+\[
+  \begin{pmatrix}
+    I_k & 0   \\
+    H   & I_n \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    y_1 \\
+    y_2 \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    I_k & H^T   \\
+    0   & I_n   \\
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    P    & P H^T     \\
+    HP   & HPH^T+R   \\
+  \end{pmatrix},
+\]
+we get that 
+\[
+  \begin{pmatrix}
+    x_1 \\
+    x_2 \\
+  \end{pmatrix}
+  \sim
+  \ec 
+    \left(
+	  \begin{pmatrix}
+        m    \\
+        Hm+u \\
+      \end{pmatrix},
+	  \begin{pmatrix}
+        P    & P H^T     \\
+        HP   & HPH^T+R   \\
+      \end{pmatrix}
+    \right).
+\]
+To calculate the marginal distribution of $x_2$, note that
+\[
+  \begin{pmatrix}
+    0   \\
+    x_2 \\
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    0 & 0    \\
+    0 & I_n  \\
+  \end{pmatrix}
+  \begin{pmatrix}
+    x_1 \\
+    x_2 \\
+  \end{pmatrix},
+\]
+using Lemma \ref{L:ell_lin}, we get that $x_2\sim \ec(Hm+u, HPH^T+R)$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kalman Filter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}[Kalman Filter] \label{T:kalman}
+\footnote{Adapted from Sarkka, Bayesian Filtering and Smoothing, Appendix A, 
+	Lemma A.1, p. 209, which is for the case with multivariate normal
+	distribution.}
+Consider the filtering problem of which the dynamic and measurement models are linear Gaussian:
+\begin{align}
+  x_k &= A_{k-1} x_{k-1} + q_{k-1}, \notag \\
+  y_k &= H_k x_k + r_k,
+\end{align}
+where $x_k\in \mathbb{R}^n$ is the state, $y_k\in\mathbb{R}^m$ is the
+measurement, $q_{k-1}\sim N(0,Q_{k-1})$ is the process noise, 
+$r_k\sim N(0,R_k)$ is the measurement noise, and the prior distribution is
+Gaussian $x_0\sim N(m_0,P_0)$. The matrix $A_{k-1}$ is the transition matrix of
+the dynamic model and $H_k$ is the measurement model matrix. 
+
+The Bayesian filtering equations for this linear filtering model can be
+evaluated in closed form and the resulting distributions are Gaussian:
+\begin{align}
+  p(x_k|y_{1:k-1}) &= N(x_k| m_k^-, P_k^-), \notag \\
+  p(x_k|y_{1:k}) &= N(x_k| m_k, P_k).
+\end{align}
+The parameters can be computed with the following Kalman filter predition and
+update steps:
+\begin{itemize}
+\item predition step:
+\begin{align}
+  m_k^- &= A_{k-1}m_{k-1}, \notag \\
+  P_k^- &= A_{k-1} P_{k-1} A_{k-1}^T + Q_{k-1}.
+\end{align}
+\item update step:
+\begin{align}
+  m_k &= m_k^- + P_k^- H_k^T (H_k P_k^- H_k^T + R_k)^{-1} (y_k-H_km_k^-), \notag \\
+  P_k &= P_k^- - P_k^- H_k^T (H_k P_k^- H_k^T + R_k)^{-1} H_k P_k^-. 
+\end{align}
+\end{itemize}
+
+The recursion is started from the prior mean $m_0$ and covariance $P_0$.
+\end{theorem}
+%%%%%%%%%%%%%%%%
+\begin{proof}
+In probabilistic terms the model is
+\begin{align}
+  p(x_k|x_{k-1}) &= N(x_k| A_{k-1}x_{k-1}, Q_{k-1}), \notag \\
+  p(y_k|x_k) &= N(y_k| H_kx_k, R_k).
+\end{align}
+
+First we consider the prediction step, i.e., 
+$p(x_{k-1}|y_{1:k-1}) \to p(x_k|y_{1:k-1})$.
+By Lemma \ref{L:ell_joint}, we have the joint distribution
+\begin{align}
+  & p(x_k,x_{k-1}|y_{1:k-1}) \notag \\
+	&= p(x_k|x_{k-1}) p(x_{k-1} | y_{1:k-1}) \notag \\
+	&= N(x_k | A_{k-1}x_{k-1}, Q_{k-1}) N(x_{k-1} | m_{k-1}, P_{k-1}) \notag \\
+	&= N\left(
+	    \begin{pmatrix}
+		  x_{k-1} \\
+		  x_k \\
+	    \end{pmatrix} \bigg\rvert
+	    \begin{pmatrix}
+		  m_{k-1}         \\
+		  A_{k-1} m_{k-1} \\
+	    \end{pmatrix},
+	    \begin{pmatrix}
+		  P_{k-1}          &  P_{k-1} A_{k-1}^T                    \\
+		  A_{k-1} P_{k-1}  &  A_{k-1} P_{k-1} A_{k-1}^T + Q_{k-1}  \\
+	    \end{pmatrix} 
+	  \right)
+\end{align}
+and the marginal distribution
+\begin{equation}
+  p(x_k|y_{1:k-1}) = N(x_k| m_k^-, P_k^-),
+\end{equation}
+where
+\begin{equation}
+  m_k^-=A_{k-1}m_{k-1}, \qquad P_k^-= A_{k-1} P_{k-1} A_{k-1}^T + Q_{k-1}.
+\end{equation}
+
+Next we consider the update step, i.e., 
+$p(x_k|y_{1:k-1}) \to p(x_k|y_{1:k})$.
+Again by Lemma \ref{L:ell_joint}, we have the joint distribution
+\begin{align}
+  & p(x_k,y_k|y_{1:k-1}) \notag \\
+  &= p(y_k|x_k) p(x_k | y_{1:k-1}) \notag \\
+  &= N(y_k | H_k x_k, R_k) N(x_k | m_k^-, P_k^-) \notag \\
+  &= N\left(
+	  \begin{pmatrix}
+	    x_k \\
+	    y_k \\
+	  \end{pmatrix} \bigg\rvert
+	  \begin{pmatrix}
+	    m_k^-      \\
+		H_k m_k^-  \\
+	  \end{pmatrix},
+	  \begin{pmatrix}
+	    P_k^-      &  P_k^- H_k^T            \\
+		H_k P_k^-  &  H_k P_k^- H_k^T + R_k  \\
+	  \end{pmatrix} 
+	\right)
+\end{align}
+and the marginal distribution
+\begin{equation}
+  p(y_k|y_{1:k-1}) = N(y_k| H_k m_k^-, H_k P_k^- H_k^T + R_k ).
+\end{equation}
+By Lemma \ref{L:ell_cond}, we can then compute the conditional distribution 
+\begin{equation}
+  p(x_k|y_{1:k}) = p(x_k | y_k, y_{1:k-1}) = N(x_k| m_k, P_k),
+\end{equation}
+where
+\begin{align}
+  m_k &= m_k^- + P_k^- H_k^T (H_k P_k^- H_k^T + R_k)^{-1} (y_k-H_km_k^-), \notag \\
+  P_k &= P_k^- - P_k^- H_k^T (H_k P_k^- H_k^T + R_k)^{-1} H_k P_k^-. 
+\end{align}
+
+\end{proof}
