@@ -1348,3 +1348,45 @@ CPU/GPU &  121 & 492 & 674 \\
 To conclude, our experiments show that using GPU greatly improve the
 performance of pricing autocallable using the Monte Carlo method.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Andresen-Huge local volatility interpolation}
+
+\begin{equation}
+  (A_1)_{n\times m} = 
+    \begin{pmatrix}
+      A_1^{(1)}(w_1) & A_1^{(1)}(w_2) & \cdots & A_1^{(1)}(w_m) \\
+      A_1^{(2)}(w_1) & A_1^{(2)}(w_2) & \cdots & A_1^{(2)}(w_m) \\
+      \vdots         & \vdots         & \ddots & \vdots         \\
+      A_1^{(n)}(w_1) & A_1^{(n)}(w_2) & \cdots & A_1^{(n)}(w_m) \\
+    \end{pmatrix}
+\end{equation}
+
+
+\begin{equation}
+  A_i = 
+    \begin{pmatrix}
+      1 & & & & & & & \\
+      -z_{i,1}(\frac{1}{\Delta y}+\frac{1}{2}) & 1+\frac{2}{\Delta y} z_{i,1} & -z_{i,1}(\frac{1}{\Delta y}-\frac{1}{2}) & & & & & \\
+       & -z_{i,2}(\frac{1}{\Delta y}+\frac{1}{2}) & 1+\frac{2}{\Delta y} z_{i,2} & -z_{i,2}(\frac{1}{\Delta y}-\frac{1}{2}) & & & & \\
+       & & \ddots & \ddots & \ddots & & & & \\
+       & & & \ddots & \ddots & \ddots & & &  \\
+       & & & & \ddots & \ddots & \ddots & &  \\
+       & & & & & -z_{i,m}(\frac{1}{\Delta y}+\frac{1}{2}) & 1+\frac{2}{\Delta y}z_{i,m} & -z_{i,m}(\frac{1}{\Delta y}-\frac{1}{2}) \\
+       & & & & & & & 1 \\
+    \end{pmatrix}
+\end{equation}
+
+%% not working with texlive2019
+%\begin{equation}
+%\begin{pNiceMatrix}[nullify-dots,xdots/line-style=loosely dotted]
+%a & b & 0 & & \Cdots & 0 \\
+%b & a & b & \Ddots & & \Vdots \\
+%0 & b & a & \Ddots & & \\
+%& \Ddots & \Ddots & \Ddots & & 0 \\
+%\Vdots & & & & & b \\
+%0 & \Cdots & & 0 & b & a
+%\end{pNiceMatrix}
+%\end{equation}
+

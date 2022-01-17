@@ -322,10 +322,9 @@ using Lemma \ref{L:ell_lin}, we get that $x_2\sim \ec(Hm+u, HPH^T+R)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{theorem}[Kalman Filter] \label{T:kalman}
-\footnote{Adapted from Sarkka, Bayesian Filtering and Smoothing, Appendix A, 
-	Lemma A.1, p. 209, which is for the case with multivariate normal
-	distribution.}
-Consider the filtering problem of which the dynamic and measurement models are linear Gaussian:
+\footnote{Sarkka, Bayesian Filtering and Smoothing, Theorem 4.2, pp. 56-58.}
+Consider the following filtering problem of which the dynamic and measurement 
+models are linear Gaussian:
 \begin{align}
   x_k &= A_{k-1} x_{k-1} + q_{k-1}, \notag \\
   y_k &= H_k x_k + r_k,
