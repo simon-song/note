@@ -1,0 +1,245 @@
+\chapter{Bonds}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Day count conventions}
+Day count convention is used to calculate the number of days and the year 
+fraction between two dates $T_1$ and $T_2$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/365}
+
+\begin{align}
+  Days(T_1,T_2) &= T_2 - T_1, \notag \\
+  YF(T_1,T_2) &= \frac{Days(T_1,T_2)}{365}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/365 NoLeap}
+Under this day count convention, any leap day (February 29th) between dates 
+$T_1$ and $T_2$ will be ignored.
+
+\begin{align}
+  %Days(T_1,T_2) &= 
+  %  \begin{cases}
+  %    T_2 - T_1 - 1, & \text{if leap day (Feb 29) falls in} [T_1,T_2] \\
+  %    T_2 - T_1, & otherwise,
+  %  \end{cases} \notag \\
+  Days(T_1,T_2) &= T_2 - T_1 - NumberOfLeapDays(T_1,T_2), \notag \\
+  YF(T_1,T_2) &= \frac{Days(T_1,T_2)}{365}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/360}
+
+\begin{align}
+  Days(T_1,T_2) &= T_2 - T_1, \notag \\
+  YF(T_1,T_2) &= \frac{Days(T_1,T_2)}{360}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/366}
+
+\begin{align}
+  Days(T_1,T_2) &= T_2 - T_1, \notag \\
+  YF(T_1,T_2) &= \frac{Days(T_1,T_2)}{366}.
+\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/Actual ICMA}
+Under the Actual/Actual ICMA convention, the year fraction between dates $T_1$
+and $T_2$ given two reference dates $T_3$ and $T_4$, is given by:
+
+\begin{align}
+  Days(T_1,T_2) &= T_2 - T_1, \notag \\
+  YF(T_1,T_2) &= \frac{Days(T_1,T_2)}{f \times Days(T_3, T_4)},
+\end{align}
+here $f$ is the payment frequency. If $f$ is not specified, it can be estimated
+by
+\begin{equation}
+  f = \frac{12.0}{Integer(0.5 + 12 * (T_2 - T_1) / 365.0)}.
+\end{equation}
+
+If reference dates $T_3$ and $T_4$ are not given, we can usually set $T_3=T_1$
+and $T_4=T_2$, and the year fraction formula becomes
+\begin{equation}
+  YF(T_1,T_2) = \frac{Days(T_1,T_2)}{f \times Days(T_1, T_2)}
+              = \frac{1}{f}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actual/Actual ISDA}
+
+\begin{align}
+  Days(T_1,T_2) &= T_2 - T_1, \notag \\
+  YF(T_1,T_2) &= \frac{\text{Days not in leap year}}{365}
+                 +\frac{\text{Days in leap year}}{366}.
+\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{30/360}
+
+Under the 30/360 convention, each month is treated to have 30 days, and each
+year 360 days. To calculate the number of days between two dates $T_1$
+(represented by day $D_1$, month $M_1$, year $Y_1$) and $T_2$
+(represented by day $D_2$, month $M_2$, year $Y_2$), the following steps must be
+performed:
+
+\begin{enumerate}
+  \item If $D_1=31$, set $D_1=30$;
+  \item If $D_1=30$ and $D_2=31$, set $D_2=30$.
+  \item $Days(T_1,T_2) = (D_2 - D_1) + 30 * (M_2 - M_1) + 360 * (Y_2 - Y_1)$.
+\end{enumerate}
+
+And the year fraction is given by
+\begin{equation}
+  YF(T_1,T_2) = \frac{Days(T_1,T_2)}{360}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bond calculation}
+
+A coupon bond is a contract that pays at dates 
+$\{t_1,t_2,\cdots,t_{n}\}$ the amounts of $\{cf_1,cf_2,\cdots,cf_n\}$. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \begin{tikzpicture}[scale=0.9]
+    \draw (-3.5,0) -- (2.8,0);
+    \drawbreakright{2.8}{0}
+    \drawbreakleft{4.2}{0}
+    \draw (4.2,0) -- (9.3,0);
+    \draw (-2,0) node[below] {$t_0$} -- (-2,0.2);
+
+    \draw [->, >=triangle 90] 
+      (0,0) node[below] {$t_1$} -- (0,2) node[above] {$cf_1$} ;
+    \draw [->, >=triangle 90] 
+      (2,0) node[below] {$t_2$} -- (2,2) node[above] {$cf_2$} ;
+    \draw [->, >=triangle 90] 
+      (5,0) node[below] {$t_{n-1}$} -- (5,2) node[above] {$cf_{n-1}$} ;
+    \draw [->, >=triangle 90] 
+      (7,0) node[below] {$t_{n}$} -- (7,3) node[above] {$cf_{n}$} ;
+  \end{tikzpicture} 
+  \caption{A prototypical coupon bond pays at dates
+           $\{t_1,t_2,\cdots,t_{n}\}$ the fixed amounts of 
+           $\{cf_1,cf_2,\cdots,cf_n\}$.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Notations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}
+%\caption{Notations}
+\begin{tabular}{r | l}
+\hline\hline
+$t_i$ & accrual dates \\
+$[t_{i-1},t_{i}]$ & i-th accrual period \\
+$N_i$  & starting notional for the i-th accrual period \\
+$c_i$  & coupon for the i-th accrual period \\
+$cf_i$ & cashflow for the i-th accrual period, paid at $t_i$ \\
+$cf_i^{interest}$ & interest cashflow for the i-th accrual period \\
+$f$    & payment frequency \\
+$Days(t,s)$ & number of days between dates t and s (given day count convention)\\
+$YF(t,s)$   & year fraction between dates t and s (given day count convention)\\
+$AI$   & accrued interest \\
+$YTM$  & yield to maturity \\
+\hline
+\end{tabular}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cashflows}
+
+The cashflows of a coupon-bearing bond can be divided into interest cashflows
+and principal cashflows. The interest cashflow of accrued period $[t_{i-1},t_i]$ 
+is 
+\begin{equation}
+ cf_i^{interest} = N_i\cdot c_i \cdot YF(t_{i-1},t_{i}).
+\end{equation}
+The notional is usually paid in full at 
+expiry, though they are some bonds with principal payment before the expiry.
+%Typically the cashflows are defined as $c_i=N\delta_i K$ for $i<n$, and 
+%$c_n=N\delta_n K+N$ where $K$ is a fixed coupon rate, $N$ is the face value,
+%and $\delta_j$ be the year fraction between dates $T_{j-1}$ and $T_{j}$,
+
+For discount bonds, there is no interest cashflows, but one principal payment of
+the full notional at expiry.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dirty price and clean price}
+
+Bonds are often quoted in two different prices: dirty price and clean price,
+the relationship between these two prices is
+\begin{equation}
+  P_{dirty} = P_{clean} + AI,
+\end{equation}
+where $AI$ is the accrued interest at the calculation date.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Accrued interest}
+Suppose that the calculation date $t$ falls in the accrual period
+$[t_{i-1},t_{i}]$, the accrued interest can be calculated by:
+\begin{equation}
+  %AI = \frac{N_i \cdot c_i}{f} \frac{ Days(t_i,t) }{Days(t_i,t_{i+1})}, 
+  AI = cf_i^{interest} \frac{ Days(t_{i-1},t) }{Days(t_{i-1},t_{i})}, 
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Present value}
+Bond price is calculated by discounting all future cashflows:
+\begin{equation}
+  PV_t = \sum_{t_i>t} cf_i \times DF_i,
+\end{equation}
+where the discount factor at time $t_i$ is given by:
+\[
+  DF_i = \exp(-r_t(t_i)\times (t_i-t)).
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Yield to maturity}
+
+In practice, bonds are often quoted in YTM (yield to maturity) rather than in
+price. Basically, when cashflows are discounted using YTM, the present value 
+equals to the market dirty price.
+
+If the calculation date falls in the last accrual period $[t_{n-1},t_n]$, and
+the remaining term is shorter than 1 year, the present value can be calculated 
+from $YTM$ by simple compounding:
+\begin{equation}
+  PV_t = \frac{cf_n}{ 1+ YTM \times YF(t,t_i) },
+\end{equation}
+
+otherwise we have
+\begin{equation}
+  PV_t = \sum_{t_i>t} \frac{cf_i}{ (1+YTM/f)^{f\times YF(t,t_i)} }
+\end{equation}
+
+YTM may be solved from dirty price using a root-finding algorithm such as
+Brent's method. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Yield to option}
+
+Certain bonds may have call/put options embedded. For these bonds, we can 
+also calculate the yield to option, defined as the yield if the cashflow stop at
+the option exercise date. The calculation method is similar to that of
+calculating YTM.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Modified Duration}
+Modified duration is defined as:
+
+\begin{equation}
+  Duration_{mod} = \frac{PV(Y-\Delta Y) - PV(Y+\Delta Y)}
+                        {(PV(Y-\Delta Y) + PV(Y+\Delta Y)) \times \Delta Y}.
+\end{equation}
+
