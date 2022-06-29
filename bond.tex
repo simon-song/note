@@ -3,7 +3,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Day count conventions}
 Day count convention is used to calculate the number of days and the year 
-fraction between two dates $T_1$ and $T_2$.
+fraction between two dates $T_1$ and $T_2$. It is crucial for calculating
+interest payments of bonds and other interest rate products.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Actual/365}
@@ -102,8 +103,12 @@ And the year fraction is given by
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bond calculation}
 
-A coupon bond is a contract that pays at dates 
-$\{t_1,t_2,\cdots,t_{n}\}$ the amounts of $\{cf_1,cf_2,\cdots,cf_n\}$. 
+A bond is a type of security under whith the issuer owes the holder a debt, and
+is obliged to repay the principal of the bond at the maturity date, as well as a
+series of interest over a specified series of dates.
+
+%A coupon bond is a contract that pays at dates 
+%$\{t_1,t_2,\cdots,t_{n}\}$ the amounts of $\{cf_1,cf_2,\cdots,cf_n\}$. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,11 +240,36 @@ the option exercise date. The calculation method is similar to that of
 calculating YTM.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Modified Duration}
-Modified duration is defined as:
+\subsection{Macaulay Duration}
+Macaulay duration is the weighted average duration of (remaining) cash flows,
+wherein the remaining time of each cash flow is weighted by the present value of
+the corresponding cash flow:
 
 \begin{equation}
-  Duration_{mod} = \frac{PV(Y-\Delta Y) - PV(Y+\Delta Y)}
+  Duration_{mac} = \frac{\sum_{t_i>t} YF(t,t_i)\times PV_i}
+                        {\sum_{t_i>t} PV_i},
+\end{equation}
+where $PV_i$ is the present value of the $i$-th cash flow.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Modified Duration}
+In contrast to Macaulay duration, modified duration is a price senstivity
+measure, defined as the percentage derivative of price with respect to yield:
+
+\begin{equation}
+  Duration_{mod} = -\frac{1}{PV} \frac{\Delta (PV)}{\Delta Y}
+    = \frac{PV(Y-\Delta Y) - PV(Y+\Delta Y)}
                         {(PV(Y-\Delta Y) + PV(Y+\Delta Y)) \times \Delta Y}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Convexity}
+Bond convexity is a measure of the nonlinear relationship of bond prices to
+changes in yield, being the second derivative of the bond price with respect to
+yield:
+
+\begin{equation}
+  Convexity  
+    = \frac{PV(Y-\Delta Y) + PV(Y+\Delta Y) - 2PV}{PV \times \Delta Y^2}.
 \end{equation}
 
