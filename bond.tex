@@ -596,3 +596,65 @@ in this class of models advocate different choices of this function, they
 all share the general approach that the model parameters are determined 
 through the minimization of the squared deviations of theoretical prices 
 from observed prices.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Vasicek-Fong exponential spline model}
+Vasicek and Fong (1982) use exponential splines that produce a smooth and
+continuous forward rate curve. Given a set of knot points 
+$t_0, t_1,t_2,\cdots,t_n$, the discount factor at maturity $t$ is assumed to be
+of the form:
+
+\begin{equation}
+  D_t = a_i + b_i e^{-\mu t} + c_i e^{-2\mu t} + d_i e^{-3\mu t}, 
+        \quad t\in[t_i,t_{i+1}],
+\end{equation}
+where $a_i,b_i,c_i,d_i,\mu$ are parameters.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Nelson and Siegel method}
+Nelson and Siegel (1987) suggested the following parametric form for the forward
+rate curve:
+\begin{equation}
+  f(t) = \beta_0 + \beta_1 e^{-t/\lambda} 
+         + \frac{\beta_2 t}{\lambda} e^{-t/\lambda},
+\end{equation}
+where $\beta_0,\beta_1,\beta_2,\lambda>0$ are parameters. The spot rate function
+under this model is then:
+\begin{equation}
+  r(t) = \beta_0 + \frac{\beta_1 \lambda}{t} \left(1- e^{-\lambda t} \right)
+         - \frac{\beta_2 \lambda}{t} \left(1- e^{-\lambda t} \right)
+         - \beta_2 e^{-\lambda t}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Svensson method}
+Svensson(1992) extended the Nelson and Siegel (1987) model by adding a second
+hump term to the instantaneous forward rate function:
+
+\begin{equation}
+  f(t) = \beta_0 + \beta_1 e^{-t/\lambda_1} 
+         + \frac{\beta_2 t}{\lambda_1} e^{-t/\lambda_1}
+         + \frac{\beta_3 t}{\lambda_2} e^{-t/\lambda_2},
+\end{equation}
+
+where $\beta_0,\beta_1,\beta_2,\lambda_1>0, \lambda_2>0$ are parameters. The 
+spot rate function under this model is then:
+
+\begin{equation}
+  r(t) = \beta_0 + \frac{\beta_1 \lambda_1}{t} \left(1- e^{-\lambda_1 t} \right)
+         - \frac{\beta_2 \lambda_1}{t} \left(1- e^{-\lambda_1 t} \right)
+         - \beta_2 e^{-\lambda_1 t}
+         - \frac{\beta_3 \lambda_2}{t} \left(1- e^{-\lambda_2 t} \right)
+         - \beta_3 e^{-\lambda_2 t}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Merrill Lynch Exponential Spline Model}
+
+Under the Merrill Lynch expoential spline model, the discount factor curve is
+assumed to be of the form:
+\begin{equation}
+  D_t = \sum_{k=1}^9 z_k e^{-k\alpha t },
+\end{equation}
+where $z_1,\dots,z_9$ and $\alpha$ are the parameters to be estimated.
