@@ -546,3 +546,53 @@ continuity at the boundary:
         c_n=\frac{b_{n-1}+2 b_n}{h_{n-1}}-3\frac{y_n-y_{n-1}}{h_{n-1}^2}.
 \end{equation*}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Yield curve construction: parametric methods}
+
+The estimation of a zero-coupon yield curve is based on an assumed functional
+relationship between either par yields, spot rates, forward rates or discount 
+factors on the one hand and maturities on theother. Discount factors are the 
+quantities used at a given point in time to obtain the present value of
+future cash flows. A discount function $\{D_{t,T}\}_T$ is the collection of 
+discount factors at time $t$ for all maturities $T$. Spot rates $r_{t,T}$, the 
+yields earned on bonds which pay no coupon, are related to discount factors
+according to:
+
+\begin{equation}
+  D_{t,T} = \exp(-r_{t,T} T).
+\end{equation}
+
+Because spot interest rates depend on the time horizon, it is natural to define
+the forward rates $f_T$m as the instantaneous rates which, when compounded 
+continuously up to the time to maturity, yield the spot rates (instantaneous 
+forward rates are, thus, rates for which the difference between settlement
+time and maturity time approaches zero):
+
+\begin{equation}
+  r_{t,T} = -\frac{1}{T} \int_0^T f(u) du,
+\end{equation}
+or equivalently
+\begin{equation}
+  D_{t,T} = \exp \left[ -\int_0^T f(u) du \right].
+\end{equation}
+
+However, the general absence of available pure discount bonds that can be used
+to compute zerocoupon interest rates presents a problem to practitioners. In
+other words, zero coupon rates are rarely directly observable in financial 
+markets. Attempting to extract zero-coupon rates from the prices of
+those risk-free coupon-bearing instruments which are observable, namely
+government bonds, various models and numerical techniques have been developed. 
+Such models can broadly be categorised into parametric and spline-based 
+approaches, where a different trade-off between the flexibility to
+represent shapes generally associated with the yield curve (goodness-of-fit) 
+and the smoothness characterizes the different approaches. 
+In this section, we discuss only the parametric methods.
+
+The underlying principle of parametric models, also referred to as
+function-based models, is the specification of a single-piece function that 
+is defined over the entire maturity domain. While the various approaches 
+in this class of models advocate different choices of this function, they 
+all share the general approach that the model parameters are determined 
+through the minimization of the squared deviations of theoretical prices 
+from observed prices.
