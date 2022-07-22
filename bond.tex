@@ -871,6 +871,66 @@ The possible interpolation assumptions are:
   \]
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bond Futures}
+
+A bond future is a future contract in which the asset for delivery is a
+government bond.
+Any government bonds that meet the maturity specification of a
+future contract are eligible for delivery.
+All eligible delivery bonds construct the delivery basket where each
+bond has its own conversion factor.
+Conversion factors are used to equalise the coupon and accrued
+interest differences of all the deliverable bonds.
+The seller usually picks up the cheapest bond in the basket to
+deliver, called the cheapest-to-deliver (CTD).
+The CTD bond is normally delivered on the last delivery day of the
+month.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Notations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}
+%\caption{Notations}
+\begin{tabular}{r | l}
+\hline\hline
+$T$ & delivery date of the bond futures \\
+$F_0$ & delivery price of the bond futures \\
+$F_t$ & bond futures price at time $t$ \\
+$i^*$ & index of the CTD bond \\
+$K_{i}$ & conversion factor of the $i$-th bond \\
+$A_{i}$ & accrued interest of the $i$-th bond at delivery date $T$\\
+$S_i(t)$ & dirty price of the $i$-th bond at time $t$ \\
+$D_{t t'}$ & discount factor between dates $t$ and $t'$ \\
+$C_{i,j}$ & cashflow of the $i$-th bond at time $t_j$ \\
+$I_i(t)=\sum_{t_j\in(t,T]} C_{i^*,j} D_{t,t_j}$ & PV at time $t$ of the 
+		cashflows of the$i$-th bond in $(t,T]$ \\
+\hline
+\end{tabular}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Present value given CTD bond}
+
+The present value of a bond futures at time $t$ given CTD bond $i^*$ is:
+\begin{equation}
+  PV_t = (F_t - F_0) D_{tT},
+\end{equation}
+where
+\begin{equation}
+  F_t K_{i^*} + A_{i^*} = \frac{S_{i^*}(t) - I_{i^*}(t) }{ D_{tT} },
+\end{equation}
+
+The CTD bond might change during the lifetime of the bond futures. One way to
+determine the CTD bond is by calculating the implied repo rate of all bonds:
+\begin{equation}
+  IRR_i = \frac{ F_t K_i + A_i + \sum_{t_j\in(t,T]} C_{i,j} - S_i(t) }
+               { S_i(t) \tau(t,T) - \sum_{t_j\in(t,T]} C_{i,j} \tau(t_j,T) }
+\end{equation}
+The bond with the maximal IRR is the CTD bond.
+
 
 
 \end{itemize}
