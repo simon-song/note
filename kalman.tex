@@ -175,7 +175,7 @@ $x_2|x_1\sim \ec(c_{2|1},A_{22|1})$.
 \footnote{Adapted from Sarkka, Bayesian Filtering and Smoothing, Appendix A, 
 	Lemma A.1, p. 209, which is for the case with multivariate normal
 	distribution.}
-Let $x_1\sim \ec_k(m,P)$, $x_2|x_1 \sim \ec_n (H x + u, R)$, then the joint
+Let $x_1\sim \ec_k(m,P)$, $x_2|x_1 \sim \ec_n (H x_1 + u, R)$, then the joint
 distribution of $x_1,x_2$ is given as
 \[
   \begin{pmatrix}
@@ -266,8 +266,8 @@ using Lemma \ref{L:ell_lin}, and the fact that
     H   & I_n \\
   \end{pmatrix}
   \begin{pmatrix}
-    y_1 \\
-    y_2 \\
+    P   & 0 \\
+    0   & R \\
   \end{pmatrix}
   \begin{pmatrix}
     I_k & H^T   \\
