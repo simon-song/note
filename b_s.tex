@@ -1390,3 +1390,124 @@ performance of pricing autocallable using the Monte Carlo method.
 %\end{pNiceMatrix}
 %\end{equation}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Barrier Binary Options}
+
+28 types of barrier binary options:
+\footnote{Rubinstein and Reiner (1991), Unscrambling the binary code, Risk 4
+	(Oct 1999), pp.75-83}
+
+\begin{enumerate}
+\item[(1)] down-and-in cash-(at hit)-or-nothing ($S_0>H$)
+	\[
+		V_{hit} = X \cdot 1_{\tau_H < T},
+	\]
+\item[(2)] up-and-in cash-(at hit)-or-nothing ($S_0<H$)
+	\[
+		V_{hit} = X \cdot 1_{\tau_H < T},
+	\]
+\item[(3)] down-and-in asset-(at hit)-or-nothing ($S_0>H$)
+	\[
+		V_{hit} = S_{\tau_H} \cdot 1_{\tau_H < T} = H\cdot 1_{\tau_H<T},
+	\]
+\item[(4)] up-and-in asset-(at hit)-or-nothing ($S_0<H$)
+	\[
+		V_{hit} = S_{\tau_H} \cdot 1_{\tau_H < T} = H\cdot 1_{\tau_H<T},
+	\]
+\item[(5)] down-and-in cash-(at expiry)-or-nothing ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T},
+	\]
+\item[(6)] up-and-in cash-(at expiry)-or-nothing ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T},
+	\]
+\item[(7)] down-and-in asset-(at expiry)-or-nothing ($S_0>H$)
+	\[
+		V_{hit} = S_{T} \cdot 1_{\tau_H < T},
+	\]
+\item[(8)] up-and-in asset-(at expiry)-or-nothing ($S_0<H$)
+	\[
+		V_{hit} = S_{T} \cdot 1_{\tau_H < T},
+	\]
+\item[(9)] down-and-out cash-or-nothing ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T},
+	\]
+\item[(10)] up-and-out cash-or-nothing ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T},
+	\]
+\item[(11)] down-and-out asset-or-nothing ($S_0>H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T},
+	\]
+\item[(12)] up-and-out asset-or-nothing ($S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T},
+	\]
+\item[(13)] down-and-in cash-or-nothing call ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T} \cdot 1_{S_T>K},
+	\]
+\item[(14)] up-and-in cash-or-nothing call ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T} \cdot 1_{S_T>K},
+	\]
+\item[(15)] down-and-in asset-or-nothing call ($S_0>H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H < T} \cdot 1_{S_T>K},
+	\]
+\item[(16)] up-and-in asset-or-nothing call ($S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H < T} \cdot 1_{S_T>K},
+	\]
+\item[(17)] down-and-in cash-or-nothing put ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T} \cdot 1_{S_T<K},
+	\]
+\item[(18)] up-and-in cash-or-nothing put ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H < T} \cdot 1_{S_T<K},
+	\]
+\item[(19)] down-and-in asset-or-nothing put ($S_0>H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H < T} \cdot 1_{S_T<K},
+	\]
+\item[(20)] up-and-in asset-or-nothing put ($S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H < T} \cdot 1_{S_T<K},
+	\]
+\item[(21)] down-and-out cash-or-nothing call ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T} \cdot 1_{S_T>K},
+	\]
+\item[(22)] up-and-out cash-or-nothing call ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T} \cdot 1_{S_T>K},
+	\]
+\item[(23)] down-and-out asset-or-nothing call ($S_0>H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T} \cdot 1_{S_T>K},
+	\]
+\item[(24)] up-and-out asset-or-nothing call ($S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T} \cdot 1_{S_T>K},
+	\]
+\item[(25)] down-and-out cash-or-nothing put ($S_0>H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T} \cdot 1_{S_T<K},
+	\]
+\item[(26)] up-and-out cash-or-nothing put ($S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_H > T} \cdot 1_{S_T<K},
+	\]
+\item[(27)] down-and-out asset-or-nothing put ($S_0>H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T} \cdot 1_{S_T<K},
+	\]
+\item[(28)] up-and-out asset-or-nothing put ($S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_H > T} \cdot 1_{S_T<K},
+	\]
+\end{enumerate}
