@@ -1424,11 +1424,11 @@ performance of pricing autocallable using the Monte Carlo method.
 	\]
 \item[(7)] down-and-in asset-(at expiry)-or-nothing ($S_0>H$)
 	\[
-		V_{hit} = S_{T} \cdot 1_{\tau_H < T},
+		V_{end} = S_{T} \cdot 1_{\tau_H < T},
 	\]
 \item[(8)] up-and-in asset-(at expiry)-or-nothing ($S_0<H$)
 	\[
-		V_{hit} = S_{T} \cdot 1_{\tau_H < T},
+		V_{end} = S_{T} \cdot 1_{\tau_H < T},
 	\]
 \item[(9)] down-and-out cash-or-nothing ($S_0>H$)
 	\[
@@ -1509,5 +1509,82 @@ performance of pricing autocallable using the Monte Carlo method.
 \item[(28)] up-and-out asset-or-nothing put ($S_0<H$)
 	\[
 		V_{end} = S_T \cdot 1_{\tau_H > T} \cdot 1_{S_T<K},
+	\]
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Double Barrier Binary Options}
+
+Different types of double barrier binary options:
+
+\begin{enumerate}
+\item[(1)] down-and-in cash-(at hit)-or-nothing ($L<S_0<H$)
+	\[
+		V_{hit} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=L}
+	\]
+\item[(2)] up-and-in cash-(at hit)-or-nothing ($L<S_0<H$)
+	\[
+		V_{hit} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=H}
+	\]
+\item[(3)] down-and-in asset-(at hit)-or-nothing ($L<S_0<H$)
+	\[
+		V_{hit} = S_{\tau_{LH}} \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=L}
+	\]
+\item[(4)] up-and-in asset-(at hit)-or-nothing ($L<S_0<H$)
+	\[
+		V_{hit} = S_{\tau_{LH}} \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=L}
+	\]
+\item[(5)] down-and-in cash-(at expiry)-or-nothing ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=L}
+	\]
+\item[(6)] up-and-in cash-(at expiry)-or-nothing ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_{\tau_{LH}}=H}
+	\]
+\item[(7)] knock-in asset-(at expiry)-or-nothing ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} < T} 
+	\]
+\item[(8)] knock-out cash-or-nothing ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} > T} 
+	\]
+\item[(9)] knock-out asset-or-nothing ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} > T} 
+	\]
+\item[(10)] knock-in cash-or-nothing call ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_T>K}
+	\]
+\item[(11)] knock-in asset-or-nothing call ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} < T} \cdot 1_{S_T>K}
+	\]
+\item[(12)] knock-in cash-or-nothing put ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} < T} \cdot 1_{S_T<K}
+	\]
+\item[(13)] knock-in asset-or-nothing put ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} < T} \cdot 1_{S_T<K}
+	\]
+\item[(14)] knock-out cash-or-nothing call ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} > T} \cdot 1_{S_T>K}
+	\]
+\item[(15)] knock-out asset-or-nothing call ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} > T} \cdot 1_{S_T>K}
+	\]
+\item[(16)] knock-out cash-or-nothing put ($L<S_0<H$)
+	\[
+		V_{end} = X \cdot 1_{\tau_{LH} > T} \cdot 1_{S_T<K}
+	\]
+\item[(17)] knock-out asset-or-nothing put ($L<S_0<H$)
+	\[
+		V_{end} = S_T \cdot 1_{\tau_{LH} > T} \cdot 1_{S_T<K}
 	\]
 \end{enumerate}
